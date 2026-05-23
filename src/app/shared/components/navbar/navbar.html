@@ -16,15 +16,15 @@
 
 
   <div class="largemode">
-    <a href="/" class="logo">Bonbon Boutique</a>
+    <a routerLink="/" class="logo">Bonbon Boutique</a>
     <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="shop">Shop</a></li>
+      <li><a routerLink="/">Home</a></li>
+      <li><a routerLink="shop">Shop</a></li>
    
     </ul>
     <div class="nav-actions">
 
-     <a href="cart" class="cartbtn">
+     <a routerLink="cart" class="cartbtn">
   <mat-icon>shopping_cart</mat-icon>
   @if (cartService.cartCount() > 0) {
     <span class="cart-count">{{ cartService.cartCount() }}</span>
@@ -74,8 +74,8 @@
     </button>
   </div>
   <ul class="drawer-links">
-    <li><a href="/" (click)="closeDrawer()">Home</a></li>
-    <li><a href="shop" (click)="closeDrawer()">Shop</a></li>
+    <li><a routerLink="/" (click)="closeDrawer()">Home</a></li>
+    <li><a routerLink="shop" (click)="closeDrawer()">Shop</a></li>
     
   </ul>
   <div class="drawer-actions">
