@@ -48,6 +48,18 @@
             <textarea placeholder="Any special instructions..." [(ngModel)]="form.notes" name="notes"></textarea>
           </div>
         </div>
+     
+<div class="formgroup">
+  <label>Delivery Date <span class="req">*</span></label>
+  <input
+    type="date"
+    [(ngModel)]="form.deliveryDate"
+    name="deliveryDate"
+    [min]="minDate"
+    (change)="onDateChange()"
+    required />
+  <span class="datehint">Minimum 2 days from today. Grey dates are unavailable.</span>
+</div>
 
         @if (!auth.isLoggedIn()) {
           <div class="formsection">

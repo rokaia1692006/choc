@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:choooc": "node dist/choooc/server/server.mjs",
-    "deploy": "gh-pages -d docs/browser"
+    "deploy": "touch docs/browser/.nojekyll && cp docs/browser/index.html docs/browser/404.html && gh-pages -d docs/browser --dotfiles"
   },
   "private": true,
   "packageManager": "npm@11.14.1",

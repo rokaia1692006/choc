@@ -20,6 +20,7 @@
     <ul class="nav-links">
       <li><a routerLink="/">Home</a></li>
       <li><a routerLink="shop">Shop</a></li>
+      <li><a routerLink="orders">My Orders</a></li>
    
     </ul>
     <div class="nav-actions">
@@ -76,10 +77,10 @@
   <ul class="drawer-links">
     <li><a routerLink="/" (click)="closeDrawer()">Home</a></li>
     <li><a routerLink="shop" (click)="closeDrawer()">Shop</a></li>
-    
+          <li><a routerLink="orders" (click)="closeDrawer()">My Orders</a></li>
   </ul>
   <div class="drawer-actions">
-    <!-- Drawer, replace profile btn -->
+
 @if (auth.isLoggedIn()) {
   <a routerLink="/profile" class="drawer-profile" (click)="closeDrawer()">
     <mat-icon>person</mat-icon> {{ auth.user()?.name }}

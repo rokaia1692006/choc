@@ -72,7 +72,11 @@
   text-transform: uppercase;
   color: var(--color-text);
 }
-
+.datehint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
 .formgroup input,
 .formgroup textarea {
   background: var(--color-bg);

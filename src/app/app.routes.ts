@@ -10,6 +10,7 @@ import { Profile } from './pages/profile/profile';
 import { authGuard } from './core/guards/auth-guard';
 import { guestGuard } from './core/guards/guest-guard';
 import { cartGuardGuard } from './core/guards/cart-guard-guard';
+import { Orders } from './pages/orders/orders';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', component: Products },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'register', component: Register, canActivate: [guestGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: 'forgetpass', component: ForgetPassPage},
+{path: 'orders', component: Orders, canActivate: [authGuard]},
 { path: '**', redirectTo: 'HomeComponent' },
 ];

@@ -1,0 +1,79 @@
+<div class="orderspage">
+  <div class="ordersheader">
+    <a routerLink="/" class="orderslogo">Bonbon Boutique</a>
+    <h1 class="orderstitle">My Orders</h1>
+  </div>
+
+  @if (cancelError()) {
+    <div class="ordererror">{{ cancelError() }}</div>
+  }
+
+  @if (orders().length === 0) {
+    <div class="emptyorders">
+      <p>You have no orders yet.</p>
+      <a routerLink="/shop" class="shopbtn">Start Shopping</a>
+    </div>
+  }
+
+  <div class="orderslist">
+    @for (order of orders(); track order.id) {
+      <div class="ordercard" [class]="'status-' + order.status">
+
+        <div class="ordercardhdr">
+          <div class="ordermeta">
+            <span class="orderid">Order #{{ order.id }}</span>
+            <span class="orderdate">Placed {{ formatDate(order.placedAt) }}</span>
+          </div>
+          <div class="orderstatus" [class]="'badge-' + order.status">
+            {{ statusLabel(order.status) }}
+          </div>
+        </div>
+
+        <div class="orderitems">
+          @for (item of order.items; track item.productId) {
+            <div class="orderitem">
+              <img [src]="item.image" [alt]="item.name" class="orderitemimg" />
+              <div class="orderiteminfo">
+                <p class="orderitemname">{{ item.name }}</p>
+                @if (item.variant) {
+                  <p class="orderitemvariant">{{ item.variant }}</p>
+                }
+                <p class="orderitemmeta">x{{ item.quantity }} · EGP {{ item.price * item.quantity }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="ordercardftr">
+          <div class="orderdelivery">
+            <span class="orderlabel">Delivery Date</span>
+            <span class="orderval">{{ formatDate(order.deliveryDate) }}</span>
+          </div>
+          <div class="ordertotalrow">
+            <span class="orderlabel">Total</span>
+            <span class="ordertotal">EGP {{ order.total }}</span>
+          </div>
+        </div>
+
+        @if (canCancel(order)) {
+          <div class="ordercancelrow">
+            <button
+              class="cancelbtn"
+              (click)="cancelOrder(order.id)"
+              [disabled]="cancellingId() === order.id">
+              {{ cancellingId() === order.id ? 'Cancelling...' : 'Cancel Order' }}
+            </button>
+            <span class="cancelhint">You can cancel while your order hasn't started being prepared</span>
+          </div>
+        }
+
+        @if (order.status === 'preparing') {
+          <div class="preparingnotice">
+            Your order is being prepared and will be delivered on {{ formatDate(order.deliveryDate) }}. Thank you for your patience!
+          </div>
+        }
+
+      </div>
+    }
+  </div>
+</div>
