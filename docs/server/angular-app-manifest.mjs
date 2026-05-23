@@ -49,17 +49,17 @@ export default {
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 58950, hash: '26ad2d658062b8650ae11b125845e4f2aad2c96191096cea2009be407e138791', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1594, hash: '3e8cb4277606f14cf0e3e0867daafbae1a667c33eeb881579dfea2291990fc5b', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
-    'index.html': {size: 94602, hash: 'e6a6b4c0a7dd7bae277fc17141ba5f9cfad53da97bc47bad70c9015cbb47679c', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 58970, hash: '47c9410a422ff965b976fad1547ef0becbfe5e42f66f34b9ebd390b42eead828', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1594, hash: 'ca69bfe0cc72a79dac064293f502c4896b5d445601cf4efd15c686f35b8a933a', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'shop/index.html': {size: 98779, hash: '12bccded0e9a412545ec6698d3bcba0325195b9c30304c468eb87c9eb57dd1f0', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
     'checkout/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/checkout_index_html.mjs').then(m => m.default)},
     'profile/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/profile_index_html.mjs').then(m => m.default)},
-    'shop/index.html': {size: 96031, hash: 'c01f88c8d96a5ac9c243f73db4267cca8f954db447cb8a3cf2e73d8ddcb55f7d', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
-    'forgetpass/index.html': {size: 82755, hash: 'a8384bdace635aa90dc72dc06e7f064152d4d150508e1fcd4098f6147304ef25', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
+    'index.html': {size: 96287, hash: 'd7fe023650d30803508fe35e7fc101f60d16c8723ff18581ebd8c41f5cc27de2', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
+    'forgetpass/index.html': {size: 84327, hash: 'cdf1f13e7ce91ca76b348bad2dbc92b795f05817b622c84a3c78de14dd9ce109', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
     'orders/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/orders_index_html.mjs').then(m => m.default)},
-    'login/index.html': {size: 81498, hash: 'bc6edb0889c7175501d18ddd22dfe7480b4b52bbb476f5ee06c3ff2509ea12b0', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
-    'cart/index.html': {size: 83250, hash: 'd731c36ac03b607219861cf4c2cf7d66921aa35f6eee01707af7965142cf6a60', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
-    'register/index.html': {size: 83664, hash: '04428f45a542510afaaccae5f1fabc890f160d207f482ab5e40ac9868de327a8', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
-    'styles-BYDOT6HN.css': {size: 113644, hash: 'isbAU1hlSWM', text: () => import('./assets-chunks/styles-BYDOT6HN_css.mjs').then(m => m.default)}
+    'cart/index.html': {size: 84817, hash: 'd9870ade99950bbe316b7a75040f728f9c4ce31eafe2607f8e382a5dad38a472', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
+    'register/index.html': {size: 85236, hash: 'f228f50cba6d543f85ba99516bd55f3a75fd1e8f0a44c58ca3a19dcf4304e752', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
+    'login/index.html': {size: 83070, hash: 'd48d2067f30b63e4960aabd68bc47296bbeea7e73b03808be9efaf22d7ba466c', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
+    'styles-EW4EAC47.css': {size: 113685, hash: '3qxkr70qJrs', text: () => import('./assets-chunks/styles-EW4EAC47_css.mjs').then(m => m.default)}
   },
 };

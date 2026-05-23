@@ -5,9 +5,6 @@
     <h1 class="orderstitle">{{ 'myOrdersTitle' | translate }}</h1>
   </div>
   
-<button (click)="seedTestOrders()" style="margin-bottom:1rem; padding:8px 16px; background:var(--color-gold); border:none; cursor:pointer; font-size:12px;">
-  Seed Test Orders
-</button>
 
   @if (cancelError()) {
     <div class="ordererror">{{ cancelError() }}</div>
