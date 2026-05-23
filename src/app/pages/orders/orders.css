@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
 .orderspage {
   min-height: 100vh;
   background: var(--color-bg);
@@ -32,7 +38,7 @@
 .ordererror {
   background: rgba(192, 57, 43, 0.1);
   border: 1px solid rgba(192, 57, 43, 0.3);
-  color: #c0392b;
+  color: #e74c3c;
   padding: 10px 14px;
   font-size: 13px;
   margin-bottom: 1.5rem;
@@ -41,7 +47,7 @@
 .emptyorders {
   text-align: center;
   padding: 4rem 0;
-  color: var(--color-text-muted);
+  color: var(--color-text);
 }
 
 .shopbtn {
@@ -54,10 +60,13 @@
   font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
-.shopbtn:hover { background: var(--color-gold); color: #0a0a0a; }
+.shopbtn:hover {
+  background: var(--color-gold);
+  color: #0a0a0a;
+}
 
 .orderslist {
   display: flex;
@@ -72,8 +81,8 @@
 }
 
 .ordercard.status-cancelled {
-  opacity: 0.7;
-  border-color: rgba(192, 57, 43, 0.3);
+  opacity: 0.65;
+  border-color: rgba(192, 57, 43, 0.4);
 }
 
 .ordercardhdr {
@@ -99,10 +108,10 @@
 
 .orderdate {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  opacity: 0.6;
 }
 
-/* Status badges */
 .orderstatus {
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -112,10 +121,50 @@
   font-weight: 600;
 }
 
-.badge-pending { background: rgba(241, 196, 15, 0.15); color: #b7950b; border: 1px solid rgba(241,196,15,0.3); }
-.badge-preparing { background: rgba(52, 152, 219, 0.15); color: #1a6fa3; border: 1px solid rgba(52,152,219,0.3); }
-.badge-delivered { background: rgba(39, 174, 96, 0.15); color: #1e8449; border: 1px solid rgba(39,174,96,0.3); }
-.badge-cancelled { background: rgba(192, 57, 43, 0.1); color: #c0392b; border: 1px solid rgba(192,57,43,0.3); }
+.badge-pending {
+  background: rgba(255, 187, 0, 0.15);
+  color: var(--color-gold-dark);
+  border: 1px solid rgba(255, 187, 0, 0.4);
+}
+
+.dark .badge-pending {
+  color: var(--color-gold);
+  background: rgba(255, 208, 0, 0.12);
+  border-color: rgba(255, 208, 0, 0.3);
+}
+
+.badge-preparing {
+  background: rgba(52, 152, 219, 0.15);
+  color: #1565c0;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.dark .badge-preparing {
+  color: #64b5f6;
+  background: rgba(52, 152, 219, 0.12);
+}
+
+.badge-delivered {
+  background: rgba(39, 174, 96, 0.15);
+  color: #1b5e20;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.dark .badge-delivered {
+  color: #81c784;
+  background: rgba(39, 174, 96, 0.12);
+}
+
+.badge-cancelled {
+  background: rgba(192, 57, 43, 0.1);
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.dark .badge-cancelled {
+  color: #ef9a9a;
+  background: rgba(192, 57, 43, 0.12);
+}
 
 .orderitems {
   display: flex;
@@ -135,6 +184,7 @@
   height: 56px;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid var(--color-border);
 }
 
 .orderiteminfo { flex: 1; }
@@ -154,7 +204,8 @@
 
 .orderitemmeta {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  opacity: 0.6;
   margin: 0;
 }
 
@@ -170,18 +221,23 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  opacity: 0.55;
   display: block;
   margin-bottom: 4px;
 }
 
-.orderval, .ordertotal {
+.orderval {
   font-size: 14px;
   color: var(--color-text);
   font-family: Georgia, serif;
 }
 
-.ordertotal { color: var(--color-gold); }
+.ordertotal {
+  font-size: 14px;
+  color: var(--color-gold);
+  font-family: Georgia, serif;
+}
 
 .ordercancelrow {
   display: flex;
@@ -203,27 +259,47 @@
   flex-shrink: 0;
 }
 
+.dark .cancelbtn {
+  border-color: #ef9a9a;
+  color: #ef9a9a;
+}
+
 .cancelbtn:hover:not(:disabled) {
   background: #c0392b;
   color: #fff;
 }
 
-.cancelbtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.dark .cancelbtn:hover:not(:disabled) {
+  background: #ef9a9a;
+  color: #0a0a0a;
+}
+
+.cancelbtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 .cancelhint {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  opacity: 0.55;
 }
 
 .preparingnotice {
   font-size: 12px;
-  color: #1a6fa3;
+  color: #1565c0;
   background: rgba(52, 152, 219, 0.08);
-  border: 1px solid rgba(52,152,219,0.2);
+  border: 1px solid rgba(52, 152, 219, 0.2);
   padding: 8px 12px;
 }
 
-@media (max-width: 600px) {
+.dark .preparingnotice {
+  color: #64b5f6;
+  background: rgba(52, 152, 219, 0.06);
+  border-color: rgba(52, 152, 219, 0.15);
+}
+
+@media (max-width: 900px) {
   .orderspage { padding: 2rem 1.5rem; }
   .ordercardhdr { flex-direction: column; gap: 0.75rem; }
   .ordercardftr { flex-direction: column; gap: 0.75rem; }
