@@ -18,5 +18,6 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'register', component: Register, canActivate: [guestGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
-  { path: 'forgetpass', component: ForgetPassPage}
+  { path: 'forgetpass', component: ForgetPassPage},
+{ path: '**', redirectTo: 'HomeComponent' },
 ];
