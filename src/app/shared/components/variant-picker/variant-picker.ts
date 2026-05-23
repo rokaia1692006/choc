@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, signal, OnInit, OnDestroy, PLAT
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Product, productTypes } from '../../../core/models/products';
 import { CartService } from '../../../core/services/cart';
+import { LanguageService } from '../../../core/services/language';
+import { LanguagesPipe } from '../../pipes/languages-pipe';
 
 interface FlavourSelection {
   variant: productTypes;
@@ -18,7 +20,7 @@ interface FlavourSelection {
 export class VariantPicker implements OnInit, OnDestroy {
   @Input() product!: Product;
   @Output() close = new EventEmitter<void>();
-
+lang = inject(LanguageService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
@@ -29,9 +31,9 @@ export class VariantPicker implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.product.mixedBox) {
-      this.selections.set(
-        this.product.mixedBox.flavours.map(v => ({ variant: v, quantity: 0 }))
-      );
+     this.selections.set(
+  this.product.mixedBox.flavours.map((v: productTypes) => ({ variant: v, quantity: 0 }))
+);
     }
     if (this.isBrowser) document.body.style.overflow = 'hidden';
   }
@@ -99,27 +101,27 @@ export class VariantPicker implements OnInit, OnDestroy {
     return rows;
   }
 
-  addToCart() {
-    if (this.product.mixedBox) {
-      if (!this.isBoxComplete) return;
-      const selectedFlavours = this.selections()
-        .filter(s => s.quantity > 0)
-        .map(s => `${s.quantity}x ${s.variant.label}`)
-        .join(', ');
-      this.cartService.addToCart({
-        ...this.product,
-        name: `${this.product.name} (${selectedFlavours})`,
-      });
-    } else {
-      const variant = this.selected();
-      if (!variant) return;
-      this.cartService.addToCart({
-        ...this.product,
-        name: `${this.product.name} — ${variant.label}`,
-        price: this.finalPrice,
-        id: parseInt(`${this.product.id}${variant.id}`)
-      });
-    }
-    this.close.emit();
+ addToCart() {
+  if (this.product.mixedBox) {
+    if (!this.isBoxComplete) return;
+    const selectedFlavours = this.selections()
+      .filter(s => s.quantity > 0)
+      .map(s => `${s.quantity}x ${s.variant.label}`)
+      .join(', ');
+    this.cartService.addToCart({
+      ...this.product,
+      name: `${this.product.name} (${selectedFlavours})`,
+    });
+  } else {
+    const variant = this.selected();
+    if (!variant) return;
+    this.cartService.addToCart({
+      ...this.product,
+      name: `${this.product.name} — ${variant.label}`,
+      price: this.finalPrice,
+      id: Number(`${this.product.id}${variant.id}`)
+    });
   }
+  this.close.emit();
+}
 }

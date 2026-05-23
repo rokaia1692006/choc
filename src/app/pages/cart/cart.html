@@ -1,68 +1,65 @@
 <div class="cartpage">
-
   <div class="cartheader">
-    <h1 class="carttitle">Your Cart</h1>
-    <p class="cartsubtitle">{{ cartService.cartCount() }} items</p>
+    <h1 class="carttitle">{{ 'cart' | translate }}</h1>
+    <p class="cartsubtitle">{{ cartService.cartCount() }} {{ 'productsCount' | translate }}</p>
   </div>
 
   @if (cartService.cartItems().length === 0) {
     <div class="emptycart">
       <mat-icon>shopping_cart</mat-icon>
-      <p>Your cart is empty</p>
-      <a routerLink="/shop" class="continuebtn">Continue Shopping</a>
+      <p>{{ 'emptyCart' | translate }}</p>
+      <a routerLink="/shop" class="continuebtn">{{ 'startShopping' | translate }}</a>
     </div>
   } @else {
     <div class="cartlayout">
-     
       <div class="cartitems">
         @for (item of cartService.cartItems(); track item.cartItemId) {
           <div class="cartitem">
             <img [src]="item.product.image" [alt]="item.product.name" class="itemimage">
             <div class="itemdetails">
-              <h3 class="itemname">{{ item.product.name }}</h3>
-              <p class="itemcategory">{{ item.product.category }}</p>
-              <p class="itemprice">EGP {{ item.product.price }}</p>
+              <h3 class="itemname">{{ displayName(item.product) }}</h3>
+              <p class="itemcategory">{{ displayCategory(item.product) }}</p>
+              <p class="itemprice">{{ item.product.price | currency }}</p>
             </div>
             <div class="itemcontrols">
               <button class="qtybtn" (click)="decrement(item.cartItemId, item.quantity)">
                 <mat-icon>remove</mat-icon>
               </button>
               <span class="qty">{{ item.quantity }}</span>
-              
-              <!-- FIXED: Passes full item to handle custom boxes uniquely -->
               <button class="qtybtn" (click)="increment(item)">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
-            <p class="itemtotal">EGP {{ item.product.price * item.quantity }}</p>
+            <p class="itemtotal">{{ item.product.price * item.quantity | currency }}</p>
             <button class="removebtn" (click)="cartService.removeFromCart(item.cartItemId)">
               <mat-icon>close</mat-icon>
             </button>
           </div>
         }
-
-        <button class="clearbtn" (click)="cartService.clearCart()">Clear Cart</button>
+        <button class="clearbtn" (click)="cartService.clearCart()">{{ 'clearCart' | translate }}</button>
       </div>
 
       <div class="cartsummary">
-        <h2 class="summarytitle">Order Summary</h2>
-        <div class="summaryrow total">
-          <span>Total</span>
-          <span>EGP {{ cartService.cartTotal() + 30 }}</span>
+        <h2 class="summarytitle">{{ 'orderSummary' | translate }}</h2>
+        <div class="summaryrow">
+          <span>{{ 'subtotal' | translate }}</span>
+          <span>{{ cartService.cartTotal() | currency }}</span>
         </div>
-        <button class="checkoutbtn" routerLink="/checkout">Proceed to Checkout</button>
-        <a routerLink="/shop" class="continuelink">Continue Shopping</a>
+        <div class="summaryrow">
+          <span>{{ 'delivery' | translate }}</span>
+          <span>{{ 30 | currency }}</span>
+        </div>
+        <div class="summaryrow total">
+          <span>{{ 'total' | translate }}</span>
+          <span>{{ cartService.cartTotal() + 30 | currency }}</span>
+        </div>
+        <button class="checkoutbtn" routerLink="/checkout">{{ 'checkout' | translate }}</button>
+        <a routerLink="/shop" class="continuelink">{{ 'startShopping' | translate }}</a>
       </div>
-
     </div>
   }
 
-
   @if (activeProductForModal) {
-    <app-variant-picker 
-      [product]="activeProductForModal" 
-      (close)="closeModal()">
-    </app-variant-picker>
+    <app-variant-picker [product]="activeProductForModal" (close)="closeModal()"></app-variant-picker>
   }
-
 </div>

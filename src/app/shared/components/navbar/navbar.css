@@ -388,7 +388,53 @@ background-color: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
   padding-top: 1.5rem;
   border-top: 1px solid var(--color-border);
   margin-top: 1rem;
+}
+.drawer-actions .switchers {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.drawer-actions .switcher {
+  flex: 1;
+}
+.switchers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switcher {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 4px 8px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.switcher:hover,
+.switcher:focus {
+  border-color: var(--color-gold);
+}
+
+.switcher option {
+  background: var(--color-surface);
+  color: var(--color-text);
 }

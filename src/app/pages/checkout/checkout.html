@@ -1,7 +1,7 @@
 <div class="checkoutpage">
   <div class="checkoutheader">
     <a routerLink="/" class="checkoutlogo">Bonbon Boutique</a>
-    <h1 class="checkouttitle">Checkout</h1>
+    <h1 class="checkouttitle">{{ 'checkout' | translate }}</h1>
   </div>
 
   <div class="checkoutlayout">
@@ -15,51 +15,51 @@
         }
 
         <div class="formsection">
-          <h3 class="sectiontitle">Delivery Details</h3>
+          <h3 class="sectiontitle">{{ 'deliveryDetails' | translate }}</h3>
 
           <div class="formgroup">
-            <label>Full Name <span class="req">*</span></label>
-            <input type="text" placeholder="Your full name" [(ngModel)]="form.name" name="name" required />
+            <label>{{ 'fullName' | translate }} <span class="req">*</span></label>
+            <input type="text" [placeholder]="'fullName' | translate" [(ngModel)]="form.name" name="name" required />
           </div>
 
           <div class="formgroup">
-            <label>Phone Number <span class="req">*</span></label>
+            <label>{{ 'phoneNumber' | translate }} <span class="req">*</span></label>
             <input type="tel" placeholder="+20 1XX XXX XXXX" [(ngModel)]="form.phone" name="phone" required />
           </div>
 
           <div class="formgroup">
-            <label>Street Address <span class="req">*</span></label>
-            <input type="text" placeholder="Street address" [(ngModel)]="form.address" name="address" required />
+            <label>{{ 'streetAddress' | translate }} <span class="req">*</span></label>
+            <input type="text" [placeholder]="'streetAddress' | translate" [(ngModel)]="form.address" name="address" required />
           </div>
 
           <div class="formrow">
             <div class="formgroup">
-              <label>City <span class="req">*</span></label>
-              <input type="text" placeholder="City" [(ngModel)]="form.city" name="city" required />
+              <label>{{ 'city' | translate }} <span class="req">*</span></label>
+              <input type="text" [placeholder]="'city' | translate" [(ngModel)]="form.city" name="city" required />
             </div>
             <div class="formgroup">
-              <label>Apartment / Floor</label>
-              <input type="text" placeholder="Optional" [(ngModel)]="form.apartment" name="apartment" />
+              <label>{{ 'apartment' | translate }}</label>
+              <input type="text" [placeholder]="'apartment' | translate" [(ngModel)]="form.apartment" name="apartment" />
             </div>
           </div>
 
           <div class="formgroup">
-            <label>Notes</label>
-            <textarea placeholder="Any special instructions..." [(ngModel)]="form.notes" name="notes"></textarea>
+            <label>{{ 'notes' | translate }}</label>
+            <textarea [placeholder]="'notes' | translate" [(ngModel)]="form.notes" name="notes"></textarea>
           </div>
         </div>
-     
-<div class="formgroup">
-  <label>Delivery Date <span class="req">*</span></label>
-  <input
-    type="date"
-    [(ngModel)]="form.deliveryDate"
-    name="deliveryDate"
-    [min]="minDate"
-    (change)="onDateChange()"
-    required />
-  <span class="datehint">Minimum 2 days from today. Grey dates are unavailable.</span>
-</div>
+
+        <div class="formgroup">
+          <label>{{ 'deliveryDate' | translate }} <span class="req">*</span></label>
+          <input
+            type="date"
+            [(ngModel)]="form.deliveryDate"
+            name="deliveryDate"
+            [min]="minDate"
+            (change)="onDateChange()"
+            required />
+          <span class="datehint">{{ 'dateHint' | translate }}</span>
+        </div>
 
         @if (!auth.isLoggedIn()) {
           <div class="formsection">
@@ -67,35 +67,34 @@
               <div class="checkbox" [class.checked]="createAccount()">
                 @if (createAccount()) { ✓ }
               </div>
-              <span>Create an account to track your orders</span>
+              <span>{{ 'createAccount' | translate }}</span>
             </label>
 
             @if (createAccount()) {
               <div class="formrow" style="margin-top: 1rem;">
                 <div class="formgroup">
-                  <label>Password <span class="req">*</span></label>
-                  <input type="password" placeholder="Min 6 characters" [(ngModel)]="form.password" name="password" />
+                  <label>{{ 'password' | translate }} <span class="req">*</span></label>
+                  <input type="password" [placeholder]="'passwordHint' | translate" [(ngModel)]="form.password" name="password" />
                 </div>
                 <div class="formgroup">
-                  <label>Confirm Password <span class="req">*</span></label>
-                  <input type="password" placeholder="Repeat password" [(ngModel)]="form.confirmPassword" name="confirmPassword" />
+                  <label>{{ 'confirmPassword' | translate }} <span class="req">*</span></label>
+                  <input type="password" [placeholder]="'confirmPassword' | translate" [(ngModel)]="form.confirmPassword" name="confirmPassword" />
                 </div>
               </div>
-              <p class="haveaccount">Already have an account? <a routerLink="/login">Sign in</a></p>
+              <p class="haveaccount">{{ 'haveAccount' | translate }} <a routerLink="/login">{{ 'login' | translate }}</a></p>
             }
           </div>
         }
 
         <button type="submit" class="placeorderbtn" [disabled]="loading()">
-          {{ loading() ? 'Placing Order...' : 'Place Order — EGP ' + total }}
+          {{ loading() ? ('placingOrder' | translate) : ('placeOrder' | translate) + ' — ' + (total | currency) }}
         </button>
 
       </form>
     </div>
 
-    <!-- Order Summary -->
     <div class="ordersummary">
-      <h3 class="sectiontitle">Order Summary</h3>
+      <h3 class="sectiontitle">{{ 'orderSummary' | translate }}</h3>
 
       <div class="summaryitems">
         @for (item of cart.cartItems(); track item.product.id) {
@@ -105,24 +104,24 @@
               <p class="summaryname">{{ item.product.name }}</p>
               <p class="summarymeta">x{{ item.quantity }}</p>
             </div>
-            <p class="summaryprice">EGP {{ item.product.price * item.quantity }}</p>
+            <p class="summaryprice">{{ item.product.price * item.quantity | currency }}</p>
           </div>
         }
       </div>
 
       <div class="summaryrows">
         <div class="summaryrow">
-          <span>Subtotal</span>
-          <span>EGP {{ cart.cartTotal() }}</span>
+          <span>{{ 'subtotal' | translate }}</span>
+          <span>{{ cart.cartTotal() | currency }}</span>
         </div>
         <div class="summaryrow">
-          <span>Delivery</span>
-          <span>EGP 30</span>
+          <span>{{ 'delivery' | translate }}</span>
+          <span>{{ 30 | currency }}</span>
         </div>
         <div class="summarydivider"></div>
         <div class="summaryrow total">
-          <span>Total</span>
-          <span>EGP {{ total }}</span>
+          <span>{{ 'total' | translate }}</span>
+          <span>{{ total | currency }}</span>
         </div>
       </div>
     </div>

@@ -21,19 +21,19 @@ export class FeatureProductCarrousel implements OnInit, OnDestroy {
   slidesPerView = 3;
 showDots = false;
   featuredProducts: Product[] = [
-    { id: 1, name: 'Dark Truffle Box', description: 'Rich 70% cacao with hazelnut praline filling.', price: 120, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.1zHspPS9X-Ayi2ms8DMNZAHaHa%3Fpid%3DApi&f=1&ipt=0a0e0040f310351993de98221e6e23992fa9f70773f5c5b9ddb71e6c0204e6cf&ipo=images', category: 'Truffles', badge: 'Bestseller' },
-    { id: 2, name: 'Salted Caramel', description: 'Smooth milk chocolate with sea salt caramel.', price: 85, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', category: 'Caramel', badge: 'New' },
-    { id: 3, name: 'Gift Collection', description: 'Assorted premium bonbons, 24 pieces.', price: 250, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', category: 'Gifts' },
-    { id: 4, name: 'White Raspberry', description: 'Delicate white chocolate with raspberry ganache.', price: 95, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', category: 'White' },
-    { id: 5, name: 'Hazelnut Praline', description: 'Classic praline wrapped in dark chocolate.', price: 110, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', category: 'Praline' },
-    { id: 6, name: 'Matcha Green', description: 'Japanese matcha infused in creamy milk chocolate.', price: 100, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', category: 'Special' },
+    { id: 1, name: 'Dark Truffle Box', description: 'Rich 70% cacao with hazelnut praline filling.', price: 120, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.1zHspPS9X-Ayi2ms8DMNZAHaHa%3Fpid%3DApi&f=1&ipt=0a0e0040f310351993de98221e6e23992fa9f70773f5c5b9ddb71e6c0204e6cf&ipo=images', categoryId: 2, badge: 'Bestseller' },
+    { id: 2, name: 'Salted Caramel', description: 'Smooth milk chocolate with sea salt caramel.', price: 85, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', categoryId: 3, badge: 'New' },
+    { id: 3, name: 'Gift Collection', description: 'Assorted premium bonbons, 24 pieces.', price: 250, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', categoryId: 4 },
+    { id: 4, name: 'White Raspberry', description: 'Delicate white chocolate with raspberry ganache.', price: 95, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', categoryId: 5 },
+    { id: 5, name: 'Hazelnut Praline', description: 'Classic praline wrapped in dark chocolate.', price: 110, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', categoryId: 6 },
+    { id: 6, name: 'Matcha Green', description: 'Japanese matcha infused in creamy milk chocolate.', price: 100, image: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%２Ftse4.mm.bing.net%２Fth％２Fid％２FOIP.njRD6k_795CrG6AVtCi_QQHaDy％３Fpid％３DApi＆f＝１＆ipt＝４６６ｄ３９ｆ７６ｃ８２ｄf６６c４５４９２２d５２７９fbc１２db７４beff７８ccdbd８９３９４b１c０５f０１６fb＆ipo＝images', categoryId: 7 },
   {
   id: 7,
   name: 'Dark Truffle Box',
   description: 'Rich 70% cacao with hazelnut praline filling.',
   price: 120,
   image: '...',
-  category: 'Truffles',
+  categoryId: 2,
   badge: 'Bestseller',
   variants: [
     { id: '1', flavour: 'kunafa pistachio', label: 'Kunafa Pistachio', priceModifier: 0, crossSectionImage: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.njRD6k_795CrG6AVtCi_QQHaDy%3Fpid%3DApi&f=1&ipt=466d39f76c82df66c454922d5279fbc12db74beff78ccdbd89394b1c05f016fb&ipo=images', available: true },

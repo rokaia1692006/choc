@@ -6,11 +6,14 @@ import { AuthService } from '../../core/services/auth';
 import { CartService } from '../../core/services/cart';
 import { OrderService } from '../../core/services/order-service';
 import { Order } from '../../core/models/order';
-
+import { CurrencyService } from '../../core/services/currency';
+import { LanguageService, Translations } from '../../core/services/language';
+import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
+import { CurrencyPipe } from '../../shared/pipes/currency-pipe';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [FormsModule, RouterModule, CommonModule],
+  imports: [FormsModule, RouterModule, CommonModule, LanguagesPipe, CurrencyPipe],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
@@ -19,7 +22,7 @@ export class Checkout {
   cart = inject(CartService);
   order = inject(OrderService);
   router = inject(Router);
-
+  lang = inject(LanguageService);
   createAccount = signal(false);
   error = signal('');
   loading = signal(false);
@@ -143,9 +146,10 @@ if (this.isDateBlocked(this.form.deliveryDate)) {
       city: this.form.city,
       apartment: this.form.apartment,
       notes: this.form.notes,
-    items: this.cart.cartItems().map(i => ({
+items: this.cart.cartItems().map(i => ({
   productId: i.product.id,
   name: i.product.name,
+  nameAr: i.product.nameAr,
   image: i.product.image,
   price: i.product.price,
   quantity: i.quantity,

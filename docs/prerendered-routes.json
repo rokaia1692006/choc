@@ -5,6 +5,7 @@
     "/choc/checkout": {},
     "/choc/forgetpass": {},
     "/choc/login": {},
+    "/choc/orders": {},
     "/choc/profile": {},
     "/choc/register": {},
     "/choc/shop": {}

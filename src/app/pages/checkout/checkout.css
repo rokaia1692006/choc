@@ -274,3 +274,7 @@
     grid-template-columns: 1fr;
   }
 }
+input[type="date"] {
+  color-scheme: var(--colorScheme);
+}
+

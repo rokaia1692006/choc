@@ -1,8 +1,8 @@
 <div class="shop">
 
   <div class="header">
-    <h1 class="title">Our Collection</h1>
-    <p class="subtitle">Handcrafted with the finest ingredients</p>
+    <h1 class="title">{{ "ourCollection" | translate }}</h1>
+    <p class="subtitle">{{ "handcrafted" | translate }}</p>
   </div>
 
   <div class="toolbar">
@@ -10,31 +10,31 @@
       <mat-icon class="search-icon">search</mat-icon>
       <input
         type="text"
-        placeholder="Search chocolates"
+        placeholder="{{ 'searchPlaceholder' | translate }}"
         class="search-input"
         [value]="searchQuery()"
         (input)="setSearch($event)"
       />
     </div>
     <select class="sort-select" (change)="setSort($event)">
-      <option value="default">Sort: Default</option>
-      <option value="price-asc">Price: Low to High</option>
-      <option value="price-desc">Price: High to Low</option>
-      <option value="name">Name: A-Z</option>
+      <option value="default">{{ "sortDefault" | translate }}</option>
+      <option value="price-asc">{{ "sortPriceLow" | translate }}</option>
+      <option value="price-desc">{{ "sortPriceHigh" | translate }}</option>
+      <option value="name">{{ "sortNameAZ" | translate }}</option>
     </select>
   </div>
 
 
-  <div class="categories">
-    @for (cat of categories; track cat) {
-      <button
-        class="catbtn"
-        [class.active]="selectedCategory() === cat"
-        (click)="setCategory(cat)">
-        {{ cat }}
-      </button>
-    }
-  </div>
+ <div class="categories">
+ @for (cat of categoryService.categories(); track cat.id) {
+  <button
+    class="catbtn"
+    [class.active]="selectedCategory() === cat.id"
+    (click)="setCategory(cat.id)">
+    {{ displayCategory(cat) }}
+  </button>
+}
+</div>
 
 
   <p class="results-count">{{ filteredProducts().length }} products</p>
@@ -48,7 +48,7 @@
   } @else {
     <div class="empty-state">
       <mat-icon>search_off</mat-icon>
-      <p>No products found</p>
+      <p>{{ "noProductsFound" | translate }}</p>
     </div>
   }
 

@@ -4,14 +4,14 @@
   <button class="vp-close" (click)="close.emit()">✕</button>
 
   <div class="vp-header">
-    <h2 class="vp-title">{{ product.name }}</h2>
-    <p class="vp-desc">{{ product.description }}</p>
+    <h2 class="vp-title">{{ lang.isArabic() && product.nameAr ? product.nameAr : product.name }}</h2>
+    <p class="vp-desc">{{ lang.isArabic() && product.descriptionAr ? product.descriptionAr : product.description }}</p>
   </div>
 
   @if (product.mixedBox) {
     <div class="vp-mixedbox">
       <div class="vp-progress-header">
-        <p class="vp-label">Build your box (Rows of 4)</p>
+        <p class="vp-label">{{ lang.t().buildYourBoxRows }}</p>
         <div class="vp-counter" [class.complete]="isBoxComplete">
           <span class="vp-count">{{ totalSelected }}</span>
           <span class="vp-total">/ {{ product.mixedBox.totalPieces }}</span>
@@ -24,9 +24,12 @@
 
       <div class="vp-status-text-area">
         @if (!isBoxComplete) {
-          <p class="vp-remaining">Select {{ remaining }} more pieces ({{ remaining / 4 }} rows remaining)</p>
+          <p class="vp-remaining">
+            {{ lang.isArabic() ? 'اختر ' + remaining + ' قطع إضافية ' : 'Select ' + remaining + ' more pieces ' }}
+            ({{ remaining / 4 }} {{ lang.t().rowsRemaining }})
+          </p>
         } @else {
-          <p class="vp-complete">✓ Box perfectly filled and ready to pack!</p>
+          <p class="vp-complete">{{ lang.t().boxReady }}</p>
         }
       </div>
 
@@ -38,7 +41,7 @@
             
             <div class="cross-placeholder small">
               @if (s.variant.crossSectionImage) {
-                <img [src]="s.variant.crossSectionImage" [alt]="s.variant.label" class="cross-img" />
+                <img [src]="s.variant.crossSectionImage" [alt]="lang.isArabic() && s.variant.labelAr ? s.variant.labelAr : s.variant.label" class="cross-img" />
               } @else {
                 <div class="cross-outer" [class]="'outer-' + sanitizeClassName(s.variant.flavour)">
                   <div class="cross-inner" [class]="'inner-' + sanitizeClassName(s.variant.flavour)"></div>
@@ -48,14 +51,18 @@
             </div>
 
             <div class="vp-flavour-info">
-              <p class="vp-flavour-name">{{ s.variant.label }}</p>
+              <p class="vp-flavour-name">{{ lang.isArabic() && s.variant.labelAr ? s.variant.labelAr : s.variant.label }}</p>
               @if (s.quantity > 0) {
-                <span class="vp-row-badge">{{ s.quantity / 4 }} {{ s.quantity === 4 ? 'Row' : 'Rows' }} Selected</span>
+                <span class="vp-row-badge">
+                  {{ s.quantity / 4 }} {{ s.quantity === 4 ? lang.t().rowSelected : lang.t().rowsSelected }}
+                </span>
               } @else if (s.variant.priceModifier !== 0) {
-                <p class="vp-modifier">+EGP {{ s.variant.priceModifier }} per piece</p>
+                <p class="vp-modifier">
+                  +{{ lang.isArabic() ? '' : 'EGP ' }}{{ s.variant.priceModifier }} {{ lang.isArabic() ? 'جنيه ' : '' }}{{ lang.t().perPiece }}
+                </p>
               }
               @if (!s.variant.available) {
-                <p class="vp-unavailable-text">Out of stock</p>
+                <p class="vp-unavailable-text">{{ lang.t().outOfStockText }}</p>
               }
             </div>
 
@@ -69,9 +76,8 @@
       </div>
     </div>
 
-  
   } @else {
-    <p class="vp-label">Choose your flavour</p>
+    <p class="vp-label">{{ lang.t().chooseFlavour }}</p>
     <div class="vp-variants">
       @for (variant of product.variants!; track variant.id) {
         <div class="vp-variant"
@@ -81,7 +87,7 @@
 
           <div class="cross-placeholder">
             @if (variant.crossSectionImage) {
-              <img [src]="variant.crossSectionImage" [alt]="variant.label" class="cross-img" />
+              <img [src]="variant.crossSectionImage" [alt]="lang.isArabic() && variant.labelAr ? variant.labelAr : variant.label" class="cross-img" />
             } @else {
               <div class="cross-outer" [class]="'outer-' + sanitizeClassName(variant.flavour)">
                 <div class="cross-inner" [class]="'inner-' + sanitizeClassName(variant.flavour)"></div>
@@ -90,12 +96,12 @@
             }
           </div>
 
-          <p class="vp-variant-name">{{ variant.label }}</p>
+          <p class="vp-variant-name">{{ lang.isArabic() && variant.labelAr ? variant.labelAr : variant.label }}</p>
           @if (variant.priceModifier !== 0) {
-            <p class="vp-modifier">+EGP {{ variant.priceModifier }}</p>
+            <p class="vp-modifier">+{{ lang.isArabic() ? '' : 'EGP ' }}{{ variant.priceModifier }}{{ lang.isArabic() ? ' جنيه' : '' }}</p>
           }
           @if (!variant.available) {
-            <span class="vp-unavailable">Out of stock</span>
+            <span class="vp-unavailable">{{ lang.t().outOfStockText }}</span>
           }
         </div>
       }
@@ -105,7 +111,7 @@
       <div class="vp-selected-preview">
         <div class="cross-placeholder large">
           @if (selected()!.crossSectionImage) {
-            <img [src]="selected()!.crossSectionImage" [alt]="selected()!.label" class="cross-img" />
+            <img [src]="selected()!.crossSectionImage" [alt]="lang.isArabic() && selected()!.labelAr ? selected()!.labelAr : selected()!.label" class="cross-img" />
           } @else {
             <div class="cross-outer" [class]="'outer-' + sanitizeClassName(selected()!.flavour)">
               <div class="cross-inner" [class]="'inner-' + sanitizeClassName(selected()!.flavour)"></div>
@@ -114,18 +120,18 @@
           }
         </div>
         <div class="vp-preview-details">
-          <p class="vp-preview-name">{{ selected()!.label }}</p>
+          <p class="vp-preview-name">{{ lang.isArabic() && selected()!.labelAr ? selected()!.labelAr : selected()!.label }}</p>
           <p class="vp-preview-desc">
             @switch (selected()!.flavour) {
-              @case ('kunafa pistachio') { Rich 70% cacao casing with crispy traditional kunafa and premium pistachio paste. }
-              @case ('caramel') { Buttery slow-cooked artisan caramel with a delicate flake of sea salt. }
-              @case ('coffee') { Bold espresso bean infusion mixed into a dark velvety single-origin chocolate base. }
-              @case ('ganache') { Silky smooth, melt-in-your-mouth whipped French cream and cacao filling. }
-              @case ('almond') { Roasted California almond slivers buried inside a sweet hint of vanilla chocolate. }
-              @case ('white') { Pure, creamy cocoa butter blend offering a wonderfully sweet and velvety experience. }
+              @case ('kunafa pistachio') { {{ lang.t().descKunafaPistachio }} }
+              @case ('caramel') { {{ lang.t().descCaramel }} }
+              @case ('coffee') { {{ lang.t().descCoffee }} }
+              @case ('ganache') { {{ lang.t().descGanache }} }
+              @case ('almond') { {{ lang.t().descAlmond }} }
+              @case ('white') { {{ lang.t().descWhite }} }
             }
           </p>
-          <p class="vp-price">EGP {{ finalPrice }}</p>
+          <p class="vp-price">{{ lang.isArabic() ? '' : 'EGP ' }}{{ finalPrice }}{{ lang.isArabic() ? ' جنيه' : '' }}</p>
         </div>
       </div>
     }
@@ -136,15 +142,18 @@
     (click)="addToCart()">
     @if (product.mixedBox) {
       @if (isBoxComplete) {
-        Add Box to Cart — EGP {{ product.price }}
+        {{ lang.t().addBoxToCart }} {{ product.price }} {{ lang.isArabic() ? '' : '' }}
       } @else {
-        Select {{ remaining }} more pieces
+        {{ lang.isArabic() ? 'اختر ' + remaining + ' قطع إضافية للمتابعة' : 'Select ' + remaining + ' more pieces' }}
       }
     } @else {
       @if (selected()) {
-        Add {{ selected()!.label }} Bar to Cart — EGP {{ finalPrice }}
+        {{ lang.isArabic() 
+          ? 'أضف قالب ' + (selected()!.labelAr || selected()!.label) + ' للسلة — ' + finalPrice + ' جنيه'
+          : 'Add ' + selected()!.label + ' Bar to Cart — EGP ' + finalPrice 
+        }}
       } @else {
-        Select a flavour to continue
+        {{ lang.t().selectFlavourContinue }}
       }
     }
   </button>

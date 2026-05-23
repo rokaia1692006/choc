@@ -4,7 +4,8 @@ import { Navbar } from './shared/components/navbar/navbar';
 import { ContactusFooter } from './shared/components/contactus-footer/contactus-footer';
 import { VariantPicker } from './shared/components/variant-picker/variant-picker';
 import { PickerService } from './core/services/picker';
-
+import { LanguageService } from './core/services/language';
+import {inject} from '@angular/core';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Navbar, ContactusFooter,VariantPicker],
@@ -12,7 +13,11 @@ import { PickerService } from './core/services/picker';
   styleUrl: './app.css',
 })
 export class App {
+  pickerService = inject(PickerService);
   protected readonly title = signal('choooc');
-  constructor(public pickerService: PickerService) {}
+  lang = inject(LanguageService);
+  constructor() {
+    this.lang.init();
+  }
 }
 

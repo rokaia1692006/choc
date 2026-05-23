@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, PLATFORM_ID, inject, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Product } from '../models/products';
-
+ 
 export interface CartItem {
   cartItemId: string; 
   product: Product;

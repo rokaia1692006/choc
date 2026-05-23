@@ -4,17 +4,22 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { OrderService } from '../../core/services/order-service';
 import { Order } from '../../core/models/order';
-
+import { CurrencyService } from '../../core/services/currency';
+import { LanguageService,Translations } from '../../core/services/language';
+import {LanguagesPipe} from '../../shared/pipes/languages-pipe';
+import {CurrencyPipe} from '../../shared/pipes/currency-pipe';
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,LanguagesPipe, CurrencyPipe],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
 export class Orders implements OnInit {
   auth = inject(AuthService);
   orderService = inject(OrderService);
+  currency = inject(CurrencyService);
+  lang = inject(LanguageService);
 
   orders = signal<Order[]>([]);
   cancellingId = signal<string | null>(null);
@@ -54,19 +59,58 @@ export class Orders implements OnInit {
     this.cancellingId.set(null);
   }
 
-  statusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      pending: 'Pending',
-      preparing: 'Being Prepared',
-      delivered: 'Delivered',
-      cancelled: 'Cancelled'
+ statusLabel(status: string): string {
+    const map: Record<string, keyof Translations> = { 
+      pending: 'statusPending',
+      preparing: 'statusPreparing',
+      delivered: 'statusDelivered',
+      cancelled: 'statusCancelled',
     };
-    return labels[status] || status;
+    const key = map[status];
+    return key ? this.lang.t()[key] : status;
   }
 
   formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    });
+    return new Date(dateStr).toLocaleDateString(
+      this.lang.current() === 'ar' ? 'ar-EG' : 'en-GB',
+      { day: 'numeric', month: 'long', year: 'numeric' }
+    );
   }
+  displayItemName(item: any): string {
+  return this.lang.isArabic() && item.nameAr ? item.nameAr : item.name;
+}
+seedTestOrders() {
+  const user = this.auth.user();
+  if (!user) return;
+
+  const base = {
+    userId: user.id,
+    customerName: user.name,
+    phone: user.phone,
+    address: '123 Test St',
+    city: 'Cairo',
+    subtotal: 270,
+    delivery: 30,
+    total: 300,
+    deliveryDate: '2026-05-30',
+    placedAt: new Date().toISOString(),
+    items: [{
+      productId: 1,
+      name: 'Chocolate Box',
+      image: 'assets/images/box.png',
+      price: 270,
+      quantity: 1,
+    }]
+  };
+
+  const testOrders = [
+    { ...base, id: 'test-1', status: 'pending' as const },
+    { ...base, id: 'test-2', status: 'preparing' as const },
+    { ...base, id: 'test-3', status: 'delivered' as const },
+    { ...base, id: 'test-4', status: 'cancelled' as const },
+  ];
+
+  testOrders.forEach(o => this.orderService.saveOrder(o));
+  this.loadOrders();
+}
 }

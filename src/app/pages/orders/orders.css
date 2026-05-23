@@ -134,14 +134,17 @@
 }
 
 .badge-preparing {
-  background: rgba(52, 152, 219, 0.15);
-  color: #1565c0;
-  border: 1px solid rgba(52, 152, 219, 0.3);
+font-size: 12px;
+  color: #04448d;
+  background: rgba(52, 152, 219, 0.08);
+  border: 1px solid rgba(46, 131, 188, 0.31);
+  padding: 8px 12px;
 }
 
 .dark .badge-preparing {
-  color: #64b5f6;
-  background: rgba(52, 152, 219, 0.12);
+  color: #9fd4ff;
+  background: rgba(52, 152, 219, 0.06);
+  border-color: rgba(52, 152, 219, 0.15);
 }
 
 .badge-delivered {
@@ -287,14 +290,14 @@
 
 .preparingnotice {
   font-size: 12px;
-  color: #1565c0;
+  color: #04448d;
   background: rgba(52, 152, 219, 0.08);
-  border: 1px solid rgba(52, 152, 219, 0.2);
+  border: 1px solid rgba(46, 131, 188, 0.31);
   padding: 8px 12px;
 }
 
 .dark .preparingnotice {
-  color: #64b5f6;
+  color: #9fd4ff;
   background: rgba(52, 152, 219, 0.06);
   border-color: rgba(52, 152, 219, 0.15);
 }
