@@ -5,8 +5,8 @@
     <button class="menu-icon-btn" (click)="toggleDrawer()">
       <mat-icon>menu</mat-icon>
     </button>
-    <a href="/" class="logo">Bonbon Boutique</a>
-   <a href="cart" class="cartbtn">
+    <a routerLink="/" class="logo">Bonbon Boutique</a>
+   <a routerLink="cart" class="cartbtn">
   <mat-icon>shopping_cart</mat-icon>
   @if (cartService.cartCount() > 0) {
     <span class="cart-count">{{ cartService.cartCount() }}</span>

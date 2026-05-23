@@ -36,20 +36,25 @@ export default {
   {
     "renderMode": 2,
     "route": "/choc/forgetpass"
+  },
+  {
+    "renderMode": 2,
+    "redirectTo": "/choc/HomeComponent",
+    "route": "/choc/**"
   }
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 58950, hash: '62c506777e0fa2b29e3af6736bb817ca21261e88986659fcac30c4906269b0d1', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1594, hash: '00ebb2317cbe1155b89dd288e9c3ce41f8728eab557078efc59ef284a0d9fa4b', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 58950, hash: 'a40323bbf0336c031abbeeca9654e1be7bb34d1a5f0cae721cc2bc56a6f0c844', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1594, hash: 'fdfc21170c3c8f370534b4e6c510311ad073a68dddf966ceda14b8d86662013a', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'profile/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/profile_index_html.mjs').then(m => m.default)},
-    'shop/index.html': {size: 95663, hash: '8fb5f5f2e6d8e7ddd37d118395037194358ff8f7bfe93d8687bd8b6a19aa53c1', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
-    'register/index.html': {size: 83296, hash: '3ff33e8a507c7e2c703dfc7ed0d387ec1fcdeedcfd0a7ce9025afa4a6a9c9f0a', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
-    'index.html': {size: 94234, hash: '3f7a9f735618f32eb4f03153e39ac092f93582201073d36d9480c6b55a2776b6', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
-    'login/index.html': {size: 81130, hash: '05620e0bd7b3ee8d269befed45b5be6b161aa2fe53270fbf742ae807c3fa24c1', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
+    'shop/index.html': {size: 96017, hash: '25ee244be63678e313034e410affbaaf0941029070fab52cc780204e6cd80b07', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
+    'index.html': {size: 94588, hash: 'fb04dec8f9864598f63e22e446a645110c59c5d5a1eadc7fc51f4bc9f971dc37', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
+    'login/index.html': {size: 81484, hash: 'a142a93bdbf8ebcc1e0f8c4dd1330885ea653aa384ac1dd41ffde77448dad8c3', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
+    'register/index.html': {size: 83650, hash: '1139ced8b363ba7436e88e513145b8a0b21614ca5037d79c49923b1095552d42', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
+    'cart/index.html': {size: 83236, hash: '672de1af62cf295d6ffcf9d61df648e772edc6f058c711406c022b72bb93186c', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
     'checkout/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/checkout_index_html.mjs').then(m => m.default)},
-    'cart/index.html': {size: 82882, hash: '1bdd68387d8ad841dc134a305e693a57425dbacc4db277e934c5ecff079517a6', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
-    'forgetpass/index.html': {size: 82387, hash: 'f6a1875bae549eadaf2d66f80bd55533e32323e69940ef3d5f3dfc1ee2e2a12b', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
+    'forgetpass/index.html': {size: 82741, hash: '15d747724cdfc6d0dc9f5ce4b5aecdf8e9964fdf43c3284d799028eacd60684a', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
     'styles-BYDOT6HN.css': {size: 113644, hash: 'isbAU1hlSWM', text: () => import('./assets-chunks/styles-BYDOT6HN_css.mjs').then(m => m.default)}
   },
 };
