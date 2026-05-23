@@ -1,0 +1,12 @@
+{
+  "routes": {
+    "/choc": {},
+    "/choc/cart": {},
+    "/choc/checkout": {},
+    "/choc/forgetpass": {},
+    "/choc/login": {},
+    "/choc/profile": {},
+    "/choc/register": {},
+    "/choc/shop": {}
+  }
+}
