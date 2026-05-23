@@ -1,0 +1,31 @@
+<section class="carousel-section">
+  <h2 class="title">Our Featured Products</h2>
+
+  <div class="carousel-wrapper">
+    <button class="carousel-btn" (click)="prev()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="carousel-viewport">
+      <div class="carousel-track" [style.transform]="'translateX(-' + (currentIndex * slideWidth) + '%)'">
+        @for (product of featuredProducts; track product.id) {
+          <div class="carousel-slide">
+            <app-product-cards [product]="product" />
+          </div>
+        }
+      </div>
+    </div>
+
+    <button class="carousel-btn" (click)="next()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  @if (showDots) {
+  <div class="carousel-dots">
+    @for (product of featuredProducts; track product.id; let i = $index) {
+      <button class="dot" [class.active]="i === currentIndex" (click)="goTo(i)"></button>
+    }
+  </div>
+}
+</section>

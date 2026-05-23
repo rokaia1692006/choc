@@ -1,0 +1,133 @@
+.authpage {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.authcard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 3rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.authheader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.authlogo {
+  font-family: Georgia, serif;
+  color: var(--color-gold);
+  font-size: 18px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.authtitle {
+  font-family: Georgia, serif;
+  font-size: 24px;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+}
+
+.authsubtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.authform {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.autherror {
+  background: rgba(192, 57, 43, 0.1);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  color: #c0392b;
+  padding: 10px 14px;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.formgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formgroup label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.formgroup input {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.formgroup input:focus {
+  border-color: var(--color-gold);
+}
+
+.formgroup input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.authbtn {
+  width: 100%;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border: none;
+  padding: 13px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.authbtn:hover:not(:disabled) {
+  background: var(--color-gold);
+  color: #0A0A0A;
+}
+
+.authbtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.authswitch {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.authswitch a {
+  color: var(--color-gold);
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.authswitch a:hover {
+  text-decoration: underline;
+}

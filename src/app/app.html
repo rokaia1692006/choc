@@ -1,1 +1,9 @@
-<h1>HELLO, WORLD!</h1>
+<app-navbar></app-navbar>
+<router-outlet />
+<app-contactus-footer></app-contactus-footer>
+
+@if (pickerService.product()) {
+  <app-variant-picker
+    [product]="pickerService.product()!"
+    (close)="pickerService.close()" />
+}

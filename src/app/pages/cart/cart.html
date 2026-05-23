@@ -1,1 +1,68 @@
-<p>cart works!</p>
+<div class="cartpage">
+
+  <div class="cartheader">
+    <h1 class="carttitle">Your Cart</h1>
+    <p class="cartsubtitle">{{ cartService.cartCount() }} items</p>
+  </div>
+
+  @if (cartService.cartItems().length === 0) {
+    <div class="emptycart">
+      <mat-icon>shopping_cart</mat-icon>
+      <p>Your cart is empty</p>
+      <a routerLink="/shop" class="continuebtn">Continue Shopping</a>
+    </div>
+  } @else {
+    <div class="cartlayout">
+     
+      <div class="cartitems">
+        @for (item of cartService.cartItems(); track item.cartItemId) {
+          <div class="cartitem">
+            <img [src]="item.product.image" [alt]="item.product.name" class="itemimage">
+            <div class="itemdetails">
+              <h3 class="itemname">{{ item.product.name }}</h3>
+              <p class="itemcategory">{{ item.product.category }}</p>
+              <p class="itemprice">EGP {{ item.product.price }}</p>
+            </div>
+            <div class="itemcontrols">
+              <button class="qtybtn" (click)="decrement(item.cartItemId, item.quantity)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="qty">{{ item.quantity }}</span>
+              
+              <!-- FIXED: Passes full item to handle custom boxes uniquely -->
+              <button class="qtybtn" (click)="increment(item)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <p class="itemtotal">EGP {{ item.product.price * item.quantity }}</p>
+            <button class="removebtn" (click)="cartService.removeFromCart(item.cartItemId)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+
+        <button class="clearbtn" (click)="cartService.clearCart()">Clear Cart</button>
+      </div>
+
+      <div class="cartsummary">
+        <h2 class="summarytitle">Order Summary</h2>
+        <div class="summaryrow total">
+          <span>Total</span>
+          <span>EGP {{ cartService.cartTotal() + 30 }}</span>
+        </div>
+        <button class="checkoutbtn" routerLink="/checkout">Proceed to Checkout</button>
+        <a routerLink="/shop" class="continuelink">Continue Shopping</a>
+      </div>
+
+    </div>
+  }
+
+
+  @if (activeProductForModal) {
+    <app-variant-picker 
+      [product]="activeProductForModal" 
+      (close)="closeModal()">
+    </app-variant-picker>
+  }
+
+</div>

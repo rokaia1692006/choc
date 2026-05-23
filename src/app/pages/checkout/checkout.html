@@ -1,1 +1,119 @@
-<p>checkout works!</p>
+<div class="checkoutpage">
+  <div class="checkoutheader">
+    <a routerLink="/" class="checkoutlogo">Bonbon Boutique</a>
+    <h1 class="checkouttitle">Checkout</h1>
+  </div>
+
+  <div class="checkoutlayout">
+
+    <!-- Form -->
+    <div class="checkoutform-wrap">
+      <form class="checkoutform" (ngSubmit)="placeOrder()">
+
+        @if (error()) {
+          <div class="formerror">{{ error() }}</div>
+        }
+
+        <div class="formsection">
+          <h3 class="sectiontitle">Delivery Details</h3>
+
+          <div class="formgroup">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" placeholder="Your full name" [(ngModel)]="form.name" name="name" required />
+          </div>
+
+          <div class="formgroup">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" placeholder="+20 1XX XXX XXXX" [(ngModel)]="form.phone" name="phone" required />
+          </div>
+
+          <div class="formgroup">
+            <label>Street Address <span class="req">*</span></label>
+            <input type="text" placeholder="Street address" [(ngModel)]="form.address" name="address" required />
+          </div>
+
+          <div class="formrow">
+            <div class="formgroup">
+              <label>City <span class="req">*</span></label>
+              <input type="text" placeholder="City" [(ngModel)]="form.city" name="city" required />
+            </div>
+            <div class="formgroup">
+              <label>Apartment / Floor</label>
+              <input type="text" placeholder="Optional" [(ngModel)]="form.apartment" name="apartment" />
+            </div>
+          </div>
+
+          <div class="formgroup">
+            <label>Notes</label>
+            <textarea placeholder="Any special instructions..." [(ngModel)]="form.notes" name="notes"></textarea>
+          </div>
+        </div>
+
+        @if (!auth.isLoggedIn()) {
+          <div class="formsection">
+            <label class="checkboxlabel" (click)="toggleCreateAccount()">
+              <div class="checkbox" [class.checked]="createAccount()">
+                @if (createAccount()) { ✓ }
+              </div>
+              <span>Create an account to track your orders</span>
+            </label>
+
+            @if (createAccount()) {
+              <div class="formrow" style="margin-top: 1rem;">
+                <div class="formgroup">
+                  <label>Password <span class="req">*</span></label>
+                  <input type="password" placeholder="Min 6 characters" [(ngModel)]="form.password" name="password" />
+                </div>
+                <div class="formgroup">
+                  <label>Confirm Password <span class="req">*</span></label>
+                  <input type="password" placeholder="Repeat password" [(ngModel)]="form.confirmPassword" name="confirmPassword" />
+                </div>
+              </div>
+              <p class="haveaccount">Already have an account? <a routerLink="/login">Sign in</a></p>
+            }
+          </div>
+        }
+
+        <button type="submit" class="placeorderbtn" [disabled]="loading()">
+          {{ loading() ? 'Placing Order...' : 'Place Order — EGP ' + total }}
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="ordersummary">
+      <h3 class="sectiontitle">Order Summary</h3>
+
+      <div class="summaryitems">
+        @for (item of cart.cartItems(); track item.product.id) {
+          <div class="summaryitem">
+            <img [src]="item.product.image" [alt]="item.product.name" class="summaryimg">
+            <div class="summarydetails">
+              <p class="summaryname">{{ item.product.name }}</p>
+              <p class="summarymeta">x{{ item.quantity }}</p>
+            </div>
+            <p class="summaryprice">EGP {{ item.product.price * item.quantity }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="summaryrows">
+        <div class="summaryrow">
+          <span>Subtotal</span>
+          <span>EGP {{ cart.cartTotal() }}</span>
+        </div>
+        <div class="summaryrow">
+          <span>Delivery</span>
+          <span>EGP 30</span>
+        </div>
+        <div class="summarydivider"></div>
+        <div class="summaryrow total">
+          <span>Total</span>
+          <span>EGP {{ total }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

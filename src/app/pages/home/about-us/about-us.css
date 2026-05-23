@@ -1,0 +1,70 @@
+.aboutus {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 6rem 4rem;
+  background: var(--color-bg-secondary);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.aboutusText h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--color-text-secondary);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.aboutusText h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--color-gold);
+}
+
+.aboutusText p {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.9;
+  max-width: 500px;
+}
+
+.maybechoclateBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maybechoclateBox img {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+  transition: transform 0.4s ease;
+}
+
+.maybechoclateBox img:hover {
+  transform: translateY(-8px);
+}
+
+@media (max-width: 768px) {
+  .aboutus {
+    grid-template-columns: 1fr;
+    padding: 4rem 2rem;
+    gap: 2rem;
+  }
+
+  .maybechoclateBox {
+    order: -1;
+  }
+}

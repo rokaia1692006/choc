@@ -1,0 +1,151 @@
+<div class="vp-overlay" (click)="close.emit()"></div>
+
+<div class="vp-modal">
+  <button class="vp-close" (click)="close.emit()">✕</button>
+
+  <div class="vp-header">
+    <h2 class="vp-title">{{ product.name }}</h2>
+    <p class="vp-desc">{{ product.description }}</p>
+  </div>
+
+  @if (product.mixedBox) {
+    <div class="vp-mixedbox">
+      <div class="vp-progress-header">
+        <p class="vp-label">Build your box (Rows of 4)</p>
+        <div class="vp-counter" [class.complete]="isBoxComplete">
+          <span class="vp-count">{{ totalSelected }}</span>
+          <span class="vp-total">/ {{ product.mixedBox.totalPieces }}</span>
+        </div>
+      </div>
+
+      <div class="vp-progress-bar">
+        <div class="vp-progress-fill" [style.width.%]="(totalSelected / product.mixedBox.totalPieces) * 100"></div>
+      </div>
+
+      <div class="vp-status-text-area">
+        @if (!isBoxComplete) {
+          <p class="vp-remaining">Select {{ remaining }} more pieces ({{ remaining / 4 }} rows remaining)</p>
+        } @else {
+          <p class="vp-complete">✓ Box perfectly filled and ready to pack!</p>
+        }
+      </div>
+
+      <div class="vp-flavours">
+        @for (s of selections(); track s.variant.id; let i = $index) {
+          <div class="vp-flavour-row" 
+               [class.active-selection]="s.quantity > 0"
+               [class.unavailable]="!s.variant.available">
+            
+            <div class="cross-placeholder small">
+              @if (s.variant.crossSectionImage) {
+                <img [src]="s.variant.crossSectionImage" [alt]="s.variant.label" class="cross-img" />
+              } @else {
+                <div class="cross-outer" [class]="'outer-' + sanitizeClassName(s.variant.flavour)">
+                  <div class="cross-inner" [class]="'inner-' + sanitizeClassName(s.variant.flavour)"></div>
+                  <div class="cross-filling"></div>
+                </div>
+              }
+            </div>
+
+            <div class="vp-flavour-info">
+              <p class="vp-flavour-name">{{ s.variant.label }}</p>
+              @if (s.quantity > 0) {
+                <span class="vp-row-badge">{{ s.quantity / 4 }} {{ s.quantity === 4 ? 'Row' : 'Rows' }} Selected</span>
+              } @else if (s.variant.priceModifier !== 0) {
+                <p class="vp-modifier">+EGP {{ s.variant.priceModifier }} per piece</p>
+              }
+              @if (!s.variant.available) {
+                <p class="vp-unavailable-text">Out of stock</p>
+              }
+            </div>
+
+            <div class="vp-qty-controls">
+              <button class="vp-qty-btn" (click)="decrement(i)" [disabled]="s.quantity === 0">−4</button>
+              <span class="vp-qty" [class.has-value]="s.quantity > 0">{{ s.quantity }}</span>
+              <button class="vp-qty-btn" (click)="increment(i)" [disabled]="remaining < 4 || !s.variant.available">+4</button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+  
+  } @else {
+    <p class="vp-label">Choose your flavour</p>
+    <div class="vp-variants">
+      @for (variant of product.variants!; track variant.id) {
+        <div class="vp-variant"
+          [class.selected]="selected()?.id === variant.id"
+          [class.unavailable]="!variant.available"
+          (click)="selectVariant(variant)">
+
+          <div class="cross-placeholder">
+            @if (variant.crossSectionImage) {
+              <img [src]="variant.crossSectionImage" [alt]="variant.label" class="cross-img" />
+            } @else {
+              <div class="cross-outer" [class]="'outer-' + sanitizeClassName(variant.flavour)">
+                <div class="cross-inner" [class]="'inner-' + sanitizeClassName(variant.flavour)"></div>
+                <div class="cross-filling"></div>
+              </div>
+            }
+          </div>
+
+          <p class="vp-variant-name">{{ variant.label }}</p>
+          @if (variant.priceModifier !== 0) {
+            <p class="vp-modifier">+EGP {{ variant.priceModifier }}</p>
+          }
+          @if (!variant.available) {
+            <span class="vp-unavailable">Out of stock</span>
+          }
+        </div>
+      }
+    </div>
+
+    @if (selected()) {
+      <div class="vp-selected-preview">
+        <div class="cross-placeholder large">
+          @if (selected()!.crossSectionImage) {
+            <img [src]="selected()!.crossSectionImage" [alt]="selected()!.label" class="cross-img" />
+          } @else {
+            <div class="cross-outer" [class]="'outer-' + sanitizeClassName(selected()!.flavour)">
+              <div class="cross-inner" [class]="'inner-' + sanitizeClassName(selected()!.flavour)"></div>
+              <div class="cross-filling"></div>
+            </div>
+          }
+        </div>
+        <div class="vp-preview-details">
+          <p class="vp-preview-name">{{ selected()!.label }}</p>
+          <p class="vp-preview-desc">
+            @switch (selected()!.flavour) {
+              @case ('kunafa pistachio') { Rich 70% cacao casing with crispy traditional kunafa and premium pistachio paste. }
+              @case ('caramel') { Buttery slow-cooked artisan caramel with a delicate flake of sea salt. }
+              @case ('coffee') { Bold espresso bean infusion mixed into a dark velvety single-origin chocolate base. }
+              @case ('ganache') { Silky smooth, melt-in-your-mouth whipped French cream and cacao filling. }
+              @case ('almond') { Roasted California almond slivers buried inside a sweet hint of vanilla chocolate. }
+              @case ('white') { Pure, creamy cocoa butter blend offering a wonderfully sweet and velvety experience. }
+            }
+          </p>
+          <p class="vp-price">EGP {{ finalPrice }}</p>
+        </div>
+      </div>
+    }
+  }
+
+  <button class="vp-add"
+    [disabled]="product.mixedBox ? !isBoxComplete : !selected()"
+    (click)="addToCart()">
+    @if (product.mixedBox) {
+      @if (isBoxComplete) {
+        Add Box to Cart — EGP {{ product.price }}
+      } @else {
+        Select {{ remaining }} more pieces
+      }
+    } @else {
+      @if (selected()) {
+        Add {{ selected()!.label }} Bar to Cart — EGP {{ finalPrice }}
+      } @else {
+        Select a flavour to continue
+      }
+    }
+  </button>
+</div>

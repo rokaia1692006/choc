@@ -1,0 +1,7 @@
+
+.home{
+    background-color: var(--color-bg);
+}
+.featurecont{
+    border-bottom: 2px solid var(--color-gold);
+}

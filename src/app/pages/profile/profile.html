@@ -1,1 +1,90 @@
-<p>profile works!</p>
+<div class="profilepage">
+
+  <div class="profileheader">
+    <h1 class="profiletitle">My Account</h1>
+    <p class="profilesubtitle">{{ auth.user()?.name }}</p>
+  </div>
+
+  <div class="profilelayout">
+
+    <div class="profilecard">
+      <div class="cardheader">
+        <h3 class="cardtitle">Personal Details</h3>
+        @if (!editing()) {
+          <button class="editbtn" (click)="editing.set(true)">Edit</button>
+        }
+      </div>
+
+      @if (saved()) {
+        <div class="savemsg">Changes saved successfully.</div>
+      }
+
+      <form (ngSubmit)="save()">
+        <div class="formgroup">
+          <label>Full Name</label>
+          @if (editing()) {
+            <input type="text" [(ngModel)]="form.name" name="name" />
+          } @else {
+            <p class="fieldvalue">{{ auth.user()?.name }}</p>
+          }
+        </div>
+
+        <div class="formgroup">
+          <label>Phone Number</label>
+          @if (editing()) {
+            <input type="tel" [(ngModel)]="form.phone" name="phone" />
+          } @else {
+            <p class="fieldvalue">{{ auth.user()?.phone }}</p>
+          }
+        </div>
+
+        <div class="formgroup">
+          <label>Street Address</label>
+          @if (editing()) {
+            <input type="text" [(ngModel)]="form.address" name="address" />
+          } @else {
+            <p class="fieldvalue">{{ auth.user()?.address }}</p>
+          }
+        </div>
+
+        <div class="formrow">
+          <div class="formgroup">
+            <label>City</label>
+            @if (editing()) {
+              <input type="text" [(ngModel)]="form.city" name="city" />
+            } @else {
+              <p class="fieldvalue">{{ auth.user()?.city }}</p>
+            }
+          </div>
+          <div class="formgroup">
+            <label>Apartment / Floor</label>
+            @if (editing()) {
+              <input type="text" [(ngModel)]="form.apartment" name="apartment" />
+            } @else {
+              <p class="fieldvalue">{{ auth.user()?.apartment || '—' }}</p>
+            }
+          </div>
+        </div>
+
+        @if (editing()) {
+          <div class="formactions">
+            <button type="submit" class="savebtn">Save Changes</button>
+            <button type="button" class="cancelbtn" (click)="editing.set(false)">Cancel</button>
+          </div>
+        }
+      </form>
+    </div>
+
+    <div class="profilesidebar">
+      <div class="profilecard">
+        <h3 class="cardtitle">Account</h3>
+        <div class="forgetbtn">
+        <a class="forgetTxt" href="forgetpass">Forget Password</a>
+        </div>
+
+        <button class="logoutbtn" (click)="logout()">Sign Out</button>
+      </div>
+    </div>
+
+  </div>
+</div>

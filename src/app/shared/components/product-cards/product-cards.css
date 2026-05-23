@@ -1,0 +1,153 @@
+.productCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+
+.productCard:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+  margin-top: 1rem;
+}
+
+.productCard:hover .image {
+  transform: scale(1.04);
+}
+
+.body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.name {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.price {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  color: var(--color-gold);
+  font-weight: 600;
+  margin: 0;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.addbtn {
+  margin-top: 1rem;
+  background: transparent;
+  background: var(--color-text);
+ 
+  color: var(--color-bg);
+  padding: 10px 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  width: 100%;
+}
+
+.addbtn:hover {
+  background: var(--color-gold);
+  color: #0A0A0A;
+}
+.product-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.card-actions {
+  margin-top: 1rem;
+}
+
+
+
+.qty-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 18px;
+  padding: 8px 16px;
+  cursor: pointer;
+  flex: 1;
+  transition: color 0.2s, background 0.2s;
+}
+
+.qty-btn:hover {
+  color: var(--color-gold);
+  background: var(--color-bg-secondary);
+}
+
+.qty {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  color: var(--color-text);
+  min-width: 40px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-secondary);
+}
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--color-gold);
+  color: #0A0A0A;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+
+.has-variants {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: #FAF3E0;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+
+.product-image {
+  position: relative;
+}

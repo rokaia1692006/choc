@@ -1,0 +1,51 @@
+<div class="authpage">
+  <div class="authcard">
+
+    <div class="authheader">
+      <a routerLink="/" class="authlogo">Bonbon Boutique</a>
+      <h1 class="authtitle">Welcome Back</h1>
+      <p class="authsubtitle">Sign in to your account</p>
+    </div>
+
+    <form class="authform" (ngSubmit)="submit()">
+
+      @if (error()) {
+        <div class="autherror">{{ error() }}</div>
+      }
+
+      <div class="formgroup">
+        <label>Phone Number</label>
+        <input
+          type="tel"
+          placeholder="+20 1XX XXX XXXX"
+          [(ngModel)]="phone"
+          name="phone"
+          required />
+      </div>
+
+      <div class="formgroup">
+        <label>Password</label>
+        <input
+          type="password"
+          placeholder="Your password"
+          [(ngModel)]="password"
+          name="password"
+          required />
+      </div>
+
+      <button type="submit" class="authbtn" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : 'Sign In' }}
+      </button>
+
+    </form>
+
+    <p class="authswitch">
+      Don't have an account?
+      <a routerLink="/register">Register</a>
+    </p>
+
+    <p class="authswitch">
+      <a routerLink="/forgetpass">Forgot Password?</a>
+    </p>
+  </div>
+</div>

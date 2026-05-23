@@ -1,3 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@variant dark (&:where(.dark, .dark *));
+:root {
+
+  --color-gold: #ffbb00;
+  --color-gold-light: #ffdc72;
+  --color-gold-dark: #372401;
+  --color-bg: #fef5dc;
+  --color-bg-secondary: rgb(146, 90, 52);
+  --color-surface: #FFFFFF;
+  --color-border: #583f03;
+  --color-text: #2C1A0E;
+  --color-text-secondary: #fef5dc;
+  --color-text-muted: #403931;
+  --color-accent: #0a0907;
+  --color-accent-hover: #785519;
+}
+
+:root.dark {
+  --color-gold: #ffd000;
+  --color-gold-light: #ffedb7;
+  --color-gold-dark: #ffb300;
+  --color-bg: #0A0A0A;
+  --color-bg-secondary: #100700;
+  --color-surface: #1A1A1A;
+  --color-border: #484848;
+  --color-text: #FAF3E0;
+  --color-text-secondary: #ffeca0;
+  --color-text-muted: #e99d3b;
+  --color-accent: #e7b223;
+  --color-accent-hover: #a99b00;
+}

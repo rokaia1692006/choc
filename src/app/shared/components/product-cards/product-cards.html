@@ -1,0 +1,31 @@
+<div class="productCard">
+  <div class="product-image">
+    <img [src]="product.image" alt="{{ product.name }}" class="image">
+    @if (product.badge) {
+      <span class="badge">{{ product.badge }}</span>
+    }
+    @if (product.mixedBox) {
+      <span class="has-variants">Build your box</span>
+    } @else if (product.variants?.length) {
+      <span class="has-variants">{{ product.variants!.length }} flavours</span>
+    }
+  </div>
+  <div class="body">
+    <h3 class="name">{{ product.name }}</h3>
+    <p class="price">EGP {{ product.price }}</p>
+    <p class="description">{{ product.description }}</p>
+    <div class="card-actions">
+      @if (quantity === 0) {
+        <button class="addbtn" (click)="onAddClick()">
+          {{ (product.variants?.length || product.mixedBox) ? 'Choose Flavour' : 'Add to Cart' }}
+        </button>
+      } @else {
+        <div class="qty-controls">
+          <button class="qty-btn" (click)="remove()">−</button>
+          <span class="qty">{{ quantity }}</span>
+          <button class="qty-btn" (click)="onAddClick()">+</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

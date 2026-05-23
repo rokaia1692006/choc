@@ -1,0 +1,101 @@
+<div class="authpage">
+  <div class="authcard">
+
+    <div class="authheader">
+      <a routerLink="/" class="authlogo">Bonbon Boutique</a>
+      <h1 class="authtitle">Password Reset</h1>
+
+      <div class="steps">
+        <span class="step" [class.active]="step() === 'phone'" [class.done]="step() === 'code' || step() === 'newPassword'">1</span>
+        <span class="step-line" [class.done]="step() === 'code' || step() === 'newPassword'"></span>
+        <span class="step" [class.active]="step() === 'code'" [class.done]="step() === 'newPassword'">2</span>
+        <span class="step-line" [class.done]="step() === 'newPassword'"></span>
+        <span class="step" [class.active]="step() === 'newPassword'">3</span>
+      </div>
+    </div>
+
+   
+    @if (error()) {
+      <div class="autherror">{{ error() }}</div>
+    }
+    @if (success()) {
+      <div class="authsuccess">{{ success() }}</div>
+    }
+
+    <!-- Phone -->
+    @if (step() === 'phone') {
+      <form class="authform" (ngSubmit)="submitPhone()">
+        <div class="formgroup">
+          <label for="phone">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            placeholder="+20 1XX XXX XXXX"
+            [(ngModel)]="phone"
+            name="phone"
+            required />
+        </div>
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? 'Checking...' : 'Send Code' }}
+        </button>
+      </form>
+    }
+
+    <!-- SMS -->
+    @if (step() === 'code') {
+      <form class="authform" (ngSubmit)="submitCode()">
+        <p class="stepinfo">Enter the code sent to <strong>{{ phone }}</strong></p>
+        <div class="formgroup">
+          <label for="code">Verification Code</label>
+          <input
+            id="code"
+            type="text"
+            placeholder="XXXX"
+            [(ngModel)]="confirmCode"
+            name="confirmCode"
+            maxlength="6"
+            required />
+        </div>
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? 'Verifying...' : 'Verify Code' }}
+        </button>
+        <button type="button" class="authbtn-ghost" (click)="resendCode()">
+          Resend Code
+        </button>
+      </form>
+    }
+
+    <!--  new  -->
+    @if (step() === 'newPassword') {
+      <form class="authform" (ngSubmit)="submitNewPassword()">
+        <div class="formgroup">
+          <label for="newPassword">New Password</label>
+          <input
+            id="newPassword"
+            type="password"
+            placeholder="Min. 6 characters"
+            [(ngModel)]="newPassword"
+            name="newPassword"
+            required />
+        </div>
+        <div class="formgroup">
+          <label for="confirmNewPassword">Confirm Password</label>
+          <input
+            id="confirmNewPassword"
+            type="password"
+            placeholder="Repeat your password"
+            [(ngModel)]="confirmNewPassword"
+            name="confirmNewPassword"
+            required />
+        </div>
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? 'Saving...' : 'Set New Password' }}
+        </button>
+      </form>
+    }
+
+    <p class="authswitch">
+      Remembered it? <a routerLink="/login">Log in</a>
+    </p>
+  </div>
+</div>

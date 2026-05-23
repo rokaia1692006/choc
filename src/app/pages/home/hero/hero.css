@@ -1,0 +1,75 @@
+.Hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+ border-bottom: 1.5px solid var(--color-gold);
+}
+
+.darkoverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.596);
+  z-index: 1;
+}
+
+.vid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.title {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: #FAF3E0;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.title {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: #FAF3E0;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.disc {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #E8D9B5;
+  max-width: 600px;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  background: var(--color-gold);
+  color: #0A0A0A;
+  text-decoration: none;
+  padding: 14px 36px;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--color-gold-dark);
+}
