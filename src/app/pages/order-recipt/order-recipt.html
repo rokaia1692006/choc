@@ -1,0 +1,62 @@
+<div class="orderspage">
+  <div class="ordersinner">
+    
+  
+    <div class="ordersheader">
+      <a routerLink="/" class="orderslogo">Bonbon Boutique</a>
+      <h1 class="orderstitle">
+        {{ lang.isArabic() ? 'تفاصيل الإيصال' : 'Your Receipt' }}
+      </h1>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="ordererror">{{ errorMessage() }}</div>
+      <div class="emptyorders">
+        <a routerLink="/shop" class="shopbtn">{{ 'startShopping' | translate }}</a>
+      </div>
+    }
+
+    @if (order()) {
+      <div class="ordercard">
+        
+   
+        <div class="ordercardhdr">
+          <div class="ordermeta">
+            <span class="orderid">Order #{{ order()!.id }}</span>
+            <span class="orderdate">Placed {{ formatDate(order()!.placedAt) }}</span>
+          </div>
+        </div>
+
+   
+        <div class="orderitems">
+          @for (item of order()!.items; track item.productId) {
+            <div class="orderitem">
+              <img [src]="item.image" [alt]="item.name" class="orderitemimg" />
+              <div class="orderiteminfo">
+                <p class="orderitemname">{{ displayItemName(item) }}</p>
+                @if (item.variant) {
+                  <p class="orderitemvariant">{{ item.variant }}</p>
+                }
+                <p class="orderitemmeta">x{{ item.quantity }} · {{ item.price * item.quantity | currency }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+     
+        <div class="ordercardftr">
+          <div class="orderdelivery">
+            <span class="orderlabel">{{ 'deliveryDate' | translate }}</span>
+            <span class="orderval">{{ formatDate(order()!.deliveryDate) }}</span>
+          </div>
+          <div class="ordertotalrow">
+            <span class="orderlabel">{{ 'total' | translate }}</span>
+            <span class="ordertotal">{{ order()!.total | currency }}</span>
+          </div>
+        </div>
+
+      </div>
+    }
+    
+  </div>
+</div>

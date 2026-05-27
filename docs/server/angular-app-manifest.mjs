@@ -43,23 +43,28 @@ export default {
   },
   {
     "renderMode": 2,
+    "route": "/choc/order-receipt"
+  },
+  {
+    "renderMode": 2,
     "redirectTo": "/choc/HomeComponent",
     "route": "/choc/**"
   }
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 58970, hash: '47c9410a422ff965b976fad1547ef0becbfe5e42f66f34b9ebd390b42eead828', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1594, hash: 'ca69bfe0cc72a79dac064293f502c4896b5d445601cf4efd15c686f35b8a933a', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
-    'shop/index.html': {size: 98779, hash: '12bccded0e9a412545ec6698d3bcba0325195b9c30304c468eb87c9eb57dd1f0', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
-    'checkout/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/checkout_index_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 59223, hash: 'a7a20ecde3acdd5df1ba002651fd5d0f83c0ed30f56c00f233bebcce8d8aabf8', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1594, hash: '342f08db2114bde6aa898759d00ee2397efe33f8d4cc92543f69590c64790b7b', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'profile/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/profile_index_html.mjs').then(m => m.default)},
-    'index.html': {size: 96287, hash: 'd7fe023650d30803508fe35e7fc101f60d16c8723ff18581ebd8c41f5cc27de2', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
-    'forgetpass/index.html': {size: 84327, hash: 'cdf1f13e7ce91ca76b348bad2dbc92b795f05817b622c84a3c78de14dd9ce109', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
+    'index.html': {size: 96655, hash: 'eab8d36e81fc15e1e1bd9805f2d0df6d520d1f592be209da6a715d09c7f37ce3', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
+    'register/index.html': {size: 85550, hash: '0f2b7ec0ac6e7b2bf54c66b5cdab7e4fbc0e23b06f6b1a0c1e230e2b5dd6b5da', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
+    'shop/index.html': {size: 98965, hash: '90b60fb3101a17b8b427555433f6986eb0137365ba914970c3aeeb3d36600548', text: () => import('./assets-chunks/shop_index_html.mjs').then(m => m.default)},
     'orders/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/orders_index_html.mjs').then(m => m.default)},
-    'cart/index.html': {size: 84817, hash: 'd9870ade99950bbe316b7a75040f728f9c4ce31eafe2607f8e382a5dad38a472', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
-    'register/index.html': {size: 85236, hash: 'f228f50cba6d543f85ba99516bd55f3a75fd1e8f0a44c58ca3a19dcf4304e752', text: () => import('./assets-chunks/register_index_html.mjs').then(m => m.default)},
-    'login/index.html': {size: 83070, hash: 'd48d2067f30b63e4960aabd68bc47296bbeea7e73b03808be9efaf22d7ba466c', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
-    'styles-EW4EAC47.css': {size: 113685, hash: '3qxkr70qJrs', text: () => import('./assets-chunks/styles-EW4EAC47_css.mjs').then(m => m.default)}
+    'checkout/index.html': {size: 252, hash: '016ececc2314cade61ec85e8443950236c81c5ccde2d46197bab2e5a7fcb631d', text: () => import('./assets-chunks/checkout_index_html.mjs').then(m => m.default)},
+    'cart/index.html': {size: 85183, hash: 'c885f11044eabf9d0c9dc39005f7047a668ce97a3bd769ed25b2707c4a7a7403', text: () => import('./assets-chunks/cart_index_html.mjs').then(m => m.default)},
+    'login/index.html': {size: 83384, hash: '581e87165e4cf04c420865c7fbabf9638aa29ad76c363534cdf4d01754c4e2cf', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
+    'order-receipt/index.html': {size: 85810, hash: 'ebcf05133975b9d3beaa68a557dc832d93d7fc8bd2ba350b4a490de2522b602b', text: () => import('./assets-chunks/order-receipt_index_html.mjs').then(m => m.default)},
+    'forgetpass/index.html': {size: 84641, hash: '42f7bffb8124e85cbb7dd2c30e0dd7b2d755b798c767cbbd54fef66617d74d8f', text: () => import('./assets-chunks/forgetpass_index_html.mjs').then(m => m.default)},
+    'styles-6OW33QAK.css': {size: 114092, hash: 'whEETld7kR0', text: () => import('./assets-chunks/styles-6OW33QAK_css.mjs').then(m => m.default)}
   },
 };

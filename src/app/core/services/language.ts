@@ -105,10 +105,17 @@ buildYourBoxRows: string;
   descGanache: string;
   descAlmond: string;
   descWhite: string;
+  productDescription:string;
+  featuredProducts: string;
+  productDetails: string;
+  deliveryCalculatedAtCheckout: string;
+cityDeliveryNote: string;
+tax: string;
 }
 
 export const en: Translations = {
   home: 'Home', shop: 'Shop', login: 'Login', register: 'Register',
+  productDetails: 'Product Details',
   myOrders: 'My Orders', myAccount: 'My Account', signOut: 'Sign Out',
   addToCart: 'Add to Cart', outOfStock: 'Out of Stock',
   cart: 'Cart', emptyCart: 'Your cart is empty', checkout: 'Checkout',
@@ -132,6 +139,9 @@ export const en: Translations = {
   personalDetails: 'Personal Details', edit: 'Edit',
   saveChanges: 'Save Changes', cancel: 'Cancel',
   changesSaved: 'Changes saved successfully.',
+  deliveryCalculatedAtCheckout: 'Delivery and taxes calculated at checkout',
+cityDeliveryNote: 'Delivery fee varies by city',
+tax: 'Tax',
   loading: 'Loading...', error: 'An error occurred.',
   next: 'Next', back: 'Back',
   chooseFlavour: 'Choose Flavour',ourCollection: 'Our Collection',
@@ -165,7 +175,8 @@ buildYourBoxRows: 'Build your box (Rows of 4)',
   selectFlavourContinue: 'Select a flavour to continue',
   rowSelected: 'Row Selected',
   rowsSelected: 'Rows Selected',
-
+productDescription:'Product Description',
+featuredProducts: 'Our Featured Products',
   descKunafaPistachio: 'Rich 70% cacao casing with crispy traditional kunafa and premium pistachio paste.',
   descCaramel: 'Buttery slow-cooked artisan caramel with a delicate flake of sea salt.',
   descCoffee: 'Bold espresso bean infusion mixed into a dark velvety single-origin chocolate base.',
@@ -187,8 +198,10 @@ const ar: Translations = {
   placingOrder: 'جاري تأكيد الطلب...', orderSummary: 'ملخص الطلب',
   createAccount: 'إنشاء حساب لمتابعة طلباتك',
   myOrdersTitle: 'طلباتي', noOrders: 'ليس لديك طلبات بعد.',
+  productDetails: 'تفاصيل المنتج',
   startShopping: 'ابدأ التسوق', orderPlaced: 'تم الطلب في',
   cancelOrder: 'إلغاء الطلب', cancelling: 'جاري الإلغاء...',
+  featuredProducts: 'منتجاتنا المميزة',
   cancelHint: 'يمكنك الإلغاء ما لم تبدأ عملية التحضير.',
   preparingNotice: 'طلبك قيد التحضير وسيتم توصيله في',
   statusPending: 'قيد الانتظار', statusPreparing: 'قيد التحضير',
@@ -210,6 +223,7 @@ sortPriceLow: 'السعر: من الأقل للأعلى',
 sortPriceHigh: 'السعر: من الأعلى للأقل',
 sortNameAZ: 'الاسم: أ-ي',
 noProductsFound: 'لا توجد منتجات',
+tax: 'الضريبة',
 productsCount: 'منتجات',badgeBestseller: 'الأكثر مبيعاً',
 badgeNew: 'جديد',
 badgeCustomise: 'خصّص',
@@ -233,13 +247,15 @@ buildYourBoxRows: 'اختر مكونات علبتك (مجموعات من ٤ قط
   selectFlavourContinue: 'اختر نكهة للمتابعة',
   rowSelected: 'صف واحد مختار',
   rowsSelected: 'صفوف مختارة',
-
+productDescription:'وصف المنتج',
   descKunafaPistachio: 'غلاف غني من الكاكاو بنسبة ٧٠٪ مع كنافة تقليدية مقرمشة ومعجون الفستق الفاخر.',
   descCaramel: 'كراميل حرفي مطبوخ ببطء مع لمسة دقيقة من رقائق ملح البحر.',
   descCoffee: 'مزيج إسبريسو قوي ممزوج بقاعدة شوكولاتة داكنة مخملية فاخرة.',
   descGanache: 'حشوة كاكاو وكريمة فرنسية مخفوقة ناعمة وحريرية تذوب في الفم.',
   descAlmond: 'رقائق اللوز الكاليفورني المحمص داخل لمسة حلوة من شوكولاتة الفانيليا.',
   descWhite: 'مزيج نقي من زبدة الكاكاو الكريمية يقدم تجربة حلوة ومخملية رائعة.',
+  deliveryCalculatedAtCheckout: 'يتم احتساب التوصيل والضرائب عند الدفع',
+cityDeliveryNote:'رسوم التوصيل تختلف حسب المدينة'
 };
 
 @Injectable({ providedIn: 'root' })
@@ -266,7 +282,9 @@ export class LanguageService {
     }
   }
 
- 
+ getproductDisc():string{
+  return this._lang() === 'ar' ? ar.productDescription : en.productDescription;
+ }
   init() {
     if (this.isBrowser) {
       const lang = this._lang();
@@ -274,4 +292,8 @@ export class LanguageService {
       document.documentElement.setAttribute('lang', lang);
     }
   }
+  getLanguage():Lang{
+    return this._lang();
+  }
+
 }

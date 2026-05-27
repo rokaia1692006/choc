@@ -16,13 +16,13 @@
 .footer-logo {
   font-family: Georgia, serif;
   color: var(--color-gold);
-  font-size: 22px;
+  font-size: 25px;
   letter-spacing: 0.02em;
   margin-bottom: 0.5rem;
 }
 
 .footer-tagline {
-  font-size: 12px;
+  font-size: 15px;
   color: var(--color-text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -39,7 +39,7 @@
 .footer-section h3 {
   font-family: Georgia, serif;
   color: var(--color-text);
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 1rem;

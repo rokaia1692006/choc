@@ -11,6 +11,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { guestGuard } from './core/guards/guest-guard';
 import { cartGuardGuard } from './core/guards/cart-guard-guard';
 import { Orders } from './pages/orders/orders';
+import { OrderRecipt } from './pages/order-recipt/order-recipt';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', component: Products },
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: 'forgetpass', component: ForgetPassPage},
 {path: 'orders', component: Orders, canActivate: [authGuard]},
+{ path: 'order-receipt', component: OrderRecipt,canActivate:[guestGuard]},
 { path: '**', redirectTo: 'HomeComponent' },
 ];

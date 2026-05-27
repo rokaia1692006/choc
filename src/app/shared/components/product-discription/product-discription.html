@@ -1,0 +1,29 @@
+<div class="pd-overlay" (click)="close.emit()"></div>
+<div class="pd-modal">
+  <button class="pd-close" (click)="close.emit()">✕</button>
+
+  <div class="pd-image">
+    <img [src]="product.image" [alt]="displayName" />
+    @if (product.badge) {
+      <span class="pd-badge">{{ displayBadge }}</span>
+    }
+  </div>
+
+  <div class="pd-body">
+    <h2 class="pd-title">{{ displayName }}</h2>
+    <p class="pd-short-desc">{{ displayDescription }}</p>
+
+    @if (displayDetailedDescription) {
+      <hr class="pd-divider" />
+      <p class="pd-detail-label">{{ 'productDetails' | translate }}</p>
+      <p class="pd-detail-desc">{{ displayDetailedDescription }}</p>
+    }
+  </div>
+
+  <div class="pd-footer">
+    <p class="pd-price">{{ product.price | currency }}</p>
+    <button class="pd-add" (click)="addToCart()">
+      {{ (product.variants?.length || product.mixedBox) ? ('chooseFlavour' | translate) : ('addToCart' | translate) }}
+    </button>
+  </div>
+</div>

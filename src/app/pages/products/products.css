@@ -37,6 +37,7 @@
 }
 
 .search-box {
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -78,7 +79,7 @@
   background: var(--color-surface);
   color: var(--color-text);
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.05em;
   cursor: pointer;
   outline: none;
@@ -101,7 +102,7 @@
   border: 1px solid var(--color-border);
   color: var(--color-text);
   padding: 6px 18px;
-  font-size: 11px;
+  font-size: 15px;
   border-radius: 5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;

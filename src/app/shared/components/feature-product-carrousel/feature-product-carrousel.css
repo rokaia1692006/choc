@@ -34,22 +34,25 @@
   padding: 0 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  direction: ltr;
 }
 
 .carousel-viewport {
   overflow: hidden;
   flex: 1;
   width: 0;
+  direction: ltr;
 }
 
 .carousel-track {
   display: flex;
+  direction: ltr;
   transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
 }
 
 .carousel-slide {
-  flex: 0 0 calc(100% / 3);
+  flex-shrink: 0;
   padding: 0 0.75rem;
   box-sizing: border-box;
   min-width: 0;
@@ -107,7 +110,9 @@
     flex: 0 0 50%;
   }
 }
-.carousel-track {
-  display: flex;
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+
+@media (min-width: 1025px) {
+  .carousel-slide {
+    flex: 0 0 33.3333%;
+  }
 }

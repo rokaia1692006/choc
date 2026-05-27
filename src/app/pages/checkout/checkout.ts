@@ -26,9 +26,13 @@ export class Checkout {
   createAccount = signal(false);
   error = signal('');
   loading = signal(false);
-
+deliveryFee = signal(30); 
+taxRate = signal(0); 
   minDate = this.order.getMinDeliveryDate();
   blockedDates = this.order.getBlockedDates();
+get subtotal() { return this.cart.cartTotal(); }
+get tax() { return this.subtotal * this.taxRate(); }
+get total() { return this.subtotal + this.deliveryFee() + this.tax; }
 
   form = {
     name: this.auth.user()?.name || '',
@@ -42,7 +46,6 @@ export class Checkout {
     confirmPassword: ''
   };
 
-  get total() { return this.cart.cartTotal() + 30; }
 
   toggleCreateAccount() {
     this.createAccount.update(v => !v);
@@ -137,37 +140,43 @@ if (this.isDateBlocked(this.form.deliveryDate)) {
 
     this.loading.set(true);
 
-    const newOrder: Order = {
-      id: Date.now().toString(),
-      userId: this.auth.user()?.id || null,
-      customerName: this.form.name,
-      phone: this.form.phone,
-      address: this.form.address,
-      city: this.form.city,
-      apartment: this.form.apartment,
-      notes: this.form.notes,
-items: this.cart.cartItems().map(i => ({
-  productId: i.product.id,
-  name: i.product.name,
-  nameAr: i.product.nameAr,
-  image: i.product.image,
-  price: i.product.price,
-  quantity: i.quantity,
-})),
-      subtotal: this.cart.cartTotal(),
-      delivery: 30,
-      total: this.total,
-      deliveryDate: this.form.deliveryDate,
-      status: 'pending',
-      placedAt: new Date().toISOString()
-    };
+const newOrder: Order = {
+  id: Date.now().toString(),
+  userId: this.auth.user()?.id || null,
+  customerName: this.form.name,
+  phone: this.form.phone,
+  address: this.form.address,
+  city: this.form.city,
+  apartment: this.form.apartment,
+  notes: this.form.notes,
+  items: this.cart.cartItems().map(i => ({
+    productId: i.product.id,
+    name: i.product.name,
+    nameAr: i.product.nameAr,
+    image: i.product.image,
+    price: i.product.price,
+    quantity: i.quantity,
+  })),
+  subtotal: this.subtotal,
+  deliveryFee: this.deliveryFee(),
+  tax: this.tax,
+  total: this.total,
+  deliveryDate: this.form.deliveryDate,
+  status: 'pending',
+  placedAt: new Date().toISOString()
+};
 
     this.order.saveOrder(newOrder);
 
     setTimeout(() => {
       this.cart.clearCart();
       this.loading.set(false);
-      this.router.navigate(['/orders']);
+      if(!this.auth.isLoggedIn()) {
+        this.router.navigate(['/order-receipt'], { queryParams: { id: newOrder.id, phone: newOrder.phone } });
+      } else {
+        this.router.navigate(['/orders']);
+      }
+     
     }, 1000);
   }
 }

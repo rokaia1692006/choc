@@ -84,24 +84,25 @@ seedTestOrders() {
   if (!user) return;
 
   const base = {
-    userId: user.id,
-    customerName: user.name,
-    phone: user.phone,
-    address: '123 Test St',
-    city: 'Cairo',
-    subtotal: 270,
-    delivery: 30,
-    total: 300,
-    deliveryDate: '2026-05-30',
-    placedAt: new Date().toISOString(),
-    items: [{
-      productId: 1,
-      name: 'Chocolate Box',
-      image: 'assets/images/box.png',
-      price: 270,
-      quantity: 1,
-    }]
-  };
+  userId: user.id,
+  customerName: user.name,
+  phone: user.phone,
+  address: '123 Test St',
+  city: 'Cairo',
+  subtotal: 270,
+  deliveryFee: 30,  
+  tax: 0,           
+  total: 300,
+  deliveryDate: '2026-05-30',
+  placedAt: new Date().toISOString(),
+  items: [{
+    productId: 1,
+    name: 'Chocolate Box',
+    image: 'assets/images/box.png',
+    price: 270,
+    quantity: 1,
+  }]
+};
 
   const testOrders = [
     { ...base, id: 'test-1', status: 'pending' as const },

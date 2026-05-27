@@ -8,6 +8,8 @@ import {inject} from '@angular/core';
 import { LanguageService ,Translations} from '../../../core/services/language';
 import { CurrencyPipe } from '../../pipes/currency-pipe';
 import { LanguagesPipe } from '../../pipes/languages-pipe';
+import { ProductDiscription } from '../product-discription/product-discription';
+import { DescriptionService } from '../../../core/services/description';
 @Component({
   selector: 'app-product-cards',
   standalone: true,
@@ -17,6 +19,7 @@ import { LanguagesPipe } from '../../pipes/languages-pipe';
 })
 export class ProductCards {
   @Input() product!: Product;
+  desc = inject(DescriptionService);
 currency = inject(CurrencyService);
 lang = inject(LanguageService);
   constructor(private cart: CartService, private picker: PickerService) {}
@@ -25,6 +28,10 @@ lang = inject(LanguageService);
     return this.cart.cartItems()
       .filter(i => Math.floor(i.product.id / 10) === this.product.id || i.product.id === this.product.id)
       .reduce((sum, i) => sum + i.quantity, 0);
+  }
+
+  openDescription() {
+    this.desc.open(this.product);
   }
 
   onAddClick() {

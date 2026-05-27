@@ -34,8 +34,12 @@
 
           <div class="formrow">
             <div class="formgroup">
-              <label>{{ 'city' | translate }} <span class="req">*</span></label>
-              <input type="text" [placeholder]="'city' | translate" [(ngModel)]="form.city" name="city" required />
+             <label>{{ 'city' | translate }} <span class="req">*</span></label>
+  <select [(ngModel)]="form.city" name="city" required>
+    <option value="" disabled selected>{{ 'city' | translate }}</option>
+    <option value="Alexandria">Alexandria</option>
+    <option value="Cairo">Cairo</option>
+  </select>
             </div>
             <div class="formgroup">
               <label>{{ 'apartment' | translate }}</label>
@@ -109,21 +113,27 @@
         }
       </div>
 
-      <div class="summaryrows">
-        <div class="summaryrow">
-          <span>{{ 'subtotal' | translate }}</span>
-          <span>{{ cart.cartTotal() | currency }}</span>
-        </div>
-        <div class="summaryrow">
-          <span>{{ 'delivery' | translate }}</span>
-          <span>{{ 30 | currency }}</span>
-        </div>
-        <div class="summarydivider"></div>
-        <div class="summaryrow total">
-          <span>{{ 'total' | translate }}</span>
-          <span>{{ total | currency }}</span>
-        </div>
-      </div>
+     <div class="summaryrows">
+  <div class="summaryrow">
+    <span>{{ 'subtotal' | translate }}</span>
+    <span>{{ subtotal | currency }}</span>
+  </div>
+  <div class="summaryrow">
+    <span>{{ 'delivery' | translate }}</span>
+    <span>{{ deliveryFee() | currency }}</span>
+  </div>
+  @if (tax > 0) {
+    <div class="summaryrow">
+      <span>{{ 'tax' | translate }}</span>
+      <span>{{ tax | currency }}</span>
+    </div>
+  }
+  <div class="summarydivider"></div>
+  <div class="summaryrow total">
+    <span>{{ 'total' | translate }}</span>
+    <span>{{ total | currency }}</span>
+  </div>
+</div>
     </div>
 
   </div>

@@ -5,15 +5,18 @@ import { ContactusFooter } from './shared/components/contactus-footer/contactus-
 import { VariantPicker } from './shared/components/variant-picker/variant-picker';
 import { PickerService } from './core/services/picker';
 import { LanguageService } from './core/services/language';
+import { DescriptionService } from './core/services/description';
 import {inject} from '@angular/core';
+import { ProductDiscription } from './shared/components/product-discription/product-discription';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, ContactusFooter,VariantPicker],
+  imports: [RouterOutlet, Navbar, ContactusFooter,VariantPicker,ProductDiscription],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   pickerService = inject(PickerService);
+   descriptionService = inject(DescriptionService);
   protected readonly title = signal('choooc');
   lang = inject(LanguageService);
   constructor() {

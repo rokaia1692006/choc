@@ -4,18 +4,20 @@ import { CommonModule } from '@angular/common';
 import { ProductCards } from '../product-cards/product-cards';
 import { Product } from '../../../core/models/products';
 import { MatIconModule } from '@angular/material/icon';
+import { LanguageService } from '../../../core/services/language';
+import { LanguagesPipe } from '../../pipes/languages-pipe';
 
 @Component({
   selector: 'app-feature-product-carrousel',
   standalone: true,
-  imports: [CommonModule, ProductCards, MatIconModule],
+  imports: [CommonModule, ProductCards, MatIconModule, LanguagesPipe],
   templateUrl: './feature-product-carrousel.html',
   styleUrl: './feature-product-carrousel.css'
 })
 export class FeatureProductCarrousel implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
-
+lang = inject(LanguageService);
   currentIndex = 0;
   private interval: any;
   slidesPerView = 3;
@@ -42,9 +44,23 @@ showDots = false;
   ]
 },
   ];
+  touchStartX = 0;
+touchEndX = 0;
+
+onTouchStart(e: TouchEvent) {
+  this.touchStartX = e.changedTouches[0].screenX;
+}
+
+onTouchEnd(e: TouchEvent) {
+  this.touchEndX = e.changedTouches[0].screenX;
+  const diff = this.touchStartX - this.touchEndX;
+  if (Math.abs(diff) > 50) {
+    diff > 0 ? this.next() : this.prev();
+  }
+}
 
   get slideWidth() { return 100 / this.slidesPerView; }
-  get maxIndex() { return this.featuredProducts.length - this.slidesPerView; }
+  
   get isMobile() { return this.slidesPerView === 1; }
 
   @HostListener('window:resize')
@@ -81,15 +97,19 @@ ngOnInit() {
     if (this.interval) clearInterval(this.interval);
   }
 
-  next() {
-    this.currentIndex = this.currentIndex >= this.maxIndex ? 0 : this.currentIndex + 1;
-  }
+  get maxIndex() {
+  return Math.max(0, this.featuredProducts.length - this.slidesPerView);
+}
 
-  prev() {
-    this.currentIndex = this.currentIndex <= 0 ? this.maxIndex : this.currentIndex - 1;
-  }
+next() {
+  this.currentIndex = this.currentIndex >= this.maxIndex ? 0 : this.currentIndex + 1;
+}
 
-  goTo(index: number) {
-    this.currentIndex = Math.min(index, this.maxIndex);
-  }
+prev() {
+  this.currentIndex = this.currentIndex <= 0 ? this.maxIndex : this.currentIndex - 1;
+}
+
+goTo(index: number) {
+  this.currentIndex = Math.max(0, Math.min(index, this.maxIndex));
+}
 }

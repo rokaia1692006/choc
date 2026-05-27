@@ -6,10 +6,10 @@
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
   overflow: hidden;
-  max-width: 260px;
+  width: 100%;
+  max-width: 340px;
   margin: 0 auto;
 }
-
 
 .productCard:hover {
   border-color: var(--color-gold);
@@ -17,17 +17,50 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
+.product-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
 .image {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
-  margin-top: 1rem;
 }
 
 .productCard:hover .image {
   transform: scale(1.04);
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--color-gold);
+  color: #0A0A0A;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  z-index: 1;
+}
+
+.has-variants {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgb(0, 0, 0);
+  color: #FAF3E0;
+  border-radius: 7px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  z-index: 1;
 }
 
 .body {
@@ -40,7 +73,7 @@
 
 .name {
   font-family: Georgia, serif;
-  font-size: 16px;
+  font-size: 20px;
   color: var(--color-text);
   margin: 0;
   letter-spacing: 0.02em;
@@ -55,21 +88,23 @@
 }
 
 .description {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--color-text-muted);
   line-height: 1.6;
   margin: 0;
   flex: 1;
 }
 
-.addbtn {
+.card-actions {
   margin-top: 1rem;
-  background: transparent;
+}
+
+.addbtn {
   background: var(--color-text);
- 
   color: var(--color-bg);
+  border: none;
   padding: 10px 0;
-  font-size: 11px;
+  font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
@@ -81,18 +116,12 @@
   background: var(--color-gold);
   color: #0A0A0A;
 }
-.product-image {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
-}
-.card-actions {
-  margin-top: 1rem;
-}
 
-
+.qty-controls {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-secondary);
+}
 
 .qty-btn {
   background: transparent;
@@ -117,37 +146,4 @@
   min-width: 40px;
   text-align: center;
   padding: 8px 0;
-}
-
-.qty-controls {
-  display: flex;
-  align-items: center;
-  background: var(--color-bg-secondary);
-}
-.badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: var(--color-gold);
-  color: #0A0A0A;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-}
-
-.has-variants {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  color: #FAF3E0;
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-}
-
-.product-image {
-  position: relative;
 }

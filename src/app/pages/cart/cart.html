@@ -40,22 +40,15 @@
       </div>
 
       <div class="cartsummary">
-        <h2 class="summarytitle">{{ 'orderSummary' | translate }}</h2>
-        <div class="summaryrow">
-          <span>{{ 'subtotal' | translate }}</span>
-          <span>{{ cartService.cartTotal() | currency }}</span>
-        </div>
-        <div class="summaryrow">
-          <span>{{ 'delivery' | translate }}</span>
-          <span>{{ 30 | currency }}</span>
-        </div>
-        <div class="summaryrow total">
-          <span>{{ 'total' | translate }}</span>
-          <span>{{ cartService.cartTotal() + 30 | currency }}</span>
-        </div>
-        <button class="checkoutbtn" routerLink="/checkout">{{ 'checkout' | translate }}</button>
-        <a routerLink="/shop" class="continuelink">{{ 'startShopping' | translate }}</a>
-      </div>
+  <h2 class="summarytitle">{{ 'orderSummary' | translate }}</h2>
+  <div class="summaryrow">
+    <span>{{ 'subtotal' | translate }}</span>
+    <span>{{ cartService.cartTotal() | currency }}</span>
+  </div>
+  <p class="deliverynote">{{ 'deliveryCalculatedAtCheckout' | translate }}</p>
+  <button class="checkoutbtn" routerLink="/checkout">{{ 'checkout' | translate }}</button>
+  <a routerLink="/shop" class="continuelink">{{ 'startShopping' | translate }}</a>
+</div>
     </div>
   }
 

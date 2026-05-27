@@ -1,9 +1,15 @@
-<app-navbar></app-navbar>
+<app-navbar />
 <router-outlet />
-<app-contactus-footer></app-contactus-footer>
+<app-contactus-footer />
 
 @if (pickerService.product()) {
   <app-variant-picker
     [product]="pickerService.product()!"
     (close)="pickerService.close()" />
+}
+
+@if (descriptionService.product()) {
+  <app-product-discription
+    [product]="descriptionService.product()!"
+    (close)="descriptionService.close()" />
 }

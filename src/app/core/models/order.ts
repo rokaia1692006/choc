@@ -12,7 +12,7 @@ export interface OrderItem {
 }
 export interface Order {
   id: string;
-  userId: string | null;    
+  userId: string | null;
   customerName: string;
   phone: string;
   address: string;
@@ -21,10 +21,11 @@ export interface Order {
   notes?: string;
   items: OrderItem[];
   subtotal: number;
-  delivery: number;
+  deliveryFee: number;  
+  tax: number;
   total: number;
-  deliveryDate: string;      
+  deliveryDate: string;
   status: OrderStatus;
-  placedAt: string;         
+  placedAt: string;
   cancelledAt?: string;
 }

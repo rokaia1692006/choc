@@ -10,6 +10,8 @@ export interface Product {
   nameAr?: string;
   description: string;
   descriptionAr?: string;
+  detailedDescription?: string;     
+  detailedDescriptionAr?: string;   
   price: number;
   image: string;
   category?: string;
