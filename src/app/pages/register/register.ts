@@ -6,7 +6,6 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { LanguageService } from '../../core/services/language';
 import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
-import { CurrencyPipe } from '../../shared/pipes/currency-pipe';
 
 type RegStep = 'register' | 'sms';
 
@@ -38,39 +37,53 @@ export class Register {
     apartment: ''
   };
 
- submitRegistration() {
-  this.error.set(null);
-  this.success.set(null);
+  submitRegistration() {
+    this.error.set(null);
+    this.success.set(null);
 
-  if (this.form.password !== this.form.confirmPassword) {
-    this.error.set(this.lang.isArabic() ? 'كلمات المرور غير متطابقة.' : 'Passwords do not match.');
-    return;
+   
+    if (this.form.password !== this.form.confirmPassword) {
+      this.error.set(this.lang.isArabic() ? 'كلمات المرور غير متطابقة.' : 'Passwords do not match.');
+      return;
+    }
+
+    if (this.form.password.length < 6) {
+      this.error.set(this.lang.isArabic() ? 'يجب أن تتكون كلمة المرور من ٦ أحرف على الأقل.' : 'Password must be at least 6 characters.');
+      return;
+    }
+
+    
+    const egPhoneRegex = /^(?:\+22)?(?:\+20|20|0)?1[0125]\d{8}$/;
+    const cleanPhone = this.form.phone.trim().replace(/\s+/g, ''); 
+
+    if (!egPhoneRegex.test(cleanPhone)) {
+      this.error.set(
+        this.lang.isArabic() 
+          ? 'يرجى إدخال رقم هاتف مصري صحيح (مثال: ٠١٠١٢٣٤٥٦٧٨).' 
+          : 'Please enter a valid Egyptian phone number (e.g., 01012345678).'
+      );
+      return;
+    }
+
+    this.loading.set(true);
+    const isAlreadyRegistered = this.auth.confirmCode(cleanPhone); 
+    this.loading.set(false);
+
+    if (!isAlreadyRegistered) {
+      this.step.set('sms');
+      this.success.set(
+        this.lang.isArabic() 
+          ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' 
+          : 'An account verification code has been sent to your number.'
+      );
+    } else {
+      this.error.set(
+        this.lang.isArabic() 
+          ? 'رقم الهاتف هذا مسجل بالفعل.' 
+          : 'This phone number is already registered.'
+      );
+    }
   }
-
-  if (this.form.password.length < 6) {
-    this.error.set(this.lang.isArabic() ? 'يجب أن تتكون كلمة المرور من ٦ أحرف على الأقل.' : 'Password must be at least 6 characters.');
-    return;
-  }
-
-  this.loading.set(true);
-    const isAlreadyRegistered = this.auth.confirmCode(this.form.phone.trim()); 
-  this.loading.set(false);
-
-  if (!isAlreadyRegistered) {
-    this.step.set('sms');
-    this.success.set(
-      this.lang.isArabic() 
-        ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' 
-        : 'An account verification code has been sent to your number.'
-    );
-  } else {
-    this.error.set(
-      this.lang.isArabic() 
-        ? 'رقم الهاتف هذا مسجل بالفعل.' 
-        : 'This phone number is already registered.'
-    );
-  }
-}
 
   submitVerificationCode() {
     this.error.set(null);
@@ -84,7 +97,7 @@ export class Register {
     const isValid = this.auth.correctCode(this.verificationCode.trim());
     
     if (isValid) {
-      const success = this.auth.register(this.form);
+      const success = this.auth.register({ ...this.form, phone: this.form.phone.trim().replace(/\s+/g, '') });
       this.loading.set(false);
 
       if (success) {

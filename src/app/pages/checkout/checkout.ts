@@ -85,6 +85,17 @@ export class Checkout {
       this.error.set(this.lang.isArabic() ? 'يرجى ملء جميع الحقول المطلوبة.' : 'Please fill in all required fields.');
       return;
     }
+    const egPhoneRegex = /^(?:\+22)?(?:\+20|20|0)?1[0125]\d{8}$/;
+    const cleanPhone = this.form.phone.trim().replace(/\s+/g, '');
+
+    if (!egPhoneRegex.test(cleanPhone)) {
+      this.error.set(
+        this.lang.isArabic()
+          ? 'يرجى إدخال رقم هاتف مصري صحيح (مثال: ٠١٠١٢٣٤٥٦٧٨).'
+          : 'Please enter a valid Egyptian phone number (e.g., 01012345678).'
+      );
+      return;
+    }
 
     if (!this.form.deliveryDate || !this.order.isDateValid(this.form.deliveryDate) || this.isDateBlocked(this.form.deliveryDate)) {
       this.error.set(this.lang.isArabic() ? 'يرجى اختيار تاريخ توصيل صحيح.' : 'Please select a valid delivery date.');
@@ -101,7 +112,7 @@ export class Checkout {
         return;
       }
 
-      const isAlreadyRegistered = this.auth.confirmCode(this.form.phone.trim());
+      const isAlreadyRegistered = this.auth.confirmCode(cleanPhone);
       if (isAlreadyRegistered) {
         this.error.set(this.lang.isArabic() ? 'رقم الهاتف هذا مسجل بالفعل.' : 'This phone number is already registered.');
         return;
@@ -109,7 +120,8 @@ export class Checkout {
     }
 
     this.loading.set(true);
-    this.auth.confirmCode(this.form.phone.trim()); 
+    this.form.phone = cleanPhone;
+    this.auth.confirmCode(cleanPhone); 
     this.loading.set(false);
 
     this.step.set('sms');

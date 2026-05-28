@@ -14,6 +14,11 @@
           <button class="editbtn" (click)="editing.set(true)">Edit</button>
         }
       </div>
+      @if (error()) {
+        <div class="errormsg" style="color: red; margin-bottom: 15px; font-weight: bold;">
+          {{ error() }}
+        </div>
+      }
 
       @if (saved()) {
         <div class="savemsg">Changes saved successfully.</div>
@@ -69,7 +74,7 @@
         @if (editing()) {
           <div class="formactions">
             <button type="submit" class="savebtn">Save Changes</button>
-            <button type="button" class="cancelbtn" (click)="editing.set(false)">Cancel</button>
+            <button type="button" class="cancelbtn" (click)="editing.set(false); error.set(null)">Cancel</button>
           </div>
         }
       </form>
@@ -79,7 +84,7 @@
       <div class="profilecard">
         <h3 class="cardtitle">Account</h3>
         <div class="forgetbtn">
-        <a class="forgetTxt" href="forgetpass">Forget Password</a>
+          <a class="forgetTxt" href="forgetpass">Forget Password</a>
         </div>
 
         <button class="logoutbtn" (click)="logout()">Sign Out</button>
