@@ -3,8 +3,8 @@
 
     <div class="authheader">
       <a routerLink="/" class="authlogo">Bonbon Boutique</a>
-      <h1 class="authtitle">Welcome Back</h1>
-      <p class="authsubtitle">Sign in to your account</p>
+      <h1 class="authtitle">{{ lang.isArabic() ? 'مرحباً بعودتك' : 'Welcome Back' }}</h1>
+      <p class="authsubtitle">{{ lang.isArabic() ? 'قم بتسجيل الدخول إلى حسابك' : 'Sign in to your account' }}</p>
     </div>
 
     <form class="authform" (ngSubmit)="submit()">
@@ -14,7 +14,7 @@
       }
 
       <div class="formgroup">
-        <label>Phone Number</label>
+        <label>{{ lang.isArabic() ? 'رقم الهاتف' : 'Phone Number' }}</label>
         <input
           type="tel"
           placeholder="+20 1XX XXX XXXX"
@@ -24,28 +24,28 @@
       </div>
 
       <div class="formgroup">
-        <label>Password</label>
+        <label>{{ lang.isArabic() ? 'كلمة المرور' : 'Password' }}</label>
         <input
           type="password"
-          placeholder="Your password"
+          [placeholder]="lang.isArabic() ? 'كلمة المرور الخاصة بك' : 'Your password'"
           [(ngModel)]="password"
           name="password"
           required />
       </div>
 
       <button type="submit" class="authbtn" [disabled]="loading()">
-        {{ loading() ? 'Signing in...' : 'Sign In' }}
+        {{ loading() ? (lang.isArabic() ? 'جاري تسجيل الدخول...' : 'Signing in...') : (lang.isArabic() ? 'تسجيل الدخول' : 'Sign In') }}
       </button>
 
     </form>
 
     <p class="authswitch">
-      Don't have an account?
-      <a routerLink="/register">Register</a>
+      {{ lang.isArabic() ? 'ليس لديك حساب؟' : "Don't have an account?" }}
+      <a routerLink="/register">{{ lang.isArabic() ? 'إنشاء حساب جديد' : 'Register' }}</a>
     </p>
 
     <p class="authswitch">
-      <a routerLink="/forgetpass">Forgot Password?</a>
+      <a routerLink="/forgetpass">{{ lang.isArabic() ? 'هل نسيت كلمة المرور؟' : 'Forgot Password?' }}</a>
     </p>
   </div>
 </div>

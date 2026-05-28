@@ -3,64 +3,139 @@
 
     <div class="authheader">
       <a routerLink="/" class="authlogo">Bonbon Boutique</a>
-      <h1 class="authtitle">Create Account</h1>
-      <p class="authsubtitle">Join us for a sweeter experience</p>
+      <h1 class="authtitle">
+        {{ step() === 'register' ? ('createAccount' | translate) : (lang.isArabic() ? 'تأكيد الحساب' : 'Verify Account') }}
+      </h1>
+
+      <div class="steps">
+        <span class="step" [class.active]="step() === 'register'" [class.done]="step() === 'sms'">1</span>
+        <span class="step-line" [class.done]="step() === 'sms'"></span>
+        <span class="step" [class.active]="step() === 'sms'">2</span>
+      </div>
     </div>
 
-    <form class="authform" (ngSubmit)="submit()">
+    @if (error()) {
+      <div class="autherror">{{ error() }}</div>
+    }
+    @if (success()) {
+      <div class="authsuccess">{{ success() }}</div>
+    }
 
-      @if (error()) {
-        <div class="autherror">{{ error() }}</div>
-      }
+    @if (step() === 'register') {
+      <form class="authform" (ngSubmit)="submitRegistration()">
 
-      <div class="formgroup">
-        <label>Full Name <span class="required">*</span></label>
-        <input type="text" placeholder="Your full name" [(ngModel)]="form.name" name="name" required />
-      </div>
-
-      <div class="formgroup">
-        <label>Phone Number <span class="required">*</span></label>
-        <input type="tel" placeholder="+20 1XX XXX XXXX" [(ngModel)]="form.phone" name="phone" required />
-      </div>
-
-      <div class="formrow">
         <div class="formgroup">
-          <label>Password <span class="required">*</span></label>
-          <input type="password" placeholder="Min 6 characters" [(ngModel)]="form.password" name="password" required />
+          <label>{{ 'fullName' | translate }} <span class="required">*</span></label>
+          <input 
+            type="text" 
+            [placeholder]="lang.isArabic() ? 'الاسم الكامل الخاص بك' : 'Your full name'" 
+            [(ngModel)]="form.name" 
+            name="name" 
+            required />
         </div>
+
         <div class="formgroup">
-          <label>Confirm Password <span class="required">*</span></label>
-          <input type="password" placeholder="Repeat password" [(ngModel)]="form.confirmPassword" name="confirmPassword" required />
+          <label>{{ 'phoneNumber' | translate }} <span class="required">*</span></label>
+          <input 
+            type="tel" 
+            placeholder="+20 1XX XXX XXXX" 
+            [(ngModel)]="form.phone" 
+            name="phone" 
+            required />
         </div>
-      </div>
 
-      <div class="formdivider">Delivery Address</div>
+        <div class="formrow">
+          <div class="formgroup">
+            <label>{{ 'password' | translate }} <span class="required">*</span></label>
+            <input 
+              type="password" 
+              [placeholder]="lang.t()['passwordHint']" 
+              [(ngModel)]="form.password" 
+              name="password" 
+              required />
+          </div>
+          <div class="formgroup">
+            <label>{{ 'confirmPassword' | translate }} <span class="required">*</span></label>
+            <input 
+              type="password" 
+              [placeholder]="lang.isArabic() ? 'كرر كلمة المرور' : 'Repeat password'" 
+              [(ngModel)]="form.confirmPassword" 
+              name="confirmPassword" 
+              required />
+          </div>
+        </div>
 
-      <div class="formgroup">
-        <label>Street Address <span class="required">*</span></label>
-        <input type="text" placeholder="Street address" [(ngModel)]="form.address" name="address" required />
-      </div>
+        <div class="formdivider">{{ 'deliveryDetails' | translate }}</div>
 
-      <div class="formrow">
         <div class="formgroup">
-          <label>City <span class="required">*</span></label>
-          <input type="text" placeholder="City" [(ngModel)]="form.city" name="city" required />
+          <label>{{ 'streetAddress' | translate }} <span class="required">*</span></label>
+          <input 
+            type="text" 
+            [placeholder]="lang.isArabic() ? 'عنوان الشارع بالتفصيل' : 'Street address'" 
+            [(ngModel)]="form.address" 
+            name="address" 
+            required />
         </div>
+
+        <div class="formrow">
+          <div class="formgroup">
+            <label>{{ 'city' | translate }} <span class="required">*</span></label>
+            <input 
+              type="text" 
+              [placeholder]="lang.isArabic() ? 'المدينة' : 'City'" 
+              [(ngModel)]="form.city" 
+              name="city" 
+              required />
+          </div>
+          <div class="formgroup">
+            <label>{{ 'apartment' | translate }}</label>
+            <input 
+              type="text" 
+              [placeholder]="lang.isArabic() ? 'اختياري' : 'Optional'" 
+              [(ngModel)]="form.apartment" 
+              name="apartment" />
+          </div>
+        </div>
+
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? (lang.isArabic() ? 'جاري تسجيل البيانات...' : 'Submitting...') : (lang.t()['register']) }}
+        </button>
+
+      </form>
+    }
+
+    @if (step() === 'sms') {
+      <form class="authform" (ngSubmit)="submitVerificationCode()">
+        <p class="stepinfo">
+          {{ lang.isArabic() ? 'أدخل الرمز المرسل إلى رقم هاتفك' : 'Enter the verification code sent to your phone' }} 
+          <strong>{{ form.phone }}</strong>
+        </p>
+
         <div class="formgroup">
-          <label>Apartment / Floor</label>
-          <input type="text" placeholder="Optional" [(ngModel)]="form.apartment" name="apartment" />
+          <label for="verificationCode">{{ lang.isArabic() ? 'رمز التحقق' : 'Verification Code' }}</label>
+          <input
+            id="verificationCode"
+            type="text"
+            placeholder="XXXX"
+            [(ngModel)]="verificationCode"
+            name="verificationCode"
+            maxlength="6"
+            required />
         </div>
-      </div>
 
-      <button type="submit" class="authbtn" [disabled]="loading()">
-        {{ loading() ? 'Creating account...' : 'Create Account' }}
-      </button>
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? (lang.isArabic() ? 'جاري التأكيد...' : 'Verifying...') : (lang.isArabic() ? 'تأكيد الرمز وتفعيل الحساب' : 'Verify & Activate Account') }}
+        </button>
 
-    </form>
+        <button type="button" class="authbtn-ghost" (click)="resendVerificationCode()">
+          {{ lang.isArabic() ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+        </button>
+      </form>
+    }
 
     <p class="authswitch">
-      Already have an account?
-      <a routerLink="/login">Sign In</a>
+      {{ 'haveAccount' | translate }}
+      <a routerLink="/login">{{ 'login' | translate }}</a>
     </p>
 
   </div>

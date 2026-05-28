@@ -3,7 +3,7 @@
 
     <div class="authheader">
       <a routerLink="/" class="authlogo">Bonbon Boutique</a>
-      <h1 class="authtitle">Password Reset</h1>
+      <h1 class="authtitle">{{ lang.isArabic() ? 'إعادة تعيين كلمة المرور' : 'Password Reset' }}</h1>
 
       <div class="steps">
         <span class="step" [class.active]="step() === 'phone'" [class.done]="step() === 'code' || step() === 'newPassword'">1</span>
@@ -22,11 +22,10 @@
       <div class="authsuccess">{{ success() }}</div>
     }
 
-    <!-- Phone -->
     @if (step() === 'phone') {
       <form class="authform" (ngSubmit)="submitPhone()">
         <div class="formgroup">
-          <label for="phone">Phone Number</label>
+          <label for="phone">{{ lang.isArabic() ? 'رقم الهاتف' : 'Phone Number' }}</label>
           <input
             id="phone"
             type="tel"
@@ -36,17 +35,18 @@
             required />
         </div>
         <button type="submit" class="authbtn" [disabled]="loading()">
-          {{ loading() ? 'Checking...' : 'Send Code' }}
+          {{ loading() ? (lang.isArabic() ? 'جاري التحقق...' : 'Checking...') : (lang.isArabic() ? 'إرسال الرمز' : 'Send Code') }}
         </button>
       </form>
     }
 
-    <!-- SMS -->
     @if (step() === 'code') {
       <form class="authform" (ngSubmit)="submitCode()">
-        <p class="stepinfo">Enter the code sent to <strong>{{ phone }}</strong></p>
+        <p class="stepinfo">
+          {{ lang.isArabic() ? 'أدخل الرمز المرسل إلى' : 'Enter the code sent to' }} <strong>{{ phone }}</strong>
+        </p>
         <div class="formgroup">
-          <label for="code">Verification Code</label>
+          <label for="code">{{ lang.isArabic() ? 'رمز التحقق' : 'Verification Code' }}</label>
           <input
             id="code"
             type="text"
@@ -57,45 +57,44 @@
             required />
         </div>
         <button type="submit" class="authbtn" [disabled]="loading()">
-          {{ loading() ? 'Verifying...' : 'Verify Code' }}
+          {{ loading() ? (lang.isArabic() ? 'جاري التأكيد...' : 'Verifying...') : (lang.isArabic() ? 'تأكيد الرمز' : 'Verify Code') }}
         </button>
         <button type="button" class="authbtn-ghost" (click)="resendCode()">
-          Resend Code
+          {{ lang.isArabic() ? 'إعادة إرسال الرمز' : 'Resend Code' }}
         </button>
       </form>
     }
 
-    <!--  new  -->
     @if (step() === 'newPassword') {
       <form class="authform" (ngSubmit)="submitNewPassword()">
         <div class="formgroup">
-          <label for="newPassword">New Password</label>
+          <label for="newPassword">{{ lang.isArabic() ? 'كلمة المرور الجديدة' : 'New Password' }}</label>
           <input
             id="newPassword"
             type="password"
-            placeholder="Min. 6 characters"
+            [placeholder]="lang.isArabic() ? '٦ أحرف على الأقل' : 'Min. 6 characters'"
             [(ngModel)]="newPassword"
             name="newPassword"
             required />
         </div>
         <div class="formgroup">
-          <label for="confirmNewPassword">Confirm Password</label>
+          <label for="confirmNewPassword">{{ lang.isArabic() ? 'تأكيد كلمة المرور' : 'Confirm Password' }}</label>
           <input
             id="confirmNewPassword"
             type="password"
-            placeholder="Repeat your password"
+            [placeholder]="lang.isArabic() ? 'كرر كلمة المرور' : 'Repeat your password'"
             [(ngModel)]="confirmNewPassword"
             name="confirmNewPassword"
             required />
         </div>
         <button type="submit" class="authbtn" [disabled]="loading()">
-          {{ loading() ? 'Saving...' : 'Set New Password' }}
+          {{ loading() ? (lang.isArabic() ? 'جاري الحفظ...' : 'Saving...') : (lang.isArabic() ? 'تعيين كلمة المرور الجديدة' : 'Set New Password') }}
         </button>
       </form>
     }
 
     <p class="authswitch">
-      Remembered it? <a routerLink="/login">Log in</a>
+      {{ lang.isArabic() ? 'تذكرتها؟' : 'Remembered it?' }} <a routerLink="/login">{{ lang.isArabic() ? 'تسجيل الدخول' : 'Log in' }}</a>
     </p>
   </div>
 </div>

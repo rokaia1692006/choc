@@ -17,19 +17,19 @@
           <div class="cartitem">
             <img [src]="item.product.image" [alt]="item.product.name" class="itemimage">
             <div class="itemdetails">
-              <h3 class="itemname">{{ displayName(item.product) }}</h3>
+             <h3 class="itemname">{{ displayName(item.product) }}</h3>
               <p class="itemcategory">{{ displayCategory(item.product) }}</p>
               <p class="itemprice">{{ item.product.price | currency }}</p>
             </div>
-            <div class="itemcontrols">
-              <button class="qtybtn" (click)="decrement(item.cartItemId, item.quantity)">
-                <mat-icon>remove</mat-icon>
-              </button>
-              <span class="qty">{{ item.quantity }}</span>
-              <button class="qtybtn" (click)="increment(item)">
-                <mat-icon>add</mat-icon>
-              </button>
-            </div>
+<div class="itemcontrols">
+  <button class="qtybtn" (click)="decrement(item.cartItemId, item.quantity)">
+    <mat-icon>remove</mat-icon>
+  </button>
+  <span class="qty">{{ item.quantity }}</span>
+  <button class="qtybtn" (click)="increment(item)">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
             <p class="itemtotal">{{ item.product.price * item.quantity | currency }}</p>
             <button class="removebtn" (click)="cartService.removeFromCart(item.cartItemId)">
               <mat-icon>close</mat-icon>
@@ -40,15 +40,15 @@
       </div>
 
       <div class="cartsummary">
-  <h2 class="summarytitle">{{ 'orderSummary' | translate }}</h2>
-  <div class="summaryrow">
-    <span>{{ 'subtotal' | translate }}</span>
-    <span>{{ cartService.cartTotal() | currency }}</span>
-  </div>
-  <p class="deliverynote">{{ 'deliveryCalculatedAtCheckout' | translate }}</p>
-  <button class="checkoutbtn" routerLink="/checkout">{{ 'checkout' | translate }}</button>
-  <a routerLink="/shop" class="continuelink">{{ 'startShopping' | translate }}</a>
-</div>
+        <h2 class="summarytitle">{{ 'orderSummary' | translate }}</h2>
+        <div class="summaryrow">
+          <span>{{ 'subtotal' | translate }}</span>
+          <span>{{ cartService.cartTotal() | currency }}</span>
+        </div>
+        <p class="deliverynote">{{ 'deliveryCalculatedAtCheckout' | translate }}</p>
+        <button class="checkoutbtn" routerLink="/checkout">{{ 'checkout' | translate }}</button>
+        <a routerLink="/shop" class="continuelink">{{ 'startShopping' | translate }}</a>
+      </div>
     </div>
   }
 

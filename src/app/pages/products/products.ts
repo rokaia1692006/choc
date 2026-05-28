@@ -87,25 +87,32 @@ allProducts: Product[] = [
   },
 ];
 
- filteredProducts = computed(() => {
-  let products = this.allProducts;
+filteredProducts = computed(() => {
+  let products = this.allProducts.map(p => ({
+    ...p,
+    baseNameEn: (p as any).baseNameEn || p.name,
+    baseNameAr: (p as any).baseNameAr || p.nameAr || p.name
+  }));
+
   if (this.selectedCategory() !== 0) {
     products = products.filter(p => p.categoryId === this.selectedCategory());
   }
-    if (this.searchQuery().trim()) {
-      const q = this.searchQuery().toLowerCase();
-      products = products.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
-      );
-    }
-    switch (this.sortBy()) {
-      case 'price-asc': return [...products].sort((a, b) => a.price - b.price);
-      case 'price-desc': return [...products].sort((a, b) => b.price - a.price);
-      case 'name': return [...products].sort((a, b) => a.name.localeCompare(b.name));
-      default: return products;
-    }
-  });
+
+  if (this.searchQuery().trim()) {
+    const q = this.searchQuery().toLowerCase();
+    products = products.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q)
+    );
+  }
+
+  switch (this.sortBy()) {
+    case 'price-asc': return [...products].sort((a, b) => a.price - b.price);
+    case 'price-desc': return [...products].sort((a, b) => b.price - a.price);
+    case 'name': return [...products].sort((a, b) => a.name.localeCompare(b.name));
+    default: return products;
+  }
+});
 displayCategory(cat: Category): string {
   return this.lang.isArabic() ? cat.nameAr : cat.name;
 }

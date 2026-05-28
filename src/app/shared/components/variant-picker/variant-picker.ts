@@ -101,26 +101,42 @@ lang = inject(LanguageService);
     return rows;
   }
 
- addToCart() {
+addToCart() {
+  const isAr = this.lang.isArabic();
+  
   if (this.product.mixedBox) {
     if (!this.isBoxComplete) return;
-    const selectedFlavours = this.selections()
-      .filter(s => s.quantity > 0)
-      .map(s => `${s.quantity}x ${s.variant.label}`)
-      .join(', ');
+    const variantsEn = this.selections().filter(s => s.quantity > 0).map(s => `${s.quantity}x ${s.variant.label}`).join(', ');
+    const variantsAr = this.selections().filter(s => s.quantity > 0).map(s => `${s.quantity}x ${s.variant.labelAr || s.variant.label}`).join(', ');
+    
+    const baseNameEn = (this.product as any).baseNameEn || this.product.name;
+    const baseNameAr = (this.product as any).baseNameAr || this.product.nameAr || this.product.name;
+
     this.cartService.addToCart({
       ...this.product,
-      name: `${this.product.name} (${selectedFlavours})`,
-    });
+      name: `${baseNameEn} (${variantsEn})`,
+      nameAr: `${baseNameAr} (${variantsAr})`,
+      baseNameEn: baseNameEn,
+      baseNameAr: baseNameAr,
+      isCustomVariant: true
+    } as any);
   } else {
     const variant = this.selected();
     if (!variant) return;
+    
+    const baseNameEn = (this.product as any).baseNameEn || this.product.name;
+    const baseNameAr = (this.product as any).baseNameAr || this.product.nameAr || this.product.name;
+
     this.cartService.addToCart({
       ...this.product,
-      name: `${this.product.name} — ${variant.label}`,
+      name: `${baseNameEn} - ${variant.label}`,
+      nameAr: `${baseNameAr} - ${variant.labelAr || variant.label}`,
       price: this.finalPrice,
-      id: Number(`${this.product.id}${variant.id}`)
-    });
+      id: Number(`${this.product.id}${variant.id}`),
+      baseNameEn: baseNameEn,
+      baseNameAr: baseNameAr,
+      isCustomVariant: true
+    } as any);
   }
   this.close.emit();
 }

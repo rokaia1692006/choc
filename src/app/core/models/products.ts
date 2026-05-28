@@ -22,6 +22,7 @@ export interface Product {
   badgeAr?: string;
   variants?: productTypes[];
   mixedBox?: Boxes | null;
+  variantLabel?: string;
 }
 export class ProductDetailModalComponent {
   product!: Product; 

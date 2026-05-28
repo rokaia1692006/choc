@@ -24,10 +24,12 @@ categoryService = inject(CategoryService);
 
   constructor(public cartService: CartService) {}
 
-  displayName(product: Product): string {
+ displayName(product: any): string {
+  if (product.isCustomVariant) {
     return this.lang.isArabic() && product.nameAr ? product.nameAr : product.name;
   }
-
+  return this.lang.isArabic() && product.nameAr ? product.nameAr : product.name;
+}
 displayCategory(product: Product): string {
     const cat = product.categoryId != null
       ? this.categoryService.getById(product.categoryId)
@@ -35,22 +37,26 @@ displayCategory(product: Product): string {
     if (!cat) return product.category ?? '';
     return this.lang.isArabic() ? cat.nameAr : cat.name;
   }
-  increment(item: any) {
-    if (item.product.mixedBox) {
-      this.activeProductForModal = {
-        ...item.product,
-        name: item.product.baseName || item.product.name.split(' (')[0]
-      };
-    } else {
-      this.cartService.updateQuantity(item.cartItemId, item.quantity + 1);
-    }
+increment(item: any) {
+  if (item.product.mixedBox || item.product.variants?.length) {
+    this.openVariantPickerFromCart(item.product);
+  } else {
+    this.cartService.updateQuantity(item.cartItemId, item.quantity + 1);
   }
+}
 
   decrement(cartItemId: string, qty: number) {
     this.cartService.updateQuantity(cartItemId, qty - 1);
   }
-
-  closeModal() {
+openVariantPickerFromCart(product: any) {
+  const baseProduct: Product = {
+    ...product,
+    name: product.baseNameEn || product.name.split(/\s*[\(\-]/)[0].trim(),
+    nameAr: product.baseNameAr || (product.nameAr ? product.nameAr.split(/\s*[\(\-]/)[0].trim() : undefined)
+  };
+  this.activeProductForModal = baseProduct;
+}
+closeModal() {
     this.activeProductForModal = null;
   }
 }

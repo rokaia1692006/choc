@@ -5,9 +5,23 @@ export default `<!doctype html>
     <base href="/choc/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Bonbon Boutique — Handcrafted Chocolates in Cairo & Alexandria</title>
-    <meta name="title" content="Bonbon Boutique — Handcrafted Chocolates in Cairo &amp; Alexandria">
+    <meta name="title" content="Bonbon Boutique">
     <meta name="description" content="Discover Bonbon Boutique's artisan chocolate bars, mixed boxes, and seasonal collections. Delivered fresh across Cairo and Alexandria, Egypt.">
-    <meta name="keywords" content="chocolate, bonbon, artisan chocolate, Cairo, Alexandria, chocolate box, handcrafted chocolate, gift chocolate Egypt,dark chocolate ,milk chocolate">
+    <meta name="keywords" content="
+      chocolate, bonbon, artisan chocolate, handcrafted chocolate, luxury chocolate,
+      chocolate gift box, chocolate box Egypt, chocolate Cairo, chocolate Alexandria,
+      chocolate delivery Egypt, order chocolate online Egypt, gift chocolate Egypt,
+      Belgian chocolate Egypt, mixed chocolate box, chocolate bar, kunafa chocolate,
+      pistachio chocolate, caramel chocolate, dark chocolate Egypt, milk chocolate Egypt,
+      بون بون, شوكولاتة, شوكولاتة مصر, شوكولاتة الإسكندرية, شوكولاتة القاهرة,
+      شوكولاتة هدية, صندوق شوكولاتة, شوكولاتة يدوية, توصيل شوكولاتة, شوكولاتة فاخرة,
+      شوكولاتة كنافة بالفستق, شوكولاتة كراميل, شوكولاتة داكنة, شوكولاتة بالحليب,
+      هدية شوكولاتة مصر, طلب شوكولاتة اون لاين, بون بون بوتيك
+    ">
+        <meta name="robots" content="index, follow">
+    <meta name="author" content="Bonbon Boutique">
+    <link rel="canonical" href="https://bonbonboutique.com/"/>
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bonbonboutique.com/">
     <meta property="og:title" content="Bonbon Boutique — Handcrafted Chocolates">
@@ -21,27 +35,69 @@ export default `<!doctype html>
     <meta property="twitter:image" content="https://bonbonboutique.com/assets/images/og-image.jpg">
     <link rel="icon" type="image/x-icon" href="favicon.ico"/>
     <style>@font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v145/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');}.material-icons{font-family:'Material Icons';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}</style>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Bonbon Boutique",
-      "description": "Artisan chocolate shop delivering handcrafted chocolates in Cairo and Alexandria, Egypt",
-      "url": "https://bonbonboutique.com",
-      "telephone": "+201559513134",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Alexandria",
-        "addressCountry": "EG"
+     <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Bonbon Boutique",
+  "alternateName": "بون بون بوتيك",
+  "description": "Artisan chocolate shop crafting handmade chocolates and delivering across Cairo and Alexandria, Egypt.",
+  "url": "https://bonbonboutique.com",
+  "telephone": "+201559513134",
+  "image": "https://bonbonboutique.com/assets/images/og-image.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Alexandria",
+    "addressCountry": "EG"
+  },
+  "areaServed": [
+    { "@type": "City", "name": "Cairo" },
+    { "@type": "City", "name": "Alexandria" }
+  ],
+  "priceRange": "\$\$",
+  "servesCuisine": "Chocolate & Confectionery",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Chocolate Collections",
+    "itemListElement": [
+      { 
+        "@type": "Offer", 
+        "price": "120",
+        "priceCurrency": "EGP",
+        "itemOffered": { 
+          "@type": "Product", 
+          "name": "Chocolate Bars" ,
+          "image": "https://bonbonboutique.com/assets/images/chocolate-bars.jpg"
+        } 
       },
-      "areaServed": ["Cairo", "Alexandria"],
-      "priceRange": "\$\$",
-      "servesCuisine": "Chocolate & Confectionery"
-    }
+      { 
+        "@type": "Offer", 
+        "price": "450",
+        "priceCurrency": "EGP",
+        "itemOffered": { 
+          "@type": "Product", 
+          "name": "Mixed Chocolate Boxes" ,
+          "image": "https://bonbonboutique.com/assets/images/chocolate-bars.jpg"
+        } 
+      },
+      { 
+        "@type": "Offer", 
+        "price": "280",
+        "priceCurrency": "EGP",
+        "itemOffered": { 
+          "@type": "Product", 
+          "name": "Kunafa Pistachio Chocolate", 
+          "image": "https://bonbonboutique.com/assets/images/chocolate-bars.jpg"
+          
+        } 
+      }
+    ]
+  }
+}
     </script>
   <link rel="stylesheet" href="styles-WOJ2KRFT.css"></head>
   <body><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
 </script>
     <app-root></app-root>
-  <link rel="modulepreload" href="chunk-YVZBVPSE.js"><script src="main-7CR5TJFJ.js" type="module"></script></body>
+  <link rel="modulepreload" href="chunk-YVZBVPSE.js"><script src="main-WXS4DZXK.js" type="module"></script></body>
 </html>`;

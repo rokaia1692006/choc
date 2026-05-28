@@ -6,95 +6,132 @@
 
   <div class="checkoutlayout">
 
-    <!-- Form -->
     <div class="checkoutform-wrap">
-      <form class="checkoutform" (ngSubmit)="placeOrder()">
+      
+      @if (error()) {
+        <div class="formerror">{{ error() }}</div>
+      }
+      @if (success()) {
+        <div class="authsuccess" style="margin-bottom: 1.5rem;">{{ success() }}</div>
+      }
 
-        @if (error()) {
-          <div class="formerror">{{ error() }}</div>
-        }
+      @if (step() === 'checkout') {
+        <form class="checkoutform" (ngSubmit)="handleCheckoutSubmit()">
 
-        <div class="formsection">
-          <h3 class="sectiontitle">{{ 'deliveryDetails' | translate }}</h3>
-
-          <div class="formgroup">
-            <label>{{ 'fullName' | translate }} <span class="req">*</span></label>
-            <input type="text" [placeholder]="'fullName' | translate" [(ngModel)]="form.name" name="name" required />
-          </div>
-
-          <div class="formgroup">
-            <label>{{ 'phoneNumber' | translate }} <span class="req">*</span></label>
-            <input type="tel" placeholder="+20 1XX XXX XXXX" [(ngModel)]="form.phone" name="phone" required />
-          </div>
-
-          <div class="formgroup">
-            <label>{{ 'streetAddress' | translate }} <span class="req">*</span></label>
-            <input type="text" [placeholder]="'streetAddress' | translate" [(ngModel)]="form.address" name="address" required />
-          </div>
-
-          <div class="formrow">
-            <div class="formgroup">
-             <label>{{ 'city' | translate }} <span class="req">*</span></label>
-  <select [(ngModel)]="form.city" name="city" required>
-    <option value="" disabled selected>{{ 'city' | translate }}</option>
-    <option value="Alexandria">Alexandria</option>
-    <option value="Cairo">Cairo</option>
-  </select>
-            </div>
-            <div class="formgroup">
-              <label>{{ 'apartment' | translate }}</label>
-              <input type="text" [placeholder]="'apartment' | translate" [(ngModel)]="form.apartment" name="apartment" />
-            </div>
-          </div>
-
-          <div class="formgroup">
-            <label>{{ 'notes' | translate }}</label>
-            <textarea [placeholder]="'notes' | translate" [(ngModel)]="form.notes" name="notes"></textarea>
-          </div>
-        </div>
-
-        <div class="formgroup">
-          <label>{{ 'deliveryDate' | translate }} <span class="req">*</span></label>
-          <input
-            type="date"
-            [(ngModel)]="form.deliveryDate"
-            name="deliveryDate"
-            [min]="minDate"
-            (change)="onDateChange()"
-            required />
-          <span class="datehint">{{ 'dateHint' | translate }}</span>
-        </div>
-
-        @if (!auth.isLoggedIn()) {
           <div class="formsection">
-            <label class="checkboxlabel" (click)="toggleCreateAccount()">
-              <div class="checkbox" [class.checked]="createAccount()">
-                @if (createAccount()) { ✓ }
-              </div>
-              <span>{{ 'createAccount' | translate }}</span>
-            </label>
+            <h3 class="sectiontitle">{{ 'deliveryDetails' | translate }}</h3>
 
-            @if (createAccount()) {
-              <div class="formrow" style="margin-top: 1rem;">
-                <div class="formgroup">
-                  <label>{{ 'password' | translate }} <span class="req">*</span></label>
-                  <input type="password" [placeholder]="'passwordHint' | translate" [(ngModel)]="form.password" name="password" />
-                </div>
-                <div class="formgroup">
-                  <label>{{ 'confirmPassword' | translate }} <span class="req">*</span></label>
-                  <input type="password" [placeholder]="'confirmPassword' | translate" [(ngModel)]="form.confirmPassword" name="confirmPassword" />
-                </div>
+            <div class="formgroup">
+              <label>{{ 'fullName' | translate }} <span class="req">*</span></label>
+              <input type="text" [placeholder]="'fullName' | translate" [(ngModel)]="form.name" name="name" required />
+            </div>
+
+            <div class="formgroup">
+              <label>{{ 'phoneNumber' | translate }} <span class="req">*</span></label>
+              <input type="tel" placeholder="+20 1XX XXX XXXX" [(ngModel)]="form.phone" name="phone" required />
+            </div>
+
+            <div class="formgroup">
+              <label>{{ 'streetAddress' | translate }} <span class="req">*</span></label>
+              <input type="text" [placeholder]="'streetAddress' | translate" [(ngModel)]="form.address" name="address" required />
+            </div>
+
+            <div class="formrow">
+              <div class="formgroup">
+                <label>{{ 'city' | translate }} <span class="req">*</span></label>
+                <select [(ngModel)]="form.city" name="city" required>
+                  <option value="" disabled selected>{{ 'city' | translate }}</option>
+                  <option value="Alexandria">{{ lang.isArabic() ? 'الإسكندرية' : 'Alexandria' }}</option>
+                  <option value="Cairo">{{ lang.isArabic() ? 'القاهرة' : 'Cairo' }}</option>
+                </select>
               </div>
-              <p class="haveaccount">{{ 'haveAccount' | translate }} <a routerLink="/login">{{ 'login' | translate }}</a></p>
-            }
+              <div class="formgroup">
+                <label>{{ 'apartment' | translate }}</label>
+                <input type="text" [placeholder]="'apartment' | translate" [(ngModel)]="form.apartment" name="apartment" />
+              </div>
+            </div>
+
+            <div class="formgroup">
+              <label>{{ 'notes' | translate }}</label>
+              <textarea [placeholder]="'notes' | translate" [(ngModel)]="form.notes" name="notes"></textarea>
+            </div>
           </div>
-        }
 
-        <button type="submit" class="placeorderbtn" [disabled]="loading()">
-          {{ loading() ? ('placingOrder' | translate) : ('placeOrder' | translate) + ' — ' + (total | currency) }}
-        </button>
+          <div class="formgroup">
+            <label>{{ 'deliveryDate' | translate }} <span class="req">*</span></label>
+            <input
+              type="date"
+              [(ngModel)]="form.deliveryDate"
+              name="deliveryDate"
+              [min]="minDate"
+              (change)="onDateChange()"
+              required />
+            <span class="datehint">{{ 'dateHint' | translate }}</span>
+          </div>
 
-      </form>
+          @if (!auth.isLoggedIn()) {
+            <div class="formsection">
+              <label class="checkboxlabel" (click)="toggleCreateAccount()">
+                <div class="checkbox" [class.checked]="createAccount()">
+                  @if (createAccount()) { ✓ }
+                </div>
+                <span>{{ 'createAccount' | translate }}</span>
+              </label>
+
+              @if (createAccount()) {
+                <div class="formrow" style="margin-top: 1rem;">
+                  <div class="formgroup">
+                    <label>{{ 'password' | translate }} <span class="req">*</span></label>
+                    <input type="password" [placeholder]="'passwordHint' | translate" [(ngModel)]="form.password" name="password" />
+                  </div>
+                  <div class="formgroup">
+                    <label>{{ 'confirmPassword' | translate }} <span class="req">*</span></label>
+                    <input type="password" [placeholder]="'confirmPassword' | translate" [(ngModel)]="form.confirmPassword" name="confirmPassword" />
+                  </div>
+                </div>
+                <p class="haveaccount">{{ 'haveAccount' | translate }} <a routerLink="/login">{{ 'login' | translate }}</a></p>
+              }
+            </div>
+          }
+
+          <button type="submit" class="placeorderbtn" [disabled]="loading() || cart.cartItems().length === 0">
+            {{ loading() ? ('loading' | translate) : ('placeOrder' | translate) + ' - ' + (total | currency) }}
+          </button>
+
+        </form>
+      }
+
+      @if (step() === 'sms') {
+        <form class="checkoutform" (ngSubmit)="submitVerificationCode()">
+          <div class="formsection">
+            <h3 class="sectiontitle">{{ lang.isArabic() ? 'تأكيد رقم الهاتف' : 'Verify Phone Number' }}</h3>
+            <p class="stepinfo" style="margin-bottom: 1.5rem; color: #666; font-size: 0.95rem;">
+              {{ lang.isArabic() ? 'أدخل رمز التحقق المرسل إلى رقم هاتفك' : 'Enter the verification code sent to your phone' }} 
+              <strong>{{ form.phone }}</strong>
+            </p>
+
+            <div class="formgroup">
+              <label>{{ lang.isArabic() ? 'رمز التحقق' : 'Verification Code' }}</label>
+              <input
+                type="text"
+                placeholder="XXXX"
+                [(ngModel)]="verificationCode"
+                name="verificationCode"
+                maxlength="6"
+                required />
+            </div>
+          </div>
+
+          <button type="submit" class="placeorderbtn" [disabled]="loading()">
+            {{ loading() ? ('placingOrder' | translate) : (lang.isArabic() ? 'تأكيد وإتمام الطلب' : 'Verify & Complete Order') }}
+          </button>
+
+          <button type="button" class="authbtn-ghost" style="margin-top: 1rem; width: 100%;" (click)="resendVerificationCode()">
+            {{ lang.isArabic() ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+          </button>
+        </form>
+      }
+
     </div>
 
     <div class="ordersummary">
@@ -103,9 +140,11 @@
       <div class="summaryitems">
         @for (item of cart.cartItems(); track item.product.id) {
           <div class="summaryitem">
-            <img [src]="item.product.image" [alt]="item.product.name" class="summaryimg">
+            <img [src]="item.product.image" [alt]="lang.isArabic() && item.product.nameAr ? item.product.nameAr : item.product.name" class="summaryimg">
             <div class="summarydetails">
-              <p class="summaryname">{{ item.product.name }}</p>
+              <p class="summaryname">
+                {{ lang.isArabic() && item.product.nameAr ? item.product.nameAr : item.product.name }}
+              </p>
               <p class="summarymeta">x{{ item.quantity }}</p>
             </div>
             <p class="summaryprice">{{ item.product.price * item.quantity | currency }}</p>
@@ -113,27 +152,27 @@
         }
       </div>
 
-     <div class="summaryrows">
-  <div class="summaryrow">
-    <span>{{ 'subtotal' | translate }}</span>
-    <span>{{ subtotal | currency }}</span>
-  </div>
-  <div class="summaryrow">
-    <span>{{ 'delivery' | translate }}</span>
-    <span>{{ deliveryFee() | currency }}</span>
-  </div>
-  @if (tax > 0) {
-    <div class="summaryrow">
-      <span>{{ 'tax' | translate }}</span>
-      <span>{{ tax | currency }}</span>
-    </div>
-  }
-  <div class="summarydivider"></div>
-  <div class="summaryrow total">
-    <span>{{ 'total' | translate }}</span>
-    <span>{{ total | currency }}</span>
-  </div>
-</div>
+      <div class="summaryrows">
+        <div class="summaryrow">
+          <span>{{ 'subtotal' | translate }}</span>
+          <span>{{ subtotal | currency }}</span>
+        </div>
+        <div class="summaryrow">
+          <span>{{ 'delivery' | translate }}</span>
+          <span>{{ deliveryFee() | currency }}</span>
+        </div>
+        @if (tax > 0) {
+          <div class="summaryrow">
+            <span>{{ 'tax' | translate }}</span>
+            <span>{{ tax | currency }}</span>
+          </div>
+        }
+        <div class="summarydivider"></div>
+        <div class="summaryrow total">
+          <span>{{ 'total' | translate }}</span>
+          <span>{{ total | currency }}</span>
+        </div>
+      </div>
     </div>
 
   </div>
