@@ -21,7 +21,10 @@ desc = inject(DescriptionService);
   lang = inject(LanguageService);
   cart = inject(CartService);
   picker = inject(PickerService);
-
+  activeImage: string | null = null;
+setActiveImage(imgUrl: string): void {
+    this.activeImage = imgUrl;
+  }
   get displayName(): string {
     return this.lang.isArabic() && this.product.nameAr
       ? this.product.nameAr : this.product.name;

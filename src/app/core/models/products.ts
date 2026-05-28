@@ -13,7 +13,8 @@ export interface Product {
   detailedDescription?: string;     
   detailedDescriptionAr?: string;   
   price: number;
-  image: string;
+  image: string;         
+  images?: string[];     
   category?: string;
   categoryAr?: string;
   categoryId?: number;
@@ -21,6 +22,13 @@ export interface Product {
   badgeAr?: string;
   variants?: productTypes[];
   mixedBox?: Boxes | null;
+}
+export class ProductDetailModalComponent {
+  product!: Product; 
+  activeImage: string | null = null;
+  setActiveImage(imgUrl: string): void {
+    this.activeImage = imgUrl;
+  }
 }
 export interface Boxes {
   totalPieces: number;

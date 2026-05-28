@@ -1,10 +1,12 @@
-<nav class="navbar">
+<nav class="navbar" [class.scrolled]="isScrolled">
   <div class="smallmode">
-    <button class="menu-icon-btn" (click)="toggleDrawer()">
+    <button class="menu-icon-btn" (click)="toggleDrawer()" aria-label="Open navigation menu">
       <mat-icon>menu</mat-icon>
     </button>
+    
     <a routerLink="/" class="logo">Bonbon Boutique</a>
-    <a routerLink="cart" class="cartbtn">
+    
+    <a routerLink="cart" class="cartbtn" aria-label="Shopping Cart">
       <mat-icon>shopping_cart</mat-icon>
       @if (cartService.cartCount() > 0) {
         <span class="cart-count">{{ cartService.cartCount() }}</span>
@@ -13,40 +15,127 @@
   </div>
 
   <div class="largemode">
-    <a routerLink="/" class="logo">Bonbon Boutique</a>
-    <ul class="nav-links">
-      <li><a routerLink="/">{{ 'home' | translate }}</a></li>
-      <li><a routerLink="shop">{{ 'shop' | translate }}</a></li>
-      @if (auth.isLoggedIn()) {
-        <li><a routerLink="orders">{{ 'myOrders' | translate }}</a></li>
-      }
-    </ul>
+    <div class="nav-left-group">
+      <a routerLink="/" class="logo">Bonbon Boutique</a>
+      <ul class="nav-links">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'home' | translate }}</a></li>
+        <li><a routerLink="shop" routerLinkActive="active">{{ 'shop' | translate }}</a></li>
+        @if (auth.isLoggedIn()) {
+          <li><a routerLink="orders" routerLinkActive="active">{{ 'myOrders' | translate }}</a></li>
+        }
+      </ul>
+    </div>
+
     <div class="nav-actions">
       <div class="switchers">
-        <select class="switcher" (change)="setCurrency($any($event.target).value)" [value]="currency.current().code">
-          <option value="EGP">EGP</option>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="SAR">SAR</option>
-          <option value="AED">AED</option>
-        </select>
-        <select class="switcher" (change)="setLang($any($event.target).value)" [value]="lang.current()">
-          <option value="en">EN</option>
-          <option value="ar">عربي</option>
-        </select>
+        <div class="select-wrapper">
+          <select class="switcher" (change)="setCurrency($any($event.target).value)" [value]="currency.current().code">
+            <option value="EGP">EGP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="SAR">SAR</option>
+            <option value="AED">AED</option>
+          </select>
+        </div>
+        <div class="select-wrapper">
+          <select class="switcher" (change)="setLang($any($event.target).value)" [value]="lang.current()">
+            <option value="en">EN</option>
+            <option value="ar">عربي</option>
+          </select>
+        </div>
       </div>
-      <a routerLink="cart" class="cartbtn">
+
+      <label class="switch" title="Toggle color theme">
+        <input class="switch__input" type="checkbox" role="switch"
+          [checked]="theme.isDark()" (change)="onToggle($event)" />
+        <span class="switch__icon">
+          <span class="switch__icon-part switch__icon-part--1"></span>
+          <span class="switch__icon-part switch__icon-part--2"></span>
+          <span class="switch__icon-part switch__icon-part--3"></span>
+          <span class="switch__icon-part switch__icon-part--4"></span>
+          <span class="switch__icon-part switch__icon-part--5"></span>
+          <span class="switch__icon-part switch__icon-part--6"></span>
+          <span class="switch__icon-part switch__icon-part--7"></span>
+          <span class="switch__icon-part switch__icon-part--8"></span>
+          <span class="switch__icon-part switch__icon-part--9"></span>
+          <span class="switch__icon-part switch__icon-part--10"></span>
+          <span class="switch__icon-part switch__icon-part--11"></span>
+        </span>
+        <span class="switch__sr">Dark Mode</span>
+      </label>
+
+      <span class="nav-divider"></span>
+
+      <a routerLink="cart" class="cartbtn" aria-label="Shopping Cart">
         <mat-icon>shopping_cart</mat-icon>
         @if (cartService.cartCount() > 0) {
           <span class="cart-count">{{ cartService.cartCount() }}</span>
         }
       </a>
+
       @if (auth.isLoggedIn()) {
-        <a routerLink="/profile" class="profile-btn"><mat-icon>person</mat-icon></a>
+        <a routerLink="/profile" class="profile-btn" title="View Profile">
+          <mat-icon>person</mat-icon>
+        </a>
       } @else {
-        <a routerLink="/login" class="auth-btn">{{ 'login' | translate }}</a>
-        <a routerLink="/register" class="auth-btn filled">{{ 'register' | translate }}</a>
+        <div class="auth-group">
+          <a routerLink="/login" class="auth-btn">{{ 'login' | translate }}</a>
+          <a routerLink="/register" class="auth-btn filled">{{ 'register' | translate }}</a>
+        </div>
       }
+    </div>
+  </div>
+</nav>
+
+<div class="drawer-overlay" [class.active]="drawerOpen" (click)="closeDrawer()"></div>
+
+<div class="drawer" [class.open]="drawerOpen">
+  <div class="drawer-header">
+    <span class="drawer-logo">Bonbon Boutique</span>
+    <button class="drawer-close" (click)="closeDrawer()" aria-label="Close menu">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <ul class="drawer-links">
+    <li><a routerLink="/" (click)="closeDrawer()">{{ 'home' | translate }}</a></li>
+    <li><a routerLink="shop" (click)="closeDrawer()">{{ 'shop' | translate }}</a></li>
+    @if (auth.isLoggedIn()) {
+      <li><a routerLink="orders" (click)="closeDrawer()">{{ 'myOrders' | translate }}</a></li>
+    }
+  </ul>
+
+  <div class="drawer-actions">
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/profile" class="drawer-profile" (click)="closeDrawer()">
+        <mat-icon>person</mat-icon> <span>{{ auth.user()?.name }}</span>
+      </a>
+    } @else {
+      <div class="drawer-auth-stack">
+        <a routerLink="/login" class="auth-btn" (click)="closeDrawer()">{{ 'login' | translate }}</a>
+        <a routerLink="/register" class="auth-btn filled" (click)="closeDrawer()">{{ 'register' | translate }}</a>
+      </div>
+    }
+    
+    <div class="drawer-meta-row">
+      <div class="switchers">
+        <div class="select-wrapper">
+          <select class="switcher" (change)="setCurrency($any($event.target).value)" [value]="currency.current().code">
+            <option value="EGP">EGP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="SAR">SAR</option>
+            <option value="AED">AED</option>
+          </select>
+        </div>
+        <div class="select-wrapper">
+          <select class="switcher" (change)="setLang($any($event.target).value)" [value]="lang.current()">
+            <option value="en">EN</option>
+            <option value="ar">عربي</option>
+          </select>
+        </div>
+      </div>
+
       <label class="switch">
         <input class="switch__input" type="checkbox" role="switch"
           [checked]="theme.isDark()" (change)="onToggle($event)" />
@@ -66,63 +155,5 @@
         <span class="switch__sr">Dark Mode</span>
       </label>
     </div>
-  </div>
-</nav>
-
-<div class="drawer-overlay" [class.active]="drawerOpen" (click)="closeDrawer()"></div>
-
-<div class="drawer" [class.open]="drawerOpen">
-  <div class="drawer-header">
-    <span class="drawer-logo">Bonbon Boutique</span>
-    <button class="drawer-close" (click)="closeDrawer()"><mat-icon>close</mat-icon></button>
-  </div>
-  <ul class="drawer-links">
-    <li><a routerLink="/" (click)="closeDrawer()">{{ 'home' | translate }}</a></li>
-    <li><a routerLink="shop" (click)="closeDrawer()">{{ 'shop' | translate }}</a></li>
-    @if (auth.isLoggedIn()) {
-      <li><a routerLink="orders" (click)="closeDrawer()">{{ 'myOrders' | translate }}</a></li>
-    }
-  </ul>
-  <div class="drawer-actions">
-   
-    @if (auth.isLoggedIn()) {
-      <a routerLink="/profile" class="drawer-profile" (click)="closeDrawer()">
-        <mat-icon>person</mat-icon> {{ auth.user()?.name }}
-      </a>
-    } @else {
-      <a routerLink="/login" class="auth-btn" (click)="closeDrawer()">{{ 'login' | translate }}</a>
-      <a routerLink="/register" class="auth-btn filled" (click)="closeDrawer()">{{ 'register' | translate }}</a>
-    }
-     <div class="switchers">
-      <select class="switcher" (change)="setCurrency($any($event.target).value)" [value]="currency.current().code">
-        <option value="EGP">EGP</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="SAR">SAR</option>
-        <option value="AED">AED</option>
-      </select>
-      <select class="switcher" (change)="setLang($any($event.target).value)" [value]="lang.current()">
-        <option value="en">EN</option>
-        <option value="ar">عربي</option>
-      </select>
-    </div>
-    <label class="switch">
-      <input class="switch__input" type="checkbox" role="switch"
-        [checked]="theme.isDark()" (change)="onToggle($event)" />
-      <span class="switch__icon">
-        <span class="switch__icon-part switch__icon-part--1"></span>
-        <span class="switch__icon-part switch__icon-part--2"></span>
-        <span class="switch__icon-part switch__icon-part--3"></span>
-        <span class="switch__icon-part switch__icon-part--4"></span>
-        <span class="switch__icon-part switch__icon-part--5"></span>
-        <span class="switch__icon-part switch__icon-part--6"></span>
-        <span class="switch__icon-part switch__icon-part--7"></span>
-        <span class="switch__icon-part switch__icon-part--8"></span>
-        <span class="switch__icon-part switch__icon-part--9"></span>
-        <span class="switch__icon-part switch__icon-part--10"></span>
-        <span class="switch__icon-part switch__icon-part--11"></span>
-      </span>
-      <span class="switch__sr">Dark Mode</span>
-    </label>
   </div>
 </div>

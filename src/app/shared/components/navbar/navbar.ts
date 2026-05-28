@@ -17,11 +17,15 @@ import { CurrencyPipe } from '../../pipes/currency-pipe';
   encapsulation: ViewEncapsulation.None
 })
 export class Navbar {
+ isScrolled = false;
   drawerOpen = false;
   auth = inject(AuthService);
 currency = inject(CurrencyService);
   lang = inject(LanguageService);
-
+ @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 20;
+  }
   setCurrency(code: string) {
     this.currency.setCurrency(code as Currency);
   }
@@ -41,6 +45,11 @@ currency = inject(CurrencyService);
     if (checked !== this.theme.isDark()) this.theme.toggle();
   }
 
-  toggleDrawer() { this.drawerOpen = !this.drawerOpen; }
-  closeDrawer() { this.drawerOpen = false; }
+ toggleDrawer(): void {
+    this.drawerOpen = !this.drawerOpen;
+  }
+
+  closeDrawer(): void {
+    this.drawerOpen = false;
+  }
 }

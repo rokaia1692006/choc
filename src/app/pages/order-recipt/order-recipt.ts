@@ -25,7 +25,6 @@ export class OrderRecipt implements OnInit {
   errorMessage = signal<string>('');
 
   ngOnInit() {
-    // 1. Grab parameters directly from the URL query strings matching your checkout component
     const orderId = this.route.snapshot.queryParamMap.get('id');
     const phone = this.route.snapshot.queryParamMap.get('phone');
 
@@ -37,10 +36,7 @@ export class OrderRecipt implements OnInit {
   }
 
   loadReceipt(id: string, phone: string) {
-    // 2. Query your OrderService using the phone tracking list method
     const ordersList = this.orderService.getOrdersByPhone(phone);
-    
-    // 3. Find our precise target order id out of that bundle
     const found = ordersList.find(o => o.id === id);
     
     if (found) {

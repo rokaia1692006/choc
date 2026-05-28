@@ -4,25 +4,26 @@
   overflow: hidden;
 }
 
-.title {
+.carousel-section .title {
   font-family: Georgia, serif;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   color: var(--color-text);
   text-align: center;
   margin-bottom: 3rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   position: relative;
-  padding-bottom: 1rem;
+  padding-bottom: 1.125rem;
+  font-weight: 400;
 }
 
-.title::after {
+.carousel-section .title::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
+  width: 48px;
+  height: 1px;
   background: var(--color-gold);
 }
 
@@ -59,17 +60,17 @@
 }
 
 .carousel-btn {
-  background: var(--color-text);
-  border: 1px solid var(--color-text);
-  color: var(--color-bg);
-  width: 44px;
-  height: 44px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 .carousel-btn:hover {
@@ -82,37 +83,32 @@
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 2rem;
+  margin-top: 2.25rem;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  border: 1px solid var(--color-text);
+  border: 1px solid var(--color-text-muted);
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
   padding: 0;
 }
 
 .dot.active {
-  background: var(--color-text);
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+  transform: scale(1.3);
 }
+
 @media (max-width: 480px) {
-  .carousel-slide {
-    flex: 0 0 100%;
-  }
+  .carousel-slide { flex: 0 0 100%; }
 }
-
 @media (min-width: 481px) and (max-width: 1024px) {
-  .carousel-slide {
-    flex: 0 0 50%;
-  }
+  .carousel-slide { flex: 0 0 50%; }
 }
-
 @media (min-width: 1025px) {
-  .carousel-slide {
-    flex: 0 0 33.3333%;
-  }
+  .carousel-slide { flex: 0 0 33.3333%; }
 }

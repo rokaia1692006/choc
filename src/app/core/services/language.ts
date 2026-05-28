@@ -105,6 +105,10 @@ buildYourBoxRows: string;
   descGanache: string;
   descAlmond: string;
   descWhite: string;
+  
+  aboutUsTitle: string;
+  aboutUsDescription:string;
+  aboutUsImgAlt: string;
   productDescription:string;
   featuredProducts: string;
   productDetails: string;
@@ -118,6 +122,9 @@ export const en: Translations = {
   productDetails: 'Product Details',
   myOrders: 'My Orders', myAccount: 'My Account', signOut: 'Sign Out',
   addToCart: 'Add to Cart', outOfStock: 'Out of Stock',
+  "aboutUsTitle": "About Us",
+  "aboutUsDescription": "We craft premium, artisanal chocolates designed to elevate your senses. Every single piece is meticulously handmade using the world's finest cocoa, exquisite local flavors, and an uncompromised passion for perfection. Discover a legacy of luxury sweet tasting.",
+  "aboutUsImgAlt": "Premium chocolate gift box illustration",
   cart: 'Cart', emptyCart: 'Your cart is empty', checkout: 'Checkout',
   remove: 'Remove', total: 'Total', subtotal: 'Subtotal', delivery: 'Delivery',
   deliveryDetails: 'Delivery Details', fullName: 'Full Name',
@@ -127,7 +134,7 @@ export const en: Translations = {
   placingOrder: 'Placing Order...', orderSummary: 'Order Summary',
   createAccount: 'Create an account to track your orders',
   myOrdersTitle: 'My Orders', noOrders: 'You have no orders yet.',
-  startShopping: 'Start Shopping', orderPlaced: 'Placed',
+  startShopping: 'Continue Shopping', orderPlaced: 'Placed',
   cancelOrder: 'Cancel Order', cancelling: 'Cancelling...',
   cancelHint: "You can cancel while your order hasn't started being prepared.",
   preparingNotice: 'Your order is being prepared and will be delivered on',
@@ -186,6 +193,11 @@ featuredProducts: 'Our Featured Products',
 };
 
 const ar: Translations = {
+  
+  "aboutUsTitle": "من نحن",
+  "aboutUsDescription": "نحن نصنع شوكولاتة فاخرة ومصنوعة يدويًا بدقة لتثير حواسك. كل قطعة فريدة ومصممة بعناية فائقة باستخدام أجود أنواع الكاكاو في العالم، ممزوجة بنكهات محلية ساحرة وشغف لا يساوم على الجودة والكمال. اكتشف معنا مفهومًا جديدًا للفخامة.",
+  "aboutUsImgAlt": "صندوق هدايا شوكولاتة فاخر",
+
   home: 'الرئيسية', shop: 'المتجر', login: 'تسجيل الدخول', register: 'إنشاء حساب',
   myOrders: 'طلباتي', myAccount: 'حسابي', signOut: 'تسجيل الخروج',
   addToCart: 'أضف إلى السلة', outOfStock: 'غير متوفر',
@@ -199,7 +211,7 @@ const ar: Translations = {
   createAccount: 'إنشاء حساب لمتابعة طلباتك',
   myOrdersTitle: 'طلباتي', noOrders: 'ليس لديك طلبات بعد.',
   productDetails: 'تفاصيل المنتج',
-  startShopping: 'ابدأ التسوق', orderPlaced: 'تم الطلب في',
+  startShopping: 'اكمل التسوق', orderPlaced: 'تم الطلب في',
   cancelOrder: 'إلغاء الطلب', cancelling: 'جاري الإلغاء...',
   featuredProducts: 'منتجاتنا المميزة',
   cancelHint: 'يمكنك الإلغاء ما لم تبدأ عملية التحضير.',

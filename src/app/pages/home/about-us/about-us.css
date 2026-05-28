@@ -1,6 +1,9 @@
+:host {
+  --transition-luxury: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 .aboutus {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+ 
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
@@ -8,12 +11,11 @@
   padding: 6rem 4rem;
   background: var(--color-bg-secondary);
   max-width: 100%;
-  margin: 0 auto;
 }
 
 .aboutusText h2 {
-  font-family: Georgia, serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(2.9rem, 4vw, 2.75rem);
   color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
   letter-spacing: 0.02em;
@@ -25,17 +27,25 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   width: 60px;
   height: 2px;
   background: var(--color-gold);
 }
 
 .aboutusText p {
-  font-size: 15px;
+  font-size: 20px;
   color: var(--color-text-secondary);
+  opacity: 0.85;
+  line-height: 1.8;
+  max-width: 520px;
+  text-align: justify; 
+}
+
+[dir="rtl"] .aboutusText p {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
   line-height: 1.9;
-  max-width: 500px;
 }
 
 .maybechoclateBox {
@@ -46,25 +56,39 @@
 
 .maybechoclateBox img {
   width: 100%;
-  max-width: 450px;
+  max-width: 420px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
-  transition: transform 0.4s ease;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
+  transition: transform var(--transition-luxury), filter var(--transition-luxury);
 }
 
 .maybechoclateBox img:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.02);
+  filter: drop-shadow(0 28px 50px rgba(0, 0, 0, 0.18));
 }
 
 @media (max-width: 768px) {
   .aboutus {
     grid-template-columns: 1fr;
     padding: 4rem 2rem;
-    gap: 2rem;
+    gap: 3rem;
   }
 
   .maybechoclateBox {
     order: -1;
+  }
+  
+  .aboutusText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .aboutusText h2::after {
+    left: 50%;
+    transform: translateX(-50%);
+    inset-inline-start: auto; 
   }
 }

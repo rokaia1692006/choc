@@ -1,11 +1,11 @@
-<div class="aboutus flex col-2 p-5">
+<div class="aboutus">
     <div class="aboutusText">
-        <h2 class="mb-4">About Us</h2>
+        <h2 class="mb-4">{{ 'aboutUsTitle' | translate }}</h2>
         <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque modi natus, quae asperiores id veritatis. Eligendi, consectetur magni. Maiores, maxime.
+            {{ 'aboutUsDescription' | translate }}
         </p>
     </div>
-    <div class="maybechoclateBox mt-5">
-        <img src="assets/images/box.png" alt="chocolatebox">
+    <div class="maybechoclateBox">
+        <img src="assets/images/box.png" [alt]="'aboutUsImgAlt' | translate">
     </div>
 </div>

@@ -4,11 +4,11 @@
     <button class="carousel-btn" (click)="prev()">
       <mat-icon>chevron_left</mat-icon>
     </button>
-
     <div class="carousel-viewport">
       <div class="carousel-track"
-        [style.transform]="'translateX(-' + (currentIndex * slideWidth) + '%)'"(touchstart)="onTouchStart($event)"
-  (touchend)="onTouchEnd($event)">`>
+        [style.transform]="'translateX(-' + (currentIndex * slideWidth) + '%)'"
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)">
         @for (product of featuredProducts; track product.id) {
           <div class="carousel-slide" [style.width.%]="slideWidth">
             <app-product-cards [product]="product" />
@@ -16,12 +16,10 @@
         }
       </div>
     </div>
-
     <button class="carousel-btn" (click)="next()">
       <mat-icon>chevron_right</mat-icon>
     </button>
   </div>
-
   @if (showDots) {
     <div class="carousel-dots">
       @for (product of featuredProducts; track product.id; let i = $index) {

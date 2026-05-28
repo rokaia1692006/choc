@@ -2,15 +2,46 @@ export default `<!doctype html>
 <html lang="en">
   <head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <meta charset="utf-8"/>
-    <title>Choooc</title>
     <base href="/choc/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Bonbon Boutique — Handcrafted Chocolates in Cairo & Alexandria</title>
+    <meta name="title" content="Bonbon Boutique — Handcrafted Chocolates in Cairo &amp; Alexandria">
+    <meta name="description" content="Discover Bonbon Boutique's artisan chocolate bars, mixed boxes, and seasonal collections. Delivered fresh across Cairo and Alexandria, Egypt.">
+    <meta name="keywords" content="chocolate, bonbon, artisan chocolate, Cairo, Alexandria, chocolate box, handcrafted chocolate, gift chocolate Egypt,dark chocolate ,milk chocolate">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bonbonboutique.com/">
+    <meta property="og:title" content="Bonbon Boutique — Handcrafted Chocolates">
+    <meta property="og:description" content="Artisan chocolates crafted with care. Delivered across Cairo &amp; Alexandria.">
+    <meta property="og:image" content="https://bonbonboutique.com/assets/images/og-image.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bonbonboutique.com/">
+    <meta property="twitter:title" content="Bonbon Boutique — Handcrafted Chocolates">
+    <meta property="twitter:description" content="Artisan chocolates crafted with care. Delivered across Cairo &amp; Alexandria.">
+    <meta property="twitter:image" content="https://bonbonboutique.com/assets/images/og-image.jpg">
     <link rel="icon" type="image/x-icon" href="favicon.ico"/>
     <style>@font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v145/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');}.material-icons{font-family:'Material Icons';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}</style>
-  <link rel="stylesheet" href="styles-6OW33QAK.css"></head>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Bonbon Boutique",
+      "description": "Artisan chocolate shop delivering handcrafted chocolates in Cairo and Alexandria, Egypt",
+      "url": "https://bonbonboutique.com",
+      "telephone": "+201559513134",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Alexandria",
+        "addressCountry": "EG"
+      },
+      "areaServed": ["Cairo", "Alexandria"],
+      "priceRange": "\$\$",
+      "servesCuisine": "Chocolate & Confectionery"
+    }
+    </script>
+  <link rel="stylesheet" href="styles-WOJ2KRFT.css"></head>
   <body><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
 </script>
     <app-root></app-root>
-  <link rel="modulepreload" href="chunk-JPVPH5AV.js"><script src="main-YNBWU6WL.js" type="module"></script></body>
-</html>
-`;
+  <link rel="modulepreload" href="chunk-YVZBVPSE.js"><script src="main-7CR5TJFJ.js" type="module"></script></body>
+</html>`;

@@ -1,27 +1,47 @@
 <div class="pd-overlay" (click)="close.emit()"></div>
 <div class="pd-modal">
-  <button class="pd-close" (click)="close.emit()">✕</button>
-
-  <div class="pd-image">
-    <img [src]="product.image" [alt]="displayName" />
-    @if (product.badge) {
-      <span class="pd-badge">{{ displayBadge }}</span>
+  <button class="pd-close" (click)="close.emit()" aria-label="Close modal">✕</button>
+  <div class="pd-gallery-container">
+    <div class="pd-image-main">
+      <img [src]="activeImage || product.image" [alt]="displayName" class="fade-in-quick" />
+      @if (product.badge) {
+        <span class="pd-badge">{{ displayBadge }}</span>
+      }
+    </div>
+    
+    @if (product.images && product.images.length > 1) {
+      <div class="pd-thumbnails-track">
+        @for (img of product.images; track $index) {
+          <button 
+            class="pd-thumb-btn" 
+            [class.is-active]="(activeImage || product.image) === img"
+            (click)="setActiveImage(img)">
+            <img [src]="img" alt="Product thumbnail" />
+          </button>
+        }
+      </div>
     }
   </div>
 
   <div class="pd-body">
-    <h2 class="pd-title">{{ displayName }}</h2>
-    <p class="pd-short-desc">{{ displayDescription }}</p>
+    <div class="pd-header-group">
+      <h2 class="pd-title">{{ displayName }}</h2>
+      <p class="pd-short-desc">{{ displayDescription }}</p>
+    </div>
 
     @if (displayDetailedDescription) {
-      <hr class="pd-divider" />
-      <p class="pd-detail-label">{{ 'productDetails' | translate }}</p>
-      <p class="pd-detail-desc">{{ displayDetailedDescription }}</p>
+      <div class="pd-details-section">
+        <h3 class="pd-detail-label">{{ 'productDetails' | translate }}</h3>
+        <p class="pd-detail-desc">{{ displayDetailedDescription }}</p>
+      </div>
     }
   </div>
 
   <div class="pd-footer">
-    <p class="pd-price">{{ product.price | currency }}</p>
+    <div class="pd-price-container">
+      <span class="pd-price-label">Price</span>
+      <p class="pd-price">{{ product.price | currency }}</p>
+    </div>
     <button class="pd-add" (click)="addToCart()">
       {{ (product.variants?.length || product.mixedBox) ? ('chooseFlavour' | translate) : ('addToCart' | translate) }}
     </button>
