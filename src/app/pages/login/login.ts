@@ -8,7 +8,7 @@ import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterModule, LanguagesPipe],
+  imports: [FormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

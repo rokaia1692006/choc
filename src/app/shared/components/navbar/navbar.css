@@ -1,5 +1,5 @@
 :host {
-  --nav-height: 400px;
+  --nav-height: 100px; 
   --font-serif: 'Georgia', serif;
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -8,9 +8,8 @@
 
 nav.navbar {
   background: var(--color-bg);
-  border-bottom:1px solid var(--color-gold);
+  border-bottom: 1px solid var(--color-gold);
   min-height: var(--nav-height);
-
   padding: 0 3rem;
   display: flex;
   align-items: center;
@@ -22,10 +21,9 @@ nav.navbar {
 
 nav.navbar.scrolled {
   background: var(--color-bg);
-  border-bottom:1px solid var(--color-gold);
+  border-bottom: 1px solid var(--color-gold);
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-
 }
 
 .nav-left-group {
@@ -62,9 +60,9 @@ nav.navbar.scrolled {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  transition: color var(--transition-smooth);
   position: relative;
   padding: 0.5rem 0;
+  transition: color var(--transition-smooth);
 }
 
 .nav-links a::after {
@@ -110,9 +108,9 @@ nav.navbar.scrolled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--transition-smooth), transform var(--transition-smooth);
-  padding: 6px;
   text-decoration: none;
+  padding: 6px;
+  transition: color var(--transition-smooth), transform var(--transition-smooth);
 }
 .cartbtn mat-icon { font-size: 22px; width: 22px; height: 22px; }
 .cartbtn:hover { 
@@ -225,7 +223,7 @@ nav.navbar.scrolled {
 
 .switcher {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.97);
+  border: 3px solid rgb(0, 0, 0);
   border-radius: var(--radius-sm);
   color: var(--color-text);
   padding: 6px 24px 6px 12px;
@@ -235,9 +233,9 @@ nav.navbar.scrolled {
   cursor: pointer;
   outline: none;
   font-family: inherit;
-  transition: all var(--transition-smooth);
   -webkit-appearance: none;
   appearance: none;
+  transition: all var(--transition-smooth);
 }
 [dir="rtl"] .switcher {
   padding: 6px 12px 6px 24px;
@@ -248,8 +246,8 @@ nav.navbar.scrolled {
   background: rgba(255,255,255,0.02);
 }
 .switcher option {
-  background: #121212;
-  color: #ffffff;
+  background: var(--color-bg, #121212);
+  color: var(--color-text, #ffffff);
 }
 
 :root {
@@ -270,9 +268,9 @@ nav.navbar.scrolled {
   height: 1.4em;
   background-color: #1a1a1a;
   border: 1px solid rgba(255,255,255,0.1);
-  transition: background-color var(--trans-dur) var(--trans-timing);
   -webkit-appearance: none;
   appearance: none;
+  transition: background-color var(--trans-dur) var(--trans-timing);
 }
 .switch__input:before {
   border-radius: 50%;
@@ -331,13 +329,25 @@ nav.navbar.scrolled {
 .switch__input:checked ~ .switch__icon .switch__icon-part--11 { transform: translateX(-50%) rotate(315deg) translateY(0.5em) scale(0); }
 
 .smallmode { 
-  display: none; }
-.largemode {  border-bottom:var(--color-gold); min-height: 100px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  display: none; 
+}
+.largemode { 
+  min-height: 100px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  width: 100%; 
+}
 
 @media (max-width: 992px) {
   nav.navbar { padding: 0 1.5rem; }
   .smallmode {
-    min-height: 100px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    min-height: 100px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    width: 100%; 
+  }
   .largemode { display: none; }
 }
 
@@ -412,7 +422,7 @@ nav.navbar.scrolled {
   margin: 0;
   padding: 1rem 0;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: visible; 
 }
 .drawer-links li {
   padding: 0 1.5rem;
@@ -428,7 +438,48 @@ nav.navbar.scrolled {
   text-transform: uppercase;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
+.drawer-controls-li {
+  padding: 1.5rem 1.5rem !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 0.5rem;
+}
 
+.drawer-controls-li .drawer-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.drawer-controls-li .switchers {
+  display: flex !important;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.drawer-controls-li .select-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.drawer-controls-li .switcher {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--color-text);
+  padding: 8px 24px 8px 12px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  -webkit-appearance: none;
+  appearance: none;
+  display: block !important;
+}
+
+[dir="rtl"] .drawer-controls-li .switcher {
+  padding: 8px 12px 8px 24px;
+}
 .drawer-actions {
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.218);
@@ -456,18 +507,4 @@ nav.navbar.scrolled {
   font-size: 13px;
   font-weight: 500;
   padding: 8px 0;
-}
-
-.drawer-meta-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.drawer-meta-row .switchers {
-  flex: 1;
-}
-.drawer-meta-row .select-wrapper,
-.drawer-meta-row .switcher {
-  width: 100%;
 }
