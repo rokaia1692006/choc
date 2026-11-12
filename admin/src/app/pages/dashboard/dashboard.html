@@ -1,0 +1,63 @@
+<div class="max-w-6xl mx-auto px-6 py-8">
+  <h1 class="text-xl font-semibold text-stone-900">Dashboard</h1>
+
+  <app-error-line [message]="error()" />
+
+  <h2 class="font-semibold text-stone-900 mt-8">Sales and profit</h2>
+  <p class="text-sm text-stone-600 mt-1 max-w-prose">
+    Profit is sales minus what the products cost to make when they were sold.
+  </p>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm mt-3 border-t-2 border-stone-900 min-w-[34rem]">
+      <thead>
+        <tr class="text-right text-stone-500 border-b border-stone-400">
+          <th class="font-normal py-2 pr-3 text-left">Period</th>
+          <th class="font-normal py-2 pr-3">Orders</th>
+          <th class="font-normal py-2 pr-3">Sales</th>
+          <th class="font-normal py-2 pr-3">Costs</th>
+          <th class="font-normal py-2 pr-3">Profit</th>
+          <th class="font-normal py-2">Profit share of sales</th>
+        </tr>
+      </thead>
+      <tbody class="tabular-nums">
+        @for (s of summary(); track s.period) {
+          <tr class="border-b border-stone-200 text-right">
+            <td class="py-2 pr-3 text-left text-stone-900">{{ nameOf(s.period) }}</td>
+            <td class="pr-3">{{ s.orders }}</td>
+            <td class="pr-3">{{ s.sales | money }}</td>
+            <td class="pr-3">{{ s.costs | money }}</td>
+            <td class="pr-3 font-semibold" [class.loss]="s.profit < 0">{{ s.profit | money }}</td>
+            <td>{{ share(s) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-10 grid lg:grid-cols-[1fr_21rem] gap-x-10 gap-y-10">
+    <section aria-label="Sales and profit chart">
+      <div class="tabs" role="group" aria-label="Chart period">
+        @for (p of periods; track p) {
+          <button type="button" class="tab" [class.on]="period() === p" [attr.aria-pressed]="period() === p"
+                  (click)="setPeriod(p)">{{ nameOf(p) }}</button>
+        }
+      </div>
+      <app-line-chart [labels]="labels()" [sales]="sales()" [profit]="profit()" />
+    </section>
+
+    <aside class="days-off" aria-label="Days off">
+      <h2 class="font-semibold text-stone-900">Days off</h2>
+      <p class="text-sm text-stone-600 mt-1 mb-3">
+        Click a day to close it. Hatched days are closed and customers cannot order on them.
+      </p>
+      <app-calender [closed]="closed()" (toggled)="toggleDay($event)" (monthChange)="loadMonth($event)" />
+
+      <label class="block text-sm mt-6">Most orders accepted per day (0 means no limit)
+        <input class="field" type="number" min="0" step="1" [(ngModel)]="dailyLimit" (ngModelChange)="note.set('')">
+      </label>
+      <button type="button" class="btn mt-3" (click)="saveLimit()">Save limit</button>
+      @if (note()) { <p class="text-sm text-stone-600 mt-2" aria-live="polite">{{ note() }}</p> }
+    </aside>
+  </div>
+</div>

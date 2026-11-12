@@ -1,0 +1,30 @@
+<figure class="chart">
+  <figcaption class="legend">
+    <span class="key sales">Sales</span>
+    <span class="key profit">Profit</span>
+    <span class="read" aria-live="polite">{{ readout() }}</span>
+  </figcaption>
+
+  @if (labels().length) {
+    <svg [attr.viewBox]="'0 0 ' + W + ' ' + H" role="img"
+         [attr.aria-label]="'Sales and profit, ' + labels().length + ' points'"
+         (mousemove)="move($event)" (mouseleave)="hover.set(null)">
+      @for (t of ticks(); track t.v) {
+        <line class="rule" [attr.x1]="L" [attr.x2]="W - R" [attr.y1]="t.y" [attr.y2]="t.y" />
+        <text class="tick" text-anchor="end" [attr.x]="L - 8" [attr.y]="t.y + 4">{{ t.text }}</text>
+      }
+      @for (p of xLabels(); track p.i) {
+        <text class="tick" text-anchor="middle" [attr.x]="p.x" [attr.y]="H - 8">{{ p.t }}</text>
+      }
+      <path class="line sales" [attr.d]="salesPath()" />
+      <path class="line profit" [attr.d]="profitPath()" />
+      @if (marker(); as m) {
+        <line class="cursor" [attr.x1]="m.x" [attr.x2]="m.x" [attr.y1]="T" [attr.y2]="H - B" />
+        <rect class="dot sales" [attr.x]="m.x - 3" [attr.y]="m.ys - 3" width="6" height="6" />
+        <rect class="dot profit" [attr.x]="m.x - 3" [attr.y]="m.yp - 3" width="6" height="6" />
+      }
+    </svg>
+  } @else {
+    <p class="empty">No sales in this period yet.</p>
+  }
+</figure>

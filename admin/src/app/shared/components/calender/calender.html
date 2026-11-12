@@ -1,0 +1,19 @@
+<div class="head">
+  <button type="button" class="nav" aria-label="Previous month" (click)="step(-1)">Prev</button>
+  <strong>{{ title() }}</strong>
+  <button type="button" class="nav" aria-label="Next month" (click)="step(1)">Next</button>
+</div>
+
+<div class="names">
+  @for (n of names(); track n) { <span>{{ n }}</span> }
+</div>
+
+<div class="days">
+  @for (b of blanks(); track $index) { <span class="blank"></span> }
+  @for (c of cells(); track c.iso) {
+    <button type="button" class="day"
+            [class.closed]="c.closed" [class.today]="c.today"
+            [disabled]="c.past" [attr.aria-pressed]="c.closed" [attr.aria-label]="c.label"
+            (click)="toggled.emit(c.iso)">{{ c.n }}</button>
+  }
+</div>

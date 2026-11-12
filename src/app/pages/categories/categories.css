@@ -1,0 +1,5 @@
+h2{margin:0 0 1.5rem;font-weight:600;letter-spacing:-.01em}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1rem;align-items:end;margin-bottom:1.5rem}
+.chk{display:flex;gap:.5rem;align-items:center;padding-bottom:.5rem}
+.acts{display:flex;gap:.5rem}
+.act{white-space:nowrap;text-align:right}

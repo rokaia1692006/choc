@@ -1,0 +1,24 @@
+<h2>Settings</h2>
+<section class="card">
+  <h3>Your account</h3>
+  <p>{{ auth.user()?.name }}<br><small>{{ auth.user()?.email }} · {{ auth.user()?.role }}</small></p>
+</section>
+<section class="card">
+  <h3>Two-factor authentication</h3>
+  @if (codes().length) {
+    <p><b>Save these recovery codes now.</b> Each works once, and they will not be shown again.</p>
+    <ul class="codes">@for (c of codes(); track c) { <li>{{ c }}</li> }</ul>
+  } @else if (auth.user()?.twoFactorEnabled) {
+    <p>Two-factor authentication is on.</p>
+  } @else if (setup(); as s) {
+    <p>Scan this with an authenticator app, then enter the 6-digit code it shows.</p>
+    <img [src]="s.qr" alt="QR code for your authenticator app" width="200" height="200">
+    <p><small>Can't scan? Enter this key: <code>{{ s.sharedKey }}</code></small></p>
+    <div class="row"><input class="input" [formControl]="code" inputmode="numeric" placeholder="123456" aria-label="Authenticator code">
+      <button class="btn btn-primary" [disabled]="code.invalid" (click)="enable()">Turn on</button></div>
+  } @else {
+    <p>Admin accounts need a second step at login. Set it up now.</p>
+    <button class="btn btn-primary" (click)="start()">Set up two-factor</button>
+  }
+  @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+</section>

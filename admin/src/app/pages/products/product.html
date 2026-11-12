@@ -1,0 +1,118 @@
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <h1 class="text-xl font-semibold text-stone-900">Build a product from a recipe</h1>
+  <p class="text-sm text-stone-600 mt-1 max-w-prose">
+    List what goes into one batch and choose how much profit to add. The cost sheet updates as you type.
+    The server works the price out again when you save, so what you see here is a preview.
+  </p>
+
+  <app-error-line [message]="error()" />
+
+  <div class="mt-6 grid lg:grid-cols-[1fr_20rem] gap-x-10 gap-y-8">
+    <div>
+      <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+        <label class="block text-sm">Product name
+          <input class="field" maxlength="120" [(ngModel)]="d.name">
+        </label>
+        <label class="block text-sm">Pieces one batch makes
+          <input class="field" type="number" min="1" [(ngModel)]="d.yieldPieces">
+        </label>
+        <label class="block text-sm sm:col-span-2">Description
+          <textarea class="field" rows="2" maxlength="600" [(ngModel)]="d.description"></textarea>
+        </label>
+      </div>
+
+      <table class="w-full text-sm mt-8 border-t-2 border-stone-900">
+        <thead>
+          <tr class="text-left text-stone-500 border-b border-stone-400">
+            <th class="font-normal py-2 pr-3">Ingredient</th>
+            <th class="font-normal py-2 pr-3 w-24">Amount</th>
+            <th class="font-normal py-2 pr-3 w-20">Unit</th>
+            <th class="font-normal py-2 pr-3 w-24 text-right">Cost</th>
+            <th class="w-16"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of d.lines; track $index) {
+            <tr class="border-b border-stone-200">
+              <td class="pr-3">
+                <select class="field flush" [attr.aria-label]="'Ingredient ' + ($index + 1)"
+                        [(ngModel)]="l.ingredientId" (ngModelChange)="picked($index)">
+                  <option [ngValue]="null">Choose</option>
+                  @for (i of ingredients(); track i.id) { <option [ngValue]="i.id">{{ i.name }}</option> }
+                </select>
+              </td>
+              <td class="pr-3"><input class="field flush" type="number" min="0" step="any" aria-label="Amount" [(ngModel)]="l.qty"></td>
+              <td class="pr-3">
+                <select class="field flush" aria-label="Unit" [(ngModel)]="l.unit">
+                  @for (u of unitsFor(l.ingredientId); track u) { <option [value]="u">{{ u }}</option> }
+                </select>
+              </td>
+              <td class="pr-3 text-right tabular-nums">{{ q.lineCosts[$index] | money }}</td>
+              <td><button type="button" class="link-danger" (click)="removeLine($index)">Remove</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <button type="button" class="mt-3 underline underline-offset-2 text-stone-900" (click)="addLine()">Add another ingredient</button>
+
+      <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4 mt-10">
+        <label class="block text-sm">Waste (percent of ingredients)
+          <input class="field" type="number" min="0" max="50" [(ngModel)]="d.wastePct">
+        </label>
+        <label class="block text-sm">Packaging per batch ({{ cur }})
+          <input class="field" type="number" min="0" step="0.01" [(ngModel)]="d.packagingCost">
+        </label>
+        <label class="block text-sm">Labour per batch ({{ cur }})
+          <input class="field" type="number" min="0" step="0.01" [(ngModel)]="d.labourCost">
+        </label>
+        <label class="block text-sm">Round price up to the nearest
+          <select class="field" [(ngModel)]="d.roundTo">
+            <option [ngValue]="0">No rounding</option>
+            <option [ngValue]="0.5">0.50</option>
+            <option [ngValue]="1">1</option>
+            <option [ngValue]="5">5</option>
+          </select>
+        </label>
+        <label class="block text-sm">Profit to add (percent)
+          <input class="field" type="number" min="0" max="500" [(ngModel)]="d.profitPct">
+        </label>
+        <label class="block text-sm">Count that percent on
+          <select class="field" [(ngModel)]="d.profitMode">
+            <option value="markup">The cost (markup)</option>
+            <option value="margin">The selling price (margin)</option>
+          </select>
+        </label>
+        <p class="text-xs text-stone-500 sm:col-span-2 -mt-2">{{ profitHint }}</p>
+        <label class="block text-sm sm:col-span-2">Your own price (leave empty to use the suggestion)
+          <input class="field sm:max-w-xs" type="number" min="0" step="0.01" [(ngModel)]="d.priceOverride">
+        </label>
+      </div>
+    </div>
+
+    <aside class="sheet lg:pl-6 self-start" aria-label="Cost sheet">
+      <h2 class="font-semibold text-stone-900">Cost sheet</h2>
+      <dl class="mt-3 text-sm space-y-2">
+        <div class="row"><dt>Ingredients</dt><span class="leader"></span><dd>{{ q.ingredientsCost | money }}</dd></div>
+        <div class="row"><dt>Whole batch</dt><span class="leader"></span><dd>{{ q.batchCost | money }}</dd></div>
+        <div class="row"><dt>One piece costs</dt><span class="leader"></span><dd>{{ q.costPerPiece | money }}</dd></div>
+        <div class="row"><dt>Profit added</dt><span class="leader"></span><dd>{{ q.profitAdded | money }}</dd></div>
+        <div class="row"><dt>Suggested price</dt><span class="leader"></span><dd>{{ q.suggested | money }}</dd></div>
+        <div class="row total"><dt>Selling at</dt><span class="leader"></span><dd>{{ selling | money }} {{ cur }}</dd></div>
+        <div class="row text-stone-600"><dt>Profit per piece</dt><span class="leader"></span><dd>{{ profitEach | money }}</dd></div>
+      </dl>
+      <p class="mt-1 text-xs text-stone-500">That is {{ profitOfPrice.toFixed(1) }}% of the selling price.</p>
+
+      @for (p of q.problems; track p) {
+        <p class="mt-3 text-sm text-red-800">{{ p }}</p>
+      }
+      @if (selling > 0 && selling < q.costPerPiece) {
+        <p class="mt-3 text-sm text-red-800">This price is below what one piece costs to make.</p>
+      }
+
+      <button type="button" class="btn w-full mt-5 py-2" [disabled]="!canSave || saving()" (click)="save()">
+        {{ saving() ? 'Saving' : 'Create product' }}
+      </button>
+      <p class="mt-2 text-xs text-stone-500">Next you can set category, photos, seasonal dates and stock.</p>
+    </aside>
+  </div>
+</div>

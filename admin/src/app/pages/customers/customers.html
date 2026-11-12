@@ -1,0 +1,53 @@
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="text-xl font-semibold text-stone-900">Customers signed in now</h1>
+      <p class="text-sm text-stone-600 mt-1">
+        {{ rows().length }} signed in. The list refreshes every 30 seconds.
+      </p>
+    </div>
+    <label class="text-sm">
+      <span class="sr-only">Search customers</span>
+      <input class="field w-64" placeholder="Search name, email or phone"
+             [ngModel]="search()" (ngModelChange)="search.set($event)">
+    </label>
+  </div>
+
+  <app-error-line [message]="error()" />
+
+  <div class="overflow-x-auto mt-6">
+    <table class="w-full text-sm border-t-2 border-stone-900 min-w-[44rem]">
+      <thead>
+        <tr class="text-left text-stone-500 border-b border-stone-400">
+          <th class="font-normal py-2 pr-3">Customer</th>
+          <th class="font-normal py-2 pr-3">Phone</th>
+          <th class="font-normal py-2 pr-3">Device</th>
+          <th class="font-normal py-2 pr-3">Signed in</th>
+          <th class="font-normal py-2 pr-3">Last active</th>
+          <th class="w-24"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of shown(); track r.sessionId) {
+          <tr class="border-b border-stone-200 hover:bg-stone-50">
+            <td class="py-2 pr-3">
+              <div class="text-stone-900">{{ r.name }}</div>
+              <div class="text-stone-500">{{ r.email }}</div>
+            </td>
+            <td class="pr-3 tabular-nums">{{ r.phoneMasked }}</td>
+            <td class="pr-3">{{ r.device }}</td>
+            <td class="pr-3">{{ r.signedInAt | timeAgo }}</td>
+            <td class="pr-3">{{ r.lastActiveAt | timeAgo }}</td>
+            <td><button class="link-danger" type="button" (click)="signOut(r)">Sign out</button></td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="py-8 text-stone-500">
+              {{ search() ? 'No signed-in customer matches that search.' : 'Nobody is signed in right now.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+.flush {
+  margin-top: 0;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+}
+.row dd {
+  font-variant-numeric: tabular-nums;
+}
+.leader {
+  flex: 1;
+  margin: 0 0.4rem;
+  border-bottom: 1px dotted #78716c;
+}
+.total {
+  padding-top: 0.5rem;
+  border-top: 1px solid #a8a29e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+  .sheet {
+    position: sticky;
+    top: 1.5rem;
+    border-left: 2px solid #1c1917;
+  }
+}

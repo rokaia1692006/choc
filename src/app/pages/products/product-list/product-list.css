@@ -1,0 +1,5 @@
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+h2{margin:0;font-weight:600;letter-spacing:-.01em}img{object-fit:cover}
+.act{white-space:nowrap;text-align:right}
+.empty{padding:2rem;text-align:center;background:#fff;border:1px dashed var(--line)}
+a.btn{text-decoration:none;color:inherit}a.btn-primary{color:#fff}

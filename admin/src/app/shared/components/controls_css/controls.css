@@ -1,0 +1,41 @@
+.cell {
+  width: 100%;
+  padding: 0.5rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  outline: none;
+}
+.cell:focus {
+  background: #fff;
+  border-bottom-color: #1c1917;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.5rem;
+  background: #fff;
+  border: 1px solid #a8a29e;
+}
+.field:focus {
+  border-color: #1c1917;
+  outline: 2px solid #1c1917;
+}
+
+.btn {
+  padding: 0.4rem 0.9rem;
+  background: #1c1917;
+  color: #fff;
+}
+.btn:hover:not(:disabled) { background: #44403c; }
+.btn:disabled { opacity: 0.4; }
+.btn:focus-visible { outline: 2px solid #1c1917; outline-offset: 2px; }
+
+.link-danger {
+  color: #991b1b;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

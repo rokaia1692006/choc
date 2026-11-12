@@ -1,0 +1,29 @@
+<div class="shell">
+  <aside>
+    <h1>Choc admin</h1>
+    <nav>
+            <!-- { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'products', loadComponent: () => import('./pages/products/product-list/product-list').then(m => m.ProductList) },
+      { path: 'products/new', loadComponent: () => import('./pages/products/product-form/product-form').then(m => m.ProductForm) },
+      { path: 'products/:id', loadComponent: () => import('./pages/products/product-form/product-form').then(m => m.ProductForm) },
+      { path: 'orders', loadComponent: () => import('./pages/orders/orders').then(m => m.Orders) },
+      {path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardPage) },
+      {path: 'ingredient', loadComponent: () => import('./pages/ingredients/ingredients').then(m => m.IngredientsPage) },
+      {path: 'customers', loadComponent: () => import('./pages/customers/customers').then(m => m.CustomersPage) },
+      {path: 'build',loadComponent: () => import('./pages/products/product').then(m => m.ProductPage) }, -->
+      <a routerLink="/products" routerLinkActive="on">Products</a>
+      <a routerLink="/orders" routerLinkActive="on">Orders</a>
+      <a routerLink="/dashboard" routerLinkActive="on">Dashboard</a>
+      <a routerLink="/ingredient" routerLinkActive="on">Ingredient</a>
+      <a routerLink="/customers" routerLinkActive="on">Customers</a>
+      <a routerLink="/build" routerLinkActive="on">Build</a>
+  
+
+    </nav>
+    <div class="who">
+      <span>{{ auth.user()?.name }}</span>
+      <button class="btn" (click)="logout()">Log out</button>
+    </div>
+  </aside>
+  <main><router-outlet /></main>
+</div>

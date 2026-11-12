@@ -1,0 +1,11 @@
+.shell{display:grid;grid-template-columns:12rem 1fr;min-height:100vh}
+aside{background:#1d120c;color:#fff;padding:1.5rem 0;display:flex;flex-direction:column;gap:1.75rem}
+h1{font-size:1rem;font-weight:600;letter-spacing:-.01em;margin:0;padding:0 1.25rem}
+nav{display:grid}
+nav a{color:#bfa89a;text-decoration:none;padding:.55rem 1.25rem;border-left:2px solid transparent}
+nav a:hover{color:#fff}
+nav a.on{color:#fff;border-left-color:var(--berry);background:#2a1a12}
+.who{margin-top:auto;display:grid;gap:.5rem;padding:0 1.25rem;font-size:.85rem}
+.who .btn{background:transparent;color:#fff;border-color:#4a352a}
+main{padding:2rem;overflow-x:auto}
+@media(max-width:700px){.shell{grid-template-columns:1fr}aside{flex-direction:row;flex-wrap:wrap;align-items:center;padding:.75rem}nav{display:flex;flex-wrap:wrap}.who{margin:0 0 0 auto}}

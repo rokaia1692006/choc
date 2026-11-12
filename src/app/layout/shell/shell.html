@@ -1,0 +1,18 @@
+<div class="shell">
+  <aside>
+    <h1>Choc admin</h1>
+    <nav>
+      <a routerLink="/dashboard" routerLinkActive="on">Dashboard</a>
+      <a routerLink="/products" routerLinkActive="on">Products</a>
+      <a routerLink="/categories" routerLinkActive="on">Categories</a>
+      <a routerLink="/orders" routerLinkActive="on">Orders</a>
+      <a routerLink="/customers" routerLinkActive="on">Customers</a>
+      <a routerLink="/settings" routerLinkActive="on">Settings</a>
+    </nav>
+    <div class="who">
+      <span>{{ auth.user()?.name }}</span>
+      <button class="btn" (click)="logout()">Log out</button>
+    </div>
+  </aside>
+  <main><router-outlet /></main>
+</div>

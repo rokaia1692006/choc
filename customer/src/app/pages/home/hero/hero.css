@@ -40,6 +40,7 @@
   color: #FAF3E0;
   margin-bottom: 1rem;
   letter-spacing: 0.02em;
+  width:80%;
 }
 
 .title {
@@ -72,4 +73,13 @@
 
 .btn:hover {
   background: var(--color-gold-dark);
+}
+
+@media screen and (min-width: 1000px) {
+  
+  .title{
+    width:45%;
+
+  }
+  
 }

@@ -4,7 +4,7 @@
       <mat-icon>menu</mat-icon>
     </button>
     
-    <a routerLink="/" class="logo">Bonbon Boutique</a>
+    <a routerLink="/" class="logo"><img src="assets/images/logo.png" alt="coacoa"></a>
     
     <a routerLink="cart" class="cartbtn" aria-label="Shopping Cart">
       <mat-icon>shopping_cart</mat-icon>
@@ -16,7 +16,7 @@
 
   <div class="largemode">
     <div class="nav-left-group">
-      <a routerLink="/" class="logo">Bonbon Boutique</a>
+      <a routerLink="/" class="logo"><img src="assets/images/logo.png" alt="coacoa"></a>
       <ul class="nav-links">
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'home' | translate }}</a></li>
         <li><a routerLink="shop" routerLinkActive="active">{{ 'shop' | translate }}</a></li>
@@ -90,7 +90,7 @@
 <div class="drawer-overlay" [class.active]="drawerOpen" (click)="closeDrawer()"></div>
 <div class="drawer" [class.open]="drawerOpen">
   <div class="drawer-header">
-    <span class="drawer-logo">Bonbon Boutique</span>
+    <span class="drawer-logo"><img src="assets/images/logo.png" alt="coacoa"></span>
     <button class="drawer-close" (click)="closeDrawer()" aria-label="Close menu">
       <mat-icon>close</mat-icon>
     </button>

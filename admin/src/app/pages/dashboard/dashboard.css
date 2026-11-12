@@ -1,0 +1,28 @@
+.loss { color: #991b1b; }
+
+.tabs {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #d6d3d1;
+}
+.tab {
+  padding: 0.4rem 0;
+  margin-bottom: -1px;
+  color: #57534e;
+  border-bottom: 2px solid transparent;
+}
+.tab:hover { color: #1c1917; }
+.tab.on {
+  color: #1c1917;
+  font-weight: 600;
+  border-bottom-color: #1c1917;
+}
+.tab:focus-visible { outline: 2px solid #1c1917; outline-offset: 2px; }
+
+@media (min-width: 1024px) {
+  .days-off {
+    padding-left: 2rem;
+    border-left: 1px solid #a8a29e;
+  }
+}

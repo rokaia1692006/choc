@@ -40,6 +40,7 @@ nav.navbar.scrolled {
   text-decoration: none;
   letter-spacing: 0.02em;
   transition: color var(--transition-smooth);
+  max-width: 25%;
 }
 .logo:hover { 
   color: var(--color-gold); 

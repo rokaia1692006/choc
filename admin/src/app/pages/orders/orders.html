@@ -1,0 +1,31 @@
+<header class="top">
+  <h2>Orders</h2>
+  <label>Show <select class="input" (change)="setFilter($any($event.target).value)">
+    <option value="">All orders</option>
+    @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+  </select></label>
+</header>
+@if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+@if (orders().length === 0) { <p class="empty">No orders match this filter.</p> } @else {
+  <table class="tbl">
+    <thead><tr><th>Order</th><th>Customer</th><th>Delivery</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+    <tbody>
+      @for (o of orders(); track o.id) {
+        <tr>
+          <td>{{ o.id }}<br><small>{{ o.placedAt | date: 'd MMM, HH:mm' }}</small></td>
+          <td>{{ o.customerName }}<br><small>{{ o.phone }}</small><br><small>{{ o.address }}, {{ o.city }}</small>
+            <details><summary>{{ o.items.length }} items</summary>
+              @for (i of o.items; track $index) { <div>{{ i.quantity }} × {{ i.name }} {{ i.variant }}</div> }
+              @if (o.notes) { <em>Note: {{ o.notes }}</em> }
+            </details></td>
+          <td>{{ o.deliveryDate | date: 'd MMM y' }}</td>
+          <td>{{ o.total | currency: 'EGP' }}</td>
+          <td><span class="badge b-{{ o.paymentStatus }}">{{ o.paymentStatus }}</span></td>
+          <td><select class="input" [value]="o.status" (change)="change(o, $any($event.target).value)" [attr.aria-label]="'Status of order ' + o.id">
+            @for (s of statuses; track s) { <option [value]="s" [selected]="s === o.status">{{ s }}</option> }
+          </select></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

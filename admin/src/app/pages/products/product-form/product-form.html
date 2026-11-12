@@ -1,0 +1,106 @@
+<header class="top"><h2>{{ id ? 'Edit product' : 'New product' }}</h2><a routerLink="/products">Back to products</a></header>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <fieldset class="card"><legend>Basics</legend>
+    <label class="f">Name (English)<input class="input" formControlName="name"></label>
+    <label class="f">Name (Arabic)<input class="input" dir="rtl" formControlName="nameAr"></label>
+    <label class="f">Short description (English)<textarea class="input" rows="2" formControlName="description"></textarea></label>
+    <label class="f">Short description (Arabic)<textarea class="input" dir="rtl" rows="2" formControlName="descriptionAr"></textarea></label>
+    <label class="f">Full description (English)<textarea class="input" rows="4" formControlName="detailedDescription"></textarea></label>
+    <label class="f">Full description (Arabic)<textarea class="input" dir="rtl" rows="4" formControlName="detailedDescriptionAr"></textarea></label>
+    <label class="f">Price (EGP)<input class="input" type="number" min="0" step="0.01" formControlName="price"></label>
+    <label class="f">Category
+      <select class="input" formControlName="categoryId"><option [value]="0" disabled>Choose a category</option>
+        @for (c of categories(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }</select></label>
+    <label class="f">Badge (English)<input class="input" formControlName="badge"></label>
+    <label class="f">Badge (Arabic)<input class="input" dir="rtl" formControlName="badgeAr"></label>
+    <label class="f">Status
+      <select class="input" formControlName="status"><option value="draft">Draft (hidden)</option><option value="active">Active (on sale)</option><option value="archived">Archived</option></select></label>
+    <label class="chk"><input type="checkbox" formControlName="featured"> Featured on the home page</label>
+  </fieldset>
+
+  <fieldset class="card"><legend>Photo</legend>
+    <input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, 'image')">
+    @if (form.value.image) { <img [src]="form.value.image" alt="Product preview" width="120"> }
+  </fieldset>
+
+  <fieldset class="card"><legend>What is this product?</legend>
+    <label class="f">Type
+      <select class="input" formControlName="boxType">
+        <option value="single">Single bar or piece</option>
+        <option value="set">Set box (fixed contents)</option>
+        <option value="mixed">Mixed box (customer picks the flavours)</option>
+      </select></label>
+
+    @if (form.value.boxType === 'set') {
+      <p class="hint">List exactly what is in the box. Customers cannot change it.</p>
+      <div formArrayName="contents">
+        @for (g of contents.controls; track g; let i = $index) {
+          <div class="variant" [formGroupName]="i">
+            <input class="input" formControlName="flavour" placeholder="Flavour (English)">
+            <input class="input" dir="rtl" formControlName="flavourAr" placeholder="Flavour (Arabic)">
+            <input class="input" type="number" min="1" formControlName="quantity" aria-label="Pieces">
+            <button class="btn btn-danger" type="button" (click)="contents.removeAt(i)">Remove</button>
+          </div>
+        }
+      </div>
+      <div class="acts"><button class="btn" type="button" (click)="addContent()">Add item</button><span>{{ setTotal }} pieces in total</span></div>
+      @if (form.errors?.['setEmpty']) { <p class="err">Add at least one item to the box.</p> }
+    }
+
+    @if (form.value.boxType === 'mixed') {
+      <p class="hint">Customers choose from the flavours you mark as available under "Flavours and options" below.</p>
+      <label class="f">Pieces in the box<input class="input" type="number" min="1" formControlName="totalPieces"></label>
+      <label class="f">Minimum pieces of each flavour they pick<input class="input" type="number" min="0" formControlName="minPerFlavour"></label>
+      <label class="f">Box label (English)<input class="input" formControlName="boxLabel" placeholder="Build your own box"></label>
+      <label class="f">Box label (Arabic)<input class="input" dir="rtl" formControlName="boxLabelAr"></label>
+      @if (form.errors?.['mixedFlavours']) { <p class="err">A mixed box needs at least two available flavours.</p> }
+      @if (form.errors?.['mixedPieces']) { <p class="err">The minimum per flavour times the number of flavours cannot be more than the pieces in the box.</p> }
+    }
+  </fieldset>
+
+  <fieldset class="card"><legend>Season</legend>
+    <label class="chk"><input type="checkbox" formControlName="isSeasonal"> This is a seasonal product</label>
+    @if (form.value.isSeasonal) {
+      <label class="f">Season name (English)<input class="input" formControlName="seasonName" placeholder="Ramadan 2027"></label>
+      <label class="f">Season name (Arabic)<input class="input" dir="rtl" formControlName="seasonNameAr"></label>
+      <label class="f">Goes on sale<input class="input" type="datetime-local" formControlName="startsAt"></label>
+      <label class="f">Stops being sold<input class="input" type="datetime-local" formControlName="endsAt"></label>
+      @if (form.errors?.['seasonMissing']) { <p class="err">Add a season name, a start and an end.</p> }
+      @if (form.errors?.['seasonRange']) { <p class="err">The end must be after the start.</p> }
+    }
+  </fieldset>
+
+  @if (form.value.boxType !== 'set') {
+    <fieldset class="card"><legend>Flavours and options</legend>
+      <label class="f">Option label (for example "Flavour")<input class="input" formControlName="variantLabel"></label>
+      <div formArrayName="variants">
+        @for (g of variants.controls; track g; let i = $index) {
+          <div class="variant" [formGroupName]="i">
+            <input class="input" formControlName="flavour" placeholder="Flavour">
+            <input class="input" formControlName="label" placeholder="Label (English)">
+            <input class="input" dir="rtl" formControlName="labelAr" placeholder="Label (Arabic)">
+            <input class="input" type="number" step="0.01" formControlName="priceModifier" aria-label="Price change in EGP">
+            <input type="file" accept="image/*" (change)="upload($event, i)" aria-label="Cross-section photo">
+            <label class="chk"><input type="checkbox" formControlName="available"> Available</label>
+            <button class="btn btn-danger" type="button" (click)="variants.removeAt(i)">Remove</button>
+          </div>
+        }
+      </div>
+      <button class="btn" type="button" (click)="addVariant()">Add flavour</button>
+    </fieldset>
+  }
+
+  <fieldset class="card"><legend>Product details</legend>
+    <label class="f">SKU<input class="input" formControlName="sku"></label>
+    <label class="f">Ingredients (English)<textarea class="input" rows="2" formControlName="ingredients"></textarea></label>
+    <label class="f">Ingredients (Arabic)<textarea class="input" dir="rtl" rows="2" formControlName="ingredientsAr"></textarea></label>
+    <label class="f">Allergens (comma separated)<input class="input" formControlName="allergens" placeholder="milk, nuts, soy"></label>
+    <label class="f">Weight (grams)<input class="input" type="number" min="0" formControlName="weightGrams"></label>
+    <label class="f">Shelf life (days)<input class="input" type="number" min="0" formControlName="shelfLifeDays"></label>
+    <label class="f">Stock (leave empty if made to order)<input class="input" type="number" min="0" formControlName="stockQuantity"></label>
+    <label class="f">Sort order<input class="input" type="number" formControlName="sortOrder"></label>
+  </fieldset>
+
+  @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+  <div class="bar"><button class="btn btn-primary" [disabled]="saving()">Save product</button><a class="btn" routerLink="/products">Cancel</a></div>
+</form>

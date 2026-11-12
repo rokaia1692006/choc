@@ -1,0 +1,22 @@
+<h2>Dashboard</h2>
+@if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+@if (stats(); as s) {
+  <section class="stats">
+    <div><b>{{ s.pendingOrders }}</b><span>Orders waiting</span></div>
+    <div><b>{{ s.ordersToday }}</b><span>Orders today</span></div>
+    <div><b>{{ s.revenue30d | currency: 'EGP' : 'symbol' : '1.0-0' }}</b><span>Paid, last 30 days</span></div>
+    <div><b>{{ s.productsOnSale }}</b><span>Products on sale</span></div>
+  </section>
+  <h3>Latest orders</h3>
+  @if (s.latest.length === 0) { <p class="empty">No orders yet.</p> } @else {
+    <table class="tbl">
+      <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>
+        @for (o of s.latest; track o.id) {
+          <tr><td>{{ o.id }}</td><td>{{ o.customerName }}</td><td>{{ o.total | currency: 'EGP' }}</td><td><span class="badge b-{{ o.status }}">{{ o.status }}</span></td></tr>
+        }
+      </tbody>
+    </table>
+    <p><a routerLink="/orders">See all orders</a></p>
+  }
+}

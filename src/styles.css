@@ -1,0 +1,12 @@
+/* append to the end of admin/src/styles.css: overrides the earlier rounded look */
+:root{--cocoa:#1d120c;--line:#ddd3cd}
+body{font-size:14px;-webkit-font-smoothing:antialiased}
+.btn,.input,.card,.tbl,.badge{border-radius:0}
+.btn{padding:.5rem 1rem;font-weight:500;transition:background .12s}
+.btn:hover{background:#f1ebe7}.btn-primary:hover{background:#8a1f3f}
+.input{border-color:#cfc3bb}.input:focus{border-color:var(--berry)}
+.card{border:1px solid var(--line);padding:1.25rem 1.5rem}
+.tbl{border:1px solid var(--line)}
+.tbl th{font-weight:600;border-bottom:2px solid var(--cocoa);background:#fff}
+.tbl tbody tr:hover{background:#faf6f3}
+.badge{padding:.1rem .45rem;font-weight:500;border:1px solid rgba(0,0,0,.08)}

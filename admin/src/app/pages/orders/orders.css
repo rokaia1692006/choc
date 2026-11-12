@@ -1,0 +1,4 @@
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+h2{margin:0}.top label{display:flex;gap:.5rem;align-items:center}
+small{color:#7a645a}details{margin-top:.3rem;font-size:.85rem}
+.empty{padding:2rem;text-align:center;background:#fff;border:1px dashed var(--line);border-radius:8px}

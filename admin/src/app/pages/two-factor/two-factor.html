@@ -1,0 +1,11 @@
+<main class="wrap">
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>{{ recovery() ? 'Use a recovery code' : 'Enter your 6-digit code' }}</h1>
+    <label class="f">{{ recovery() ? 'Recovery code' : 'Authenticator code' }}
+      <input class="input" formControlName="code" inputmode="numeric" autocomplete="one-time-code" autofocus>
+    </label>
+    @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+    <button class="btn btn-primary" [disabled]="form.invalid">Verify</button>
+    <button class="btn" type="button" (click)="recovery.set(!recovery())">{{ recovery() ? 'Use authenticator code' : 'Use a recovery code' }}</button>
+  </form>
+</main>

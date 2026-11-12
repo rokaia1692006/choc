@@ -1,0 +1,26 @@
+<header class="top"><h2>Products</h2><a class="btn btn-primary" routerLink="/products/new">Add product</a></header>
+@if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+@if (products().length === 0) {
+  <p class="empty">No products yet. Add your first chocolate.</p>
+} @else {
+  <table class="tbl">
+    <thead><tr><th></th><th>Name</th><th>Price</th><th>Status</th><th>Season</th><th></th></tr></thead>
+    <tbody>
+      @for (p of products(); track p.id) {
+        <tr>
+          <td><img [src]="p.image" alt="" width="40" height="40"></td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.price | currency: 'EGP' }}</td>
+          <td><span class="badge b-{{ p.status }}">{{ p.status }}</span></td>
+          <td>
+            @if (p.isSeasonal && p.seasonal) {
+              <span class="badge b-{{ season(p) }}">{{ season(p) }}</span>
+              {{ p.seasonal.seasonName }}, until {{ p.seasonal.endsAt | date: 'd MMM y' }}
+            } @else { Year-round }
+          </td>
+          <td class="act"><a class="btn" [routerLink]="['/products', p.id]">Edit</a> <button class="btn btn-danger" (click)="remove(p)">Delete</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

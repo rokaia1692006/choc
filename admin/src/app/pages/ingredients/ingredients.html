@@ -1,0 +1,61 @@
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <h1 class="text-xl font-semibold text-stone-900">Ingredients</h1>
+  <p class="text-sm text-stone-600 mt-1 max-w-prose">
+    What you buy and what it costs. Edit a cell and click away to save it.
+    Product prices are worked out from these numbers.
+  </p>
+
+  <app-error-line [message]="error()" />
+
+  <div class="overflow-x-auto mt-6">
+    <table class="w-full text-sm border-t-2 border-stone-900 min-w-[48rem]">
+      <thead>
+        <tr class="text-left text-stone-500 border-b border-stone-400">
+          <th class="font-normal py-2 pr-3">Name</th>
+          <th class="font-normal py-2 pr-3 w-24">Pack size</th>
+          <th class="font-normal py-2 pr-3 w-20">Unit</th>
+          <th class="font-normal py-2 pr-3 w-28">Pack price</th>
+          <th class="font-normal py-2 pr-3 w-44">Cost per unit</th>
+          <th class="font-normal py-2 pr-3">Allergens</th>
+          <th class="font-normal py-2 pr-3">Supplier</th>
+          <th class="w-16"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="new-row border-b border-stone-400">
+          <td class="pr-3"><input class="cell" placeholder="Name" aria-label="New ingredient name" [(ngModel)]="draft.name" (keydown.enter)="add()"></td>
+          <td class="pr-3"><input class="cell" type="number" min="0" aria-label="Pack size" [(ngModel)]="draft.packSize"></td>
+          <td class="pr-3">
+            <select class="cell" aria-label="Pack unit" [(ngModel)]="draft.packUnit">
+              @for (u of units; track u) { <option [value]="u">{{ u }}</option> }
+            </select>
+          </td>
+          <td class="pr-3"><input class="cell" type="number" min="0" step="0.01" aria-label="Pack price" [(ngModel)]="draft.packPrice"></td>
+          <td class="pr-3 text-stone-500">{{ perUnit(draft) }}</td>
+          <td class="pr-3"><input class="cell" placeholder="milk, soy" aria-label="Allergens" [(ngModel)]="draft.allergens"></td>
+          <td class="pr-3"><input class="cell" aria-label="Supplier" [(ngModel)]="draft.supplier"></td>
+          <td><button class="btn" type="button" (click)="add()">Add</button></td>
+        </tr>
+
+        @for (r of rows(); track r.id) {
+          <tr class="border-b border-stone-200 hover:bg-stone-50">
+            <td class="pr-3"><input class="cell" aria-label="Name" [(ngModel)]="r.name" (change)="save(r)"></td>
+            <td class="pr-3"><input class="cell" type="number" min="0" aria-label="Pack size" [(ngModel)]="r.packSize" (change)="save(r)"></td>
+            <td class="pr-3">
+              <select class="cell" aria-label="Pack unit" [(ngModel)]="r.packUnit" (change)="save(r)">
+                @for (u of units; track u) { <option [value]="u">{{ u }}</option> }
+              </select>
+            </td>
+            <td class="pr-3"><input class="cell" type="number" min="0" step="0.01" aria-label="Pack price" [(ngModel)]="r.packPrice" (change)="save(r)"></td>
+            <td class="pr-3 text-stone-600">{{ perUnit(r) }}</td>
+            <td class="pr-3"><input class="cell" aria-label="Allergens" [(ngModel)]="r.allergens" (change)="save(r)"></td>
+            <td class="pr-3"><input class="cell" aria-label="Supplier" [(ngModel)]="r.supplier" (change)="save(r)"></td>
+            <td><button class="link-danger" type="button" (click)="remove(r)">Delete</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="py-8 text-stone-500">No ingredients yet. Fill in the shaded row above and press Add.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
