@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/enviroment';
+import { API_URL } from '../api.config';
 import { ScheduleSettings } from '../models/dashboard.model';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
   private http = inject(HttpClient);
-  private api = environment.apiUrl + '/admin/schedule';
+  private api = `${API_URL}/admin/schedule`;
 
   closedDays(from: string, to: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.api}/days`, { params: { from, to } });

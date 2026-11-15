@@ -1,15 +1,13 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Product } from '../../../core/models/products';
 import { CartService } from '../../../core/services/cart';
-import { PickerService } from '../../../core/services/picker';
 import { CurrencyService } from '../../../core/services/currency';
 import {inject} from '@angular/core';
 import { LanguageService ,Translations} from '../../../core/services/language';
 import { CurrencyPipe } from '../../pipes/currency-pipe';
 import { LanguagesPipe } from '../../pipes/languages-pipe';
-import { ProductDiscription } from '../product-discription/product-discription';
-import { DescriptionService } from '../../../core/services/description';
 @Component({
   selector: 'app-product-cards',
   standalone: true,
@@ -19,35 +17,48 @@ import { DescriptionService } from '../../../core/services/description';
 })
 export class ProductCards {
   @Input() product!: Product;
-  desc = inject(DescriptionService);
 currency = inject(CurrencyService);
 lang = inject(LanguageService);
-  constructor(private cart: CartService, private picker: PickerService) {}
+  constructor(private cart: CartService, private router: Router) {}
 
-  get quantity() {
-    return this.cart.cartItems()
-      .filter(i => Math.floor(i.product.id / 10) === this.product.id || i.product.id === this.product.id)
-      .reduce((sum, i) => sum + i.quantity, 0);
+  get matchingCartQuantity(): number {
+    const englishName = this.product.name;
+    const arabicName = this.product.nameAr;
+    return this.cart.cartItems().filter(item => {
+      const cartProduct = item.product as Product & { baseNameEn?: string; baseNameAr?: string };
+      return cartProduct.id === this.product.id
+        || cartProduct.baseNameEn === englishName
+        || (!!arabicName && cartProduct.baseNameAr === arabicName)
+        || cartProduct.name.startsWith(`${englishName} - `)
+        || cartProduct.name.startsWith(`${englishName} (`)
+        || (!!arabicName && !!cartProduct.nameAr && (
+          cartProduct.nameAr.startsWith(`${arabicName} - `)
+          || cartProduct.nameAr.startsWith(`${arabicName} (`)
+        ));
+    }).reduce((sum, item) => sum + item.quantity, 0);
   }
 
-  openDescription() {
-    this.desc.open(this.product);
+  openProduct() {
+    this.router.navigate(['/product', this.product.id]);
   }
 
   onAddClick() {
     if (this.product.variants?.length || this.product.mixedBox) {
-      this.picker.open(this.product);
+      this.openProduct();
     } else {
       this.cart.addToCart(this.product);
     }
   }
 
   remove() {
-    const item = this.cart.cartItems().find(i => i.product.id === this.product.id);
-    if (item) {
-      const cartItemId = `${this.product.id}-${this.product.name.replace(/\s+/g, '')}`;
-      this.cart.updateQuantity(cartItemId, item.quantity - 1);
+    if (this.product.variants?.length || this.product.mixedBox) {
+      this.router.navigate(['/product', this.product.id], {
+        queryParams: { from: 'shop', cartChoices: '1' }
+      });
+      return;
     }
+    const item = this.cart.cartItems().find(cartItem => cartItem.product.id === this.product.id);
+    if (item) this.cart.updateQuantity(item.cartItemId, item.quantity - 1);
   }
   get displayName(): string {
     return this.lang.isArabic() && this.product.nameAr

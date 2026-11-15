@@ -4,9 +4,6 @@
   <app-error-line [message]="error()" />
 
   <h2 class="font-semibold text-stone-900 mt-8">Sales and profit</h2>
-  <p class="text-sm text-stone-600 mt-1 max-w-prose">
-    Profit is sales minus what the products cost to make when they were sold.
-  </p>
 
   <div class="overflow-x-auto">
     <table class="w-full text-sm mt-3 border-t-2 border-stone-900 min-w-[34rem]">
@@ -48,9 +45,6 @@
 
     <aside class="days-off" aria-label="Days off">
       <h2 class="font-semibold text-stone-900">Days off</h2>
-      <p class="text-sm text-stone-600 mt-1 mb-3">
-        Click a day to close it. Hatched days are closed and customers cannot order on them.
-      </p>
       <app-calender [closed]="closed()" (toggled)="toggleDay($event)" (monthChange)="loadMonth($event)" />
 
       <label class="block text-sm mt-6">Most orders accepted per day (0 means no limit)

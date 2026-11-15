@@ -52,10 +52,14 @@ export class Profile {
     }
     this.form.phone = cleanPhone;
 
-    this.auth.updateProfile(this.form);
-    this.editing.set(false);
-    this.saved.set(true);
-    setTimeout(() => this.saved.set(false), 2000);
+    this.auth.updateProfile(this.form).subscribe({
+      next: () => {
+        this.editing.set(false);
+        this.saved.set(true);
+        setTimeout(() => this.saved.set(false), 2000);
+      },
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر حفظ التغييرات.' : 'Could not save your changes.')
+    });
   }
 
   forgetPass() {

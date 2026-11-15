@@ -38,20 +38,14 @@ export class ForgetPassPage {
       return;
     }
     this.loading.set(true);
-    const found = this.auth.confirmCode(this.phone.trim());
-    this.loading.set(false);
-    if (found) {
-      this.success.set(
-        this.lang.isArabic() 
-          ? 'تم إرسال رمز التحقق إلى رقم هاتفك.' 
-          : 'A verification code has been sent to your number.'
-      );
-      this.step.set('code');
-    } else {
-      this.error.set(
-        this.lang.isArabic() ? 'لم يتم العثور على حساب مسجل برقم الهاتف هذا.' : 'No account found with that phone number.'
-      );
-    }
+    this.auth.startPhoneVerification(this.phone.trim(), 'password-reset').subscribe({
+      next: () => {
+        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز التحقق إلى رقم هاتفك.' : 'A verification code has been sent to your number.');
+        this.step.set('code');
+      },
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إرسال رمز التحقق.' : 'Could not send a verification code.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
   submitCode() {
@@ -63,16 +57,14 @@ export class ForgetPassPage {
       return;
     }
     this.loading.set(true);
-    const valid = this.auth.correctCode(this.confirmCode.trim());
-    this.loading.set(false);
-    if (valid) {
-      this.success.set('');
-      this.step.set('newPassword');
-    } else {
-      this.error.set(
-        this.lang.isArabic() ? 'الرمز غير صحيح، يرجى المحاولة مرة أخرى.' : 'Incorrect code. Please try again.'
-      );
-    }
+    this.auth.verifyPhone(this.phone.trim(), this.confirmCode.trim(), 'password-reset').subscribe({
+      next: () => {
+        this.success.set('');
+        this.step.set('newPassword');
+      },
+      error: () => this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح، يرجى المحاولة مرة أخرى.' : 'Incorrect verification code.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
 
@@ -97,29 +89,19 @@ export class ForgetPassPage {
     return;
   }
 
-  const wasLoggedIn = this.auth.isLoggedIn();
-
   this.loading.set(true);
-  const updated = this.auth.updatePassword(this.phone, this.newPassword);
-  this.loading.set(false);
-
-  if (updated) {
-    if (wasLoggedIn) {
-      this.router.navigate(['/profile']);
-    } else {
-      this.router.navigate(['/login']);
-    }
-  } else {
-    this.error.set(
-      this.lang.isArabic() ? 'حدث خطأ، يرجى المحاولة مرة أخرى.' : 'Please try again.'
-    );
-  }
+  this.auth.resetPassword(this.phone, this.confirmCode.trim(), this.newPassword).subscribe({
+    next: () => this.router.navigate(['/login']),
+    error: () => this.error.set(this.lang.isArabic() ? 'تعذر تحديث كلمة المرور.' : 'Could not update the password.'),
+    complete: () => this.loading.set(false)
+  });
 }
 
   resendCode() {
     this.error.set('');
-    this.success.set(
-      this.lang.isArabic() ? 'تم إرسال رمز جديد بنجاح.' : 'A new code has been sent.'
-    );
+    this.auth.resendVerification(this.phone.trim(), 'password-reset').subscribe({
+      next: () => this.success.set(this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new code has been sent.'),
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the code.')
+    });
   }
 }

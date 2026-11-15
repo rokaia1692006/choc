@@ -162,6 +162,78 @@
 }
  
 .removebtn:hover { color: #c0392b; }
+
+.repeat-choice-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.repeat-choice {
+  position: relative;
+  width: min(100%, 520px);
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.repeat-choice-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.repeat-choice h2 {
+  margin: 0 1.5rem 0.75rem 0;
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.repeat-choice p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.repeat-choice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.repeat-choice-actions button {
+  min-height: 44px;
+  flex: 1 1 180px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-gold);
+  font: inherit;
+  cursor: pointer;
+}
+
+.repeat-same {
+  background: var(--color-gold);
+  color: #0a0a0a;
+}
+
+.repeat-customize {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.repeat-choice-actions button:hover {
+  opacity: 0.8;
+}
  
 .clearbtn {
   margin-top: 2rem;

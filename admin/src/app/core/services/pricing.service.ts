@@ -1,18 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Ingredient, PackUnit, RecipeLine } from '../models/Ingredient.model';
 import { PriceInput, PriceQuote, ProfitMode } from '../models/pricing.model';
-
-export type BaseUnit = 'g' | 'ml' | 'pc';
-
-const UNIT: Record<PackUnit, { base: BaseUnit; factor: number }> = {
-  g: { base: 'g', factor: 1 },
-  kg: { base: 'g', factor: 1000 },
-  ml: { base: 'ml', factor: 1 },
-  l: { base: 'ml', factor: 1000 },
-  pc: { base: 'pc', factor: 1 },
-};
-
-const MAX_MARGIN = 0.9;
+import { BaseUnit, UNIT, costPerBaseUnit } from '@contracts/ingredient';
+import { roundUp, withProfit } from '@contracts/pricing';
 
 @Injectable({ providedIn: 'root' })
 export class PricingService {
@@ -23,8 +13,7 @@ export class PricingService {
   }
 
   costPerBase(i: Pick<Ingredient, 'packSize' | 'packUnit' | 'packPrice'>): number {
-    const total = i.packSize * UNIT[i.packUnit].factor;
-    return total > 0 ? i.packPrice / total : 0;
+    return costPerBaseUnit(i);
   }
 
   lineCost(ing: Ingredient, line: RecipeLine): number | null {
@@ -33,12 +22,11 @@ export class PricingService {
   }
 
   withProfit(cost: number, pct: number, mode: ProfitMode): number {
-    const p = Math.max(pct, 0) / 100;
-    return mode === 'markup' ? cost * (1 + p) : cost / (1 - Math.min(p, MAX_MARGIN));
+    return withProfit(cost, pct, mode);
   }
 
   roundUp(value: number, step: number): number {
-    return step > 0 ? Math.ceil(value / step) * step : value;
+    return roundUp(value, step);
   }
 
   quote(all: Ingredient[], lines: RecipeLine[], o: PriceInput): PriceQuote {
@@ -49,7 +37,7 @@ export class PricingService {
       if (!ing) return 0;
       const cost = this.lineCost(ing, line);
       if (cost === null) {
-        problems.push(`Line ${n + 1}: ${ing.name} is bought in ${this.baseOf(ing.packUnit)}, not ${line.unit}.`);
+        problems.push(`Line ${n + 1}: ${ing.name.en} is bought in ${this.baseOf(ing.packUnit)}, not ${line.unit}.`);
         return 0;
       }
       return cost;

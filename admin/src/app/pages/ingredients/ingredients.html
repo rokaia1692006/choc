@@ -1,9 +1,5 @@
 <div class="max-w-5xl mx-auto px-6 py-8">
   <h1 class="text-xl font-semibold text-stone-900">Ingredients</h1>
-  <p class="text-sm text-stone-600 mt-1 max-w-prose">
-    What you buy and what it costs. Edit a cell and click away to save it.
-    Product prices are worked out from these numbers.
-  </p>
 
   <app-error-line [message]="error()" />
 
@@ -23,7 +19,10 @@
       </thead>
       <tbody>
         <tr class="new-row border-b border-stone-400">
-          <td class="pr-3"><input class="cell" placeholder="Name" aria-label="New ingredient name" [(ngModel)]="draft.name" (keydown.enter)="add()"></td>
+          <td class="pr-3">
+            <input class="cell" placeholder="Name (English)" maxlength="120" aria-label="New ingredient name" [(ngModel)]="draft.name.en" (keydown.enter)="add()">
+            <input class="cell" dir="rtl" placeholder="Name (Arabic)" maxlength="120" aria-label="New ingredient name in Arabic" [(ngModel)]="draft.name.ar" (keydown.enter)="add()">
+          </td>
           <td class="pr-3"><input class="cell" type="number" min="0" aria-label="Pack size" [(ngModel)]="draft.packSize"></td>
           <td class="pr-3">
             <select class="cell" aria-label="Pack unit" [(ngModel)]="draft.packUnit">
@@ -32,14 +31,17 @@
           </td>
           <td class="pr-3"><input class="cell" type="number" min="0" step="0.01" aria-label="Pack price" [(ngModel)]="draft.packPrice"></td>
           <td class="pr-3 text-stone-500">{{ perUnit(draft) }}</td>
-          <td class="pr-3"><input class="cell" placeholder="milk, soy" aria-label="Allergens" [(ngModel)]="draft.allergens"></td>
-          <td class="pr-3"><input class="cell" aria-label="Supplier" [(ngModel)]="draft.supplier"></td>
+          <td class="pr-3"><input class="cell" placeholder="milk, soy" aria-label="Allergens" [value]="allergensText(draft)" (change)="setAllergens(draft, $any($event.target).value)"></td>
+          <td class="pr-3"><input class="cell" maxlength="120" aria-label="Supplier" [(ngModel)]="draft.supplier"></td>
           <td><button class="btn" type="button" (click)="add()">Add</button></td>
         </tr>
 
         @for (r of rows(); track r.id) {
           <tr class="border-b border-stone-200 hover:bg-stone-50">
-            <td class="pr-3"><input class="cell" aria-label="Name" [(ngModel)]="r.name" (change)="save(r)"></td>
+            <td class="pr-3">
+              <input class="cell" maxlength="120" aria-label="Name" [(ngModel)]="r.name.en" (change)="save(r)">
+              <input class="cell" dir="rtl" maxlength="120" aria-label="Name in Arabic" [(ngModel)]="r.name.ar" (change)="save(r)">
+            </td>
             <td class="pr-3"><input class="cell" type="number" min="0" aria-label="Pack size" [(ngModel)]="r.packSize" (change)="save(r)"></td>
             <td class="pr-3">
               <select class="cell" aria-label="Pack unit" [(ngModel)]="r.packUnit" (change)="save(r)">
@@ -48,12 +50,12 @@
             </td>
             <td class="pr-3"><input class="cell" type="number" min="0" step="0.01" aria-label="Pack price" [(ngModel)]="r.packPrice" (change)="save(r)"></td>
             <td class="pr-3 text-stone-600">{{ perUnit(r) }}</td>
-            <td class="pr-3"><input class="cell" aria-label="Allergens" [(ngModel)]="r.allergens" (change)="save(r)"></td>
-            <td class="pr-3"><input class="cell" aria-label="Supplier" [(ngModel)]="r.supplier" (change)="save(r)"></td>
+            <td class="pr-3"><input class="cell" aria-label="Allergens" [value]="allergensText(r)" (change)="setAllergens(r, $any($event.target).value); save(r)"></td>
+            <td class="pr-3"><input class="cell" maxlength="120" aria-label="Supplier" [(ngModel)]="r.supplier" (change)="save(r)"></td>
             <td><button class="link-danger" type="button" (click)="remove(r)">Delete</button></td>
           </tr>
         } @empty {
-          <tr><td colspan="8" class="py-8 text-stone-500">No ingredients yet. Fill in the shaded row above and press Add.</td></tr>
+          <tr><td colspan="8" class="py-8 text-stone-500">No ingredients.</td></tr>
         }
       </tbody>
     </table>

@@ -3,30 +3,46 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { BoxItem, BoxType, Category, Product, ProductInput, ProductVariant } from '../../../core/models/product.model';
+import { IngredientService } from '../../../core/services/Ingredient.service';
+import { Ingredient } from '../../../core/models/Ingredient.model';
+import { BoxContent, BoxSpec, Category, Product, ProductInput, ProductStatus, ProductType, ProfitMode, BoxMode } from '../../../core/models/product.model';
+import { applyProfit, boxCost, finalPrice, productCost } from '@contracts/pricing';
 
-const toLocal = (iso?: string) => {
+const toLocal = (iso?: string | null) => {
   if (!iso) return '';
   const d = new Date(iso);
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 };
 const toIso = (v: string) => new Date(v).toISOString();
 
-function seasonRule(g: AbstractControl): ValidationErrors | null {
-  if (!g.get('isSeasonal')?.value) return null;
-  const { seasonName, startsAt, endsAt } = g.value;
-  if (!seasonName || !startsAt || !endsAt) return { seasonMissing: true };
-  return new Date(endsAt) > new Date(startsAt) ? null : { seasonRange: true };
+type RecipeLineValue = { ingredientId: number; quantity: number };
+type FixedContentValue = { bonbonId: number; pieces: number };
+
+function availabilityRule(g: AbstractControl): ValidationErrors | null {
+  const value = g.value as { availableFrom?: string | null; availableUntil?: string | null };
+  const { availableFrom, availableUntil } = value;
+  if (!availableFrom || !availableUntil) return null;
+  return new Date(availableUntil) > new Date(availableFrom) ? null : { availabilityRange: true };
 }
 
 function boxRule(g: AbstractControl): ValidationErrors | null {
-  const v = g.value;
-  if (v.boxType === 'set') return v.contents.length ? null : { setEmpty: true };
-  if (v.boxType !== 'mixed') return null;
-  const flavours = (v.variants as { available: boolean }[]).filter(x => x.available).length;
-  if (flavours < 2) return { mixedFlavours: true };
-  if (!(v.totalPieces >= 1) || v.minPerFlavour * flavours > v.totalPieces) return { mixedPieces: true };
-  return null;
+  const v = g.value as {
+    type?: ProductType;
+    recipe?: RecipeLineValue[];
+    totalPieces?: number;
+    rowSize?: number;
+    boxMode?: BoxMode;
+    fixedContents?: FixedContentValue[];
+    allowedBonbonIds?: number[];
+  };
+  if (v.type !== 'box') return (v.recipe ?? []).length ? null : { recipeEmpty: true };
+  if ((v.totalPieces ?? 0) < 1 || (v.rowSize ?? 0) < 1 || (v.totalPieces ?? 0) % (v.rowSize ?? 1) !== 0) return { boxRows: true };
+  if (v.boxMode === 'fixed') {
+    if (!(v.fixedContents ?? []).length) return { boxEmpty: true };
+    const sum = (v.fixedContents ?? []).reduce((n, c) => n + (+(c['pieces'] as number | string) || 0), 0);
+    return sum === (v.totalPieces ?? 0) ? null : { boxSum: true };
+  }
+  return (v.allowedBonbonIds ?? []).length >= 2 ? null : { mixedChoices: true };
 }
 
 @Component({ selector: 'app-product-form', imports: [ReactiveFormsModule, RouterLink], templateUrl: './product-form.html', styleUrl: './product-form.css' })
@@ -34,95 +50,199 @@ export class ProductForm implements OnInit {
   private fb = inject(FormBuilder);
   private svc = inject(ProductService);
   private cats = inject(CategoryService);
+  private ingredientApi = inject(IngredientService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   id: number | null = null;
   categories = signal<Category[]>([]);
+  ingredients = signal<Ingredient[]>([]);
+  items = signal<Product[]>([]);
+  gallery = signal<string[]>([]);
+  needsReprice = signal(false);
   saving = signal(false);
   error = signal('');
 
   form = this.fb.nonNullable.group({
-    status: 'draft' as Product['status'],
-    name: ['', Validators.required], nameAr: '',
-    description: ['', Validators.required], descriptionAr: '',
-    detailedDescription: '', detailedDescriptionAr: '',
-    price: [0, [Validators.required, Validators.min(0)]],
-    categoryId: [0, Validators.min(1)],
-    badge: '', badgeAr: '',
-    image: ['', Validators.required],
-    boxType: 'single' as BoxType,
-    contents: this.fb.array<FormGroup>([]),
-    totalPieces: 12, minPerFlavour: 0, boxLabel: '', boxLabelAr: '',
-    variantLabel: '',
-    variants: this.fb.array<FormGroup>([]),
-    isSeasonal: false, seasonName: '', seasonNameAr: '', startsAt: '', endsAt: '',
-    sku: '', ingredients: '', ingredientsAr: '', allergens: '',
-    weightGrams: 0, shelfLifeDays: 0, stockQuantity: null as number | null,
+    type: 'bonbon' as ProductType,
+    status: 'draft' as ProductStatus,
+    name: this.fb.nonNullable.group({ en: ['', Validators.required], ar: '' }),
+    description: this.fb.nonNullable.group({ en: ['', Validators.required], ar: '' }),
+    details: this.fb.nonNullable.group({ en: '', ar: '' }),
+    badge: this.fb.nonNullable.group({ en: '', ar: '' }),
+    categoryId: 0,
+    imageUrl: ['', Validators.required],
+    availableFrom: '', availableUntil: '',
+    sku: '', weightGrams: 0, shelfLifeDays: 0, stockQuantity: null as number | null,
     featured: false, sortOrder: 0,
-  }, { validators: [seasonRule, boxRule] });
+    profitPercent: [40, [Validators.required, Validators.min(0), Validators.max(500)]],
+    profitMode: 'markup' as ProfitMode,
+    roundTo: 0.5,
+    priceOverride: null as number | null,
+    otherCost: [0, Validators.min(0)],
+    recipe: this.fb.array<FormGroup>([]),
+    boxMode: 'fixed' as BoxMode,
+    totalPieces: 12, rowSize: 4, packagingCost: [0, Validators.min(0)],
+    fixedContents: this.fb.array<FormGroup>([]),
+    allowedBonbonIds: [[] as number[]],
+  }, { validators: [availabilityRule, boxRule] });
 
-  get variants() { return this.form.controls.variants as FormArray<FormGroup>; }
-  get contents() { return this.form.controls.contents as FormArray<FormGroup>; }
-  get setTotal() { return this.contents.controls.reduce((n, g) => n + (+g.value.quantity || 0), 0); }
+  get recipe() { return this.form.controls.recipe as FormArray<FormGroup>; }
+  get fixedContents() { return this.form.controls.fixedContents as FormArray<FormGroup>; }
+  get fixedTotal() { return this.fixedContents.controls.reduce((n, g) => n + (+g.value.pieces || 0), 0); }
 
-  variantGroup(v?: ProductVariant) {
+  recipeGroup(r?: { ingredientId: number; quantity: number }) {
     return this.fb.nonNullable.group({
-      id: v?.id ?? crypto.randomUUID(), flavour: [v?.flavour ?? '', Validators.required], flavourAr: v?.flavourAr ?? '',
-      label: [v?.label ?? '', Validators.required], labelAr: v?.labelAr ?? '',
-      priceModifier: v?.priceModifier ?? 0, crossSectionImage: v?.crossSectionImage ?? '', available: v?.available ?? true,
+      ingredientId: [r?.ingredientId ?? 0, Validators.min(1)],
+      quantity: [r?.quantity ?? 0, [Validators.required, Validators.min(0.0001)]],
     });
   }
-  contentGroup(i?: BoxItem) {
-    return this.fb.nonNullable.group({ flavour: [i?.flavour ?? '', Validators.required], flavourAr: i?.flavourAr ?? '', quantity: [i?.quantity ?? 1, [Validators.required, Validators.min(1)]] });
+  contentGroup(c?: BoxContent) {
+    return this.fb.nonNullable.group({
+      bonbonId: [c?.bonbonId ?? 0, Validators.min(1)],
+      pieces: [c?.pieces ?? 1, [Validators.required, Validators.min(1)]],
+    });
   }
-  addVariant() { this.variants.push(this.variantGroup()); }
-  addContent() { this.contents.push(this.contentGroup()); }
+  addRecipeLine() { this.recipe.push(this.recipeGroup()); }
+  addContent() { this.fixedContents.push(this.contentGroup()); }
+
+  unitOf(i: number): string {
+    const id = +this.recipe.at(i).value.ingredientId;
+    return this.ingredients().find(x => x.id === id)?.unit ?? '';
+  }
+
+  isAllowed(id: number): boolean {
+    return this.form.controls.allowedBonbonIds.value.includes(id);
+  }
+
+  toggleAllowed(id: number) {
+    const c = this.form.controls.allowedBonbonIds;
+    c.setValue(c.value.includes(id) ? c.value.filter(x => x !== id) : [...c.value, id]);
+  }
+
+  private currentSpec(): BoxSpec {
+    const v = this.form.getRawValue();
+    const fixedContents = (v.fixedContents as Array<{ bonbonId: number | string; pieces: number | string }>) ?? [];
+    return {
+      mode: v.boxMode,
+      totalPieces: +v.totalPieces,
+      rowSize: +v.rowSize,
+      packagingCost: +v.packagingCost || 0,
+      fixedContents: fixedContents.map(c => ({ bonbonId: +c['bonbonId'], pieces: +c['pieces'] })),
+      allowedBonbonIds: v.allowedBonbonIds,
+    };
+  }
+
+  get cost(): number {
+    const v = this.form.getRawValue();
+    if (v.type === 'box') return boxCost(this.currentSpec(), this.items());
+    const recipe = (v.recipe as Array<{ ingredientId: number | string; quantity: number | string }>).map(r => ({ ingredientId: +r['ingredientId'], quantity: +r['quantity'] || 0 }));
+    return productCost({ recipe, otherCost: +v.otherCost || 0 }, this.ingredients());
+  }
+
+  get suggested(): number {
+    const v = this.form.getRawValue();
+    return applyProfit(this.cost, +v.profitPercent || 0, v.profitMode, +v.roundTo || 0).withProfit;
+  }
+
+  get selling(): number {
+    return finalPrice(this.suggested, this.form.getRawValue().priceOverride);
+  }
 
   ngOnInit() {
     this.cats.list().subscribe(c => this.categories.set(c));
+    this.ingredientApi.list().subscribe({
+      next: r => this.ingredients.set(r),
+      error: () => this.error.set('Could not load ingredients. Reload the page.'),
+    });
     const id = this.route.snapshot.paramMap.get('id');
-    if (!id) return;
-    this.id = +id;
+    this.id = id ? +id : null;
+    this.svc.list().subscribe({
+      next: all => this.items.set(all.filter(p => p.type !== 'box' && p.id !== this.id)),
+      error: () => this.error.set('Could not load products. Reload the page.'),
+    });
+    if (!this.id) return;
     this.svc.get(this.id).subscribe({
       next: p => {
-        p.variants?.forEach(v => this.variants.push(this.variantGroup(v)));
-        p.boxContents?.forEach(i => this.contents.push(this.contentGroup(i)));
+        p.recipe.forEach(r => this.recipe.push(this.recipeGroup(r)));
+        p.box?.fixedContents.forEach(c => this.fixedContents.push(this.contentGroup(c)));
+        this.gallery.set(p.galleryUrls);
+        this.needsReprice.set(p.needsReprice);
         this.form.patchValue({
-          ...p, allergens: (p.allergens ?? []).join(', '),
-          boxType: p.boxType ?? 'single',
-          totalPieces: p.mixedBox?.totalPieces ?? 12, minPerFlavour: p.mixedBox?.minPerFlavour ?? 0,
-          boxLabel: p.mixedBox?.label ?? '', boxLabelAr: p.mixedBox?.labelAr ?? '',
-          seasonName: p.seasonal?.seasonName ?? '', seasonNameAr: p.seasonal?.seasonNameAr ?? '',
-          startsAt: toLocal(p.seasonal?.startsAt), endsAt: toLocal(p.seasonal?.endsAt),
-          variants: undefined, contents: undefined,
-        } as any);
+          type: p.type, status: p.status,
+          name: p.name, description: p.description, details: p.details,
+          badge: p.badge ?? { en: '', ar: '' },
+          categoryId: p.categoryId ?? 0,
+          imageUrl: p.imageUrl,
+          availableFrom: toLocal(p.availability.from), availableUntil: toLocal(p.availability.until),
+          sku: p.sku, weightGrams: p.weightGrams, shelfLifeDays: p.shelfLifeDays, stockQuantity: p.stockQuantity,
+          featured: p.featured, sortOrder: p.sortOrder,
+          profitPercent: p.profitPercent, profitMode: p.profitMode, roundTo: p.roundTo,
+          priceOverride: p.priceOverride, otherCost: p.otherCost,
+          boxMode: p.box?.mode ?? 'fixed', totalPieces: p.box?.totalPieces ?? 12, rowSize: p.box?.rowSize ?? 4,
+          packagingCost: p.box?.packagingCost ?? 0, allowedBonbonIds: p.box?.allowedBonbonIds ?? [],
+        });
       },
       error: () => this.error.set('Could not load this product.'),
     });
   }
 
-  upload(e: Event, target: 'image' | number) {
-    const file = (e.target as HTMLInputElement).files?.[0];
+  upload(e: Event, target: 'image' | 'gallery') {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5_000_000) {
+      this.error.set('Upload failed. Use a JPG, PNG or WebP under 5 MB.');
+      input.value = '';
+      return;
+    }
     this.svc.upload(file).subscribe({
-      next: r => target === 'image' ? this.form.controls.image.setValue(r.url) : this.variants.at(target).patchValue({ crossSectionImage: r.url }),
+      next: r => {
+        if (target === 'image') this.form.controls.imageUrl.setValue(r.url);
+        else this.gallery.update(g => [...g, r.url].slice(0, 8));
+        input.value = '';
+      },
       error: () => this.error.set('Upload failed. Use a JPG, PNG or WebP under 5 MB.'),
     });
+  }
+
+  removeGallery(i: number) {
+    this.gallery.update(g => g.filter((_, n) => n !== i));
   }
 
   save() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     const v = this.form.getRawValue();
-    const { seasonName, seasonNameAr, startsAt, endsAt, allergens, contents, totalPieces, minPerFlavour, boxLabel, boxLabelAr, ...rest } = v;
-    const body = {
-      ...rest,
-      variants: v.boxType === 'set' ? [] : rest.variants,
-      boxContents: v.boxType === 'set' ? contents : [],
-      mixedBox: v.boxType === 'mixed' ? { totalPieces, minPerFlavour, label: boxLabel, labelAr: boxLabelAr } : null,
-      allergens: allergens.split(',').map(a => a.trim()).filter(Boolean),
-      seasonal: v.isSeasonal ? { seasonName, seasonNameAr, startsAt: toIso(startsAt), endsAt: toIso(endsAt) } : null,
-    } as unknown as ProductInput;
+    const isBox = v.type === 'box';
+    const body: ProductInput = {
+      type: v.type,
+      sellIndividually: v.type === 'bar',
+      name: v.name,
+      description: v.description,
+      details: v.details,
+      imageUrl: v.imageUrl,
+      galleryUrls: this.gallery(),
+      categoryId: v.categoryId > 0 ? v.categoryId : null,
+      badge: v.badge.en || v.badge.ar ? v.badge : null,
+      status: v.status,
+      availability: {
+        from: v.availableFrom ? toIso(v.availableFrom) : null,
+        until: v.availableUntil ? toIso(v.availableUntil) : null,
+      },
+      sku: v.sku,
+      weightGrams: +v.weightGrams || 0,
+      shelfLifeDays: +v.shelfLifeDays || 0,
+      stockQuantity: v.stockQuantity,
+      featured: v.featured,
+      sortOrder: +v.sortOrder || 0,
+      profitPercent: +v.profitPercent,
+      profitMode: v.profitMode,
+      roundTo: +v.roundTo || 0,
+      priceOverride: v.priceOverride && v.priceOverride > 0 ? v.priceOverride : null,
+      otherCost: isBox ? 0 : +v.otherCost || 0,
+      recipe: isBox ? [] : (v.recipe as Array<{ ingredientId: number | string; quantity: number | string }>).map(r => ({ ingredientId: +r['ingredientId'], quantity: +r['quantity'] })),
+      box: isBox ? this.currentSpec() : null,
+    };
     this.saving.set(true); this.error.set('');
     const req = this.id ? this.svc.update(this.id, body) : this.svc.create(body);
     req.subscribe({ next: () => this.router.navigate(['/products']), error: () => { this.saving.set(false); this.error.set('Could not save the product. Check the fields and try again.'); } });

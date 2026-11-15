@@ -1,4 +1,6 @@
-export type ProfitMode = 'markup' | 'margin';
+import { ProfitMode } from '@contracts/product';
+
+export type { ProfitMode };
 
 export interface PriceInput {
   yieldPieces: number;

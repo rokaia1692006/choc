@@ -6,6 +6,10 @@ export interface Category {
 
 export interface Product {
   id: number;
+  type?: 'bonbon' | 'bar' | 'box';
+  sellIndividually?: boolean;
+  featured?: boolean;
+  inStock?: boolean;
   name: string;
   nameAr?: string;
   description: string;
@@ -40,7 +44,7 @@ export interface Boxes {
 }
 export interface productTypes {
   id: string;      
-  flavour: 'kunafa pistachio' | 'caramel' | 'coffee' | 'ganache' | 'almond' | 'white';
+  flavour: string;
   flavourAr?: string;
   label: string;
   labelAr?: string;

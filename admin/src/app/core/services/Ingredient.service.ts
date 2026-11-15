@@ -1,19 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/enviroment';
-import { Ingredient, RecipeProductDraft } from '../models/Ingredient.model';
+import { API_URL } from '../api.config';
+import { Ingredient, IngredientInput, RecipeProductDraft } from '../models/Ingredient.model';
 
 @Injectable({ providedIn: 'root' })
 export class IngredientService {
   private http = inject(HttpClient);
-  private api = environment.apiUrl + '/admin';
+  private api = `${API_URL}/admin`;
 
   list(): Observable<Ingredient[]> {
     return this.http.get<Ingredient[]>(`${this.api}/ingredients`);
   }
 
-  create(i: Ingredient): Observable<Ingredient> {
+  create(i: IngredientInput): Observable<Ingredient> {
     return this.http.post<Ingredient>(`${this.api}/ingredients`, i);
   }
 

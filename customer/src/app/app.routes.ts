@@ -12,9 +12,11 @@ import { guestGuard } from './core/guards/guest-guard';
 import { cartGuardGuard } from './core/guards/cart-guard-guard';
 import { Orders } from './pages/orders/orders';
 import { OrderRecipt } from './pages/order-recipt/order-recipt';
+import { ProductDetail } from './pages/product-detail/product-detail';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', component: Products },
+  { path: 'product/:id', component: ProductDetail },
   { path: 'cart', component: Cart },
   { path: 'checkout', component: Checkout, canActivate: [cartGuardGuard] },
   { path: 'login', component: Login, canActivate: [guestGuard] },

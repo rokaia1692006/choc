@@ -15,7 +15,7 @@ export class ProductList implements OnInit {
   ngOnInit() { this.load(); }
   load() { this.svc.list().subscribe({ next: p => this.products.set(p), error: () => this.error.set('Could not load products.') }); }
   remove(p: Product) {
-    if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+        if (!confirm(`Delete "${p.name.en}"? This cannot be undone.`)) return;
     this.svc.remove(p.id).subscribe({ next: () => this.load(), error: () => this.error.set('Could not delete the product.') });
   }
 }

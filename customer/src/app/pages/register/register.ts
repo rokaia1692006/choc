@@ -66,23 +66,15 @@ export class Register {
     }
 
     this.loading.set(true);
-    const isAlreadyRegistered = this.auth.confirmCode(cleanPhone); 
-    this.loading.set(false);
-
-    if (!isAlreadyRegistered) {
-      this.step.set('sms');
-      this.success.set(
-        this.lang.isArabic() 
-          ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' 
-          : 'An account verification code has been sent to your number.'
-      );
-    } else {
-      this.error.set(
-        this.lang.isArabic() 
-          ? 'رقم الهاتف هذا مسجل بالفعل.' 
-          : 'This phone number is already registered.'
-      );
-    }
+    this.form.phone = cleanPhone;
+    this.auth.startRegistration(this.form).subscribe({
+      next: () => {
+        this.step.set('sms');
+        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' : 'An account verification code has been sent to your number.');
+      },
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر بدء التسجيل. تحقق مما إذا كان الرقم مسجلاً وحاول مجدداً.' : 'Could not start registration. Check whether this phone is already registered and try again.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
   submitVerificationCode() {
@@ -94,27 +86,18 @@ export class Register {
     }
 
     this.loading.set(true);
-    const isValid = this.auth.correctCode(this.verificationCode.trim());
-    
-    if (isValid) {
-      const success = this.auth.register({ ...this.form, phone: this.form.phone.trim().replace(/\s+/g, '') });
-      this.loading.set(false);
-
-      if (success) {
-        this.router.navigate(['/']);
-      } else {
-        this.error.set(this.lang.isArabic() ? 'فشلت عملية إنشاء الحساب. حاول مرة أخرى.' : 'Registration failed. Please try again.');
-      }
-    } else {
-      this.loading.set(false);
-      this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح، يرجى المحاولة مرة أخرى.' : 'Incorrect code. Please try again.');
-    }
+    this.auth.verifyRegistration(this.form.phone, this.verificationCode.trim()).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () => this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح أو انتهت صلاحيته.' : 'The code is incorrect or expired.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
   resendVerificationCode() {
     this.error.set(null);
-    this.success.set(
-      this.lang.isArabic() ? 'تم إعادة إرسال رمز التحقق بنجاح.' : 'A new registration code has been sent.'
-    );
+    this.auth.resendVerification(this.form.phone, 'registration').subscribe({
+      next: () => this.success.set(this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new registration code has been sent.'),
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the verification code.')
+    });
   }
 }

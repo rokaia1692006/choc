@@ -1,6 +1,8 @@
 import { LocalizedText } from './Localized';
 
 export type OrderStatus = 'pending' | 'preparing' | 'delivered' | 'cancelled';
+export type PaymentMethod = 'card' | 'wallet' | 'cash_on_delivery';
+export type PaymentStatus = 'unpaid' | 'pending' | 'paid' | 'failed' | 'refunded';
 
 export interface BoxSelection {
   bonbonId: number;
@@ -21,6 +23,7 @@ export interface PlaceOrderRequest {
   apartment: string;
   notes: string;
   deliveryDate: string;
+  paymentMethod: PaymentMethod;
   lines: CartLineRequest[];
   verificationToken: string;
 }
@@ -50,6 +53,26 @@ export interface Order {
   total: number;
   deliveryDate: string;
   status: OrderStatus;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
   placedAt: string;
   cancelledAt: string | null;
+}
+
+export interface AdminOrder extends Order {
+  paymobOrderId: string | null;
+  paymobTransactionId: string | null;
+  internalNotes: string;
+}
+
+export interface PlaceOrderResponse {
+  order: Order;
+  paymentUrl: string | null;
+}
+
+export interface Paged<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
 }

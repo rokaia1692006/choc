@@ -42,7 +42,7 @@
 
 .checkoutlayout {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
   gap: 3.5rem;
   max-width: 1140px;
   margin: 0 auto;
@@ -52,17 +52,19 @@
 }
 
 .checkoutform-wrap { 
-  min-width: 0; 
+  min-width: 0;
   width: 100%;
 }
 
 .checkoutform {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
 .formsection {
+  min-width: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 2rem;
@@ -250,6 +252,37 @@
   cursor: not-allowed;
 }
 
+.paymobbtn {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: -1rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.paymobbtn:disabled {
+  opacity: 0.72;
+}
+
+.card-symbol {
+  font-size: 1rem;
+}
+
+.payment-note {
+  margin: -1.5rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
 .ordersummary {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -359,12 +392,13 @@
   }
 
  .checkoutlayout { 
-    grid-template-columns: 1fr !important; 
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 2rem; 
     width: 100%;
   }
 
 .ordersummary { 
+    min-width: 0;
     position: static; 
     order: -1;
     padding: 1.5rem;
@@ -372,6 +406,7 @@
     box-sizing: border-box;
   }
   .checkoutform-wrap {
+    min-width: 0;
     width: 100%;
   }
 

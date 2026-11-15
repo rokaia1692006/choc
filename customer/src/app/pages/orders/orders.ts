@@ -24,23 +24,19 @@ export class Orders implements OnInit {
   orders = signal<Order[]>([]);
   cancellingId = signal<string | null>(null);
   cancelError = signal('');
+  loading = signal(false);
 
   ngOnInit() {
     this.loadOrders();
   }
 
   loadOrders() {
-    const user = this.auth.user();
-    let result: Order[] = [];
-    if (user) {
-      const byId = this.orderService.getOrdersByUser(user.id);
-      const byPhone = this.orderService.getOrdersByPhone(user.phone);
-      const map = new Map<string, Order>();
-      [...byId, ...byPhone].forEach(o => map.set(o.id, o));
-      result = Array.from(map.values());
-    }
-    result.sort((a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime());
-    this.orders.set(result);
+    this.loading.set(true);
+    this.orderService.getMyOrders().subscribe({
+      next: orders => this.orders.set([...orders].sort((a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime())),
+      error: () => this.cancelError.set(this.lang.isArabic() ? 'تعذر تحميل الطلبات.' : 'Could not load orders.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
   canCancel(order: Order): boolean {
@@ -50,13 +46,11 @@ export class Orders implements OnInit {
   cancelOrder(orderId: string) {
     this.cancelError.set('');
     this.cancellingId.set(orderId);
-    const success = this.orderService.cancelOrder(orderId);
-    if (success) {
-      this.loadOrders();
-    } else {
-      this.cancelError.set('This order can no longer be cancelled.');
-    }
-    this.cancellingId.set(null);
+    this.orderService.cancelOrder(orderId).subscribe({
+      next: () => this.loadOrders(),
+      error: () => this.cancelError.set('This order can no longer be cancelled.'),
+      complete: () => this.cancellingId.set(null)
+    });
   }
 
  statusLabel(status: string): string {
@@ -78,40 +72,5 @@ export class Orders implements OnInit {
   }
   displayItemName(item: any): string {
   return this.lang.isArabic() && item.nameAr ? item.nameAr : item.name;
-}
-seedTestOrders() {
-  const user = this.auth.user();
-  if (!user) return;
-
-  const base = {
-  userId: user.id,
-  customerName: user.name,
-  phone: user.phone,
-  address: '123 Test St',
-  city: 'Cairo',
-  subtotal: 270,
-  deliveryFee: 30,  
-  tax: 0,           
-  total: 300,
-  deliveryDate: '2026-05-30',
-  placedAt: new Date().toISOString(),
-  items: [{
-    productId: 1,
-    name: 'Chocolate Box',
-    image: 'assets/images/box.png',
-    price: 270,
-    quantity: 1,
-  }]
-};
-
-  const testOrders = [
-    { ...base, id: 'test-1', status: 'pending' as const },
-    { ...base, id: 'test-2', status: 'preparing' as const },
-    { ...base, id: 'test-3', status: 'delivered' as const },
-    { ...base, id: 'test-4', status: 'cancelled' as const },
-  ];
-
-  testOrders.forEach(o => this.orderService.saveOrder(o));
-  this.loadOrders();
 }
 }

@@ -1,7 +1,11 @@
 .flush {
   margin-top: 0;
 }
-
+.field {
+  margin: 0.5rem 0;
+  padding:0.5rem 0.5rem ;
+  border :1px solid #a8a29e;
+}
 .row {
   display: flex;
   align-items: baseline;

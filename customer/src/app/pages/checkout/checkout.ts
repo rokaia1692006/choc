@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth';
 import { CartService } from '../../core/services/cart';
 import { OrderService } from '../../core/services/order-service';
-import { Order } from '../../core/models/order';
 import { CurrencyService } from '../../core/services/currency';
 import { LanguageService } from '../../core/services/language';
 import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
@@ -37,7 +36,16 @@ export class Checkout {
   deliveryFee = signal(30); 
   taxRate = signal(0); 
   minDate = this.order.getMinDeliveryDate();
-  blockedDates = this.order.getBlockedDates();
+  blockedDates = signal<string[]>([]);
+
+  constructor() {
+    const from = new Date().toISOString().slice(0, 10);
+    const to = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    this.order.getBlockedDates(from, to).subscribe({
+      next: dates => this.blockedDates.set(dates),
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر تحميل مواعيد التوصيل.' : 'Could not load delivery availability.')
+    });
+  }
 
   get subtotal() { return this.cart.cartTotal(); }
   get tax() { return this.subtotal * this.taxRate(); }
@@ -60,7 +68,7 @@ export class Checkout {
   }
 
   isDateBlocked(dateStr: string): boolean {
-    return this.blockedDates.includes(dateStr);
+    return this.blockedDates().includes(dateStr);
   }
 
   onDateChange() {
@@ -112,24 +120,22 @@ export class Checkout {
         return;
       }
 
-      const isAlreadyRegistered = this.auth.confirmCode(cleanPhone);
-      if (isAlreadyRegistered) {
-        this.error.set(this.lang.isArabic() ? 'رقم الهاتف هذا مسجل بالفعل.' : 'This phone number is already registered.');
-        return;
-      }
     }
 
-    this.loading.set(true);
     this.form.phone = cleanPhone;
-    this.auth.confirmCode(cleanPhone); 
-    this.loading.set(false);
-
-    this.step.set('sms');
-    this.success.set(
-      this.lang.isArabic() 
-        ? 'تم إرسال رمز التحقق لتأكيد طلبك إلى رقم هاتفك.' 
-        : 'A verification code to confirm your order has been sent to your number.'
-    );
+    if (this.auth.isLoggedIn()) {
+      this.placeOrder();
+      return;
+    }
+    this.loading.set(true);
+    this.auth.startPhoneVerification(cleanPhone, 'checkout').subscribe({
+      next: () => {
+        this.step.set('sms');
+        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز التحقق إلى رقم هاتفك.' : 'A verification code has been sent to your number.');
+      },
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إرسال رمز التحقق.' : 'Could not send a verification code.'),
+      complete: () => this.loading.set(false)
+    });
   }
 
   submitVerificationCode() {
@@ -141,27 +147,45 @@ export class Checkout {
     }
 
     this.loading.set(true);
-    const isValidCode = this.auth.correctCode(this.verificationCode.trim());
+    this.auth.verifyPhone(this.form.phone, this.verificationCode.trim(), 'checkout').subscribe({
+      next: () => {
+        if (this.createAccount()) {
+          this.auth.registerAfterVerification({
+            name: this.form.name,
+            phone: this.form.phone,
+            password: this.form.password,
+            address: this.form.address,
+            city: this.form.city,
+            apartment: this.form.apartment
+          }, this.verificationCode.trim()).subscribe({
+            next: () => this.placeOrder(),
+            error: () => {
+              this.loading.set(false);
+              this.error.set(this.lang.isArabic() ? 'تعذر إنشاء الحساب.' : 'Could not create the account.');
+            }
+          });
+        } else {
+          this.placeOrder();
+        }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح أو انتهت صلاحيته.' : 'The code is incorrect or expired.');
+      }
+    });
+  }
 
-    if (!isValidCode) {
-      this.loading.set(false);
-      this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح، يرجى المحاولة مرة أخرى.' : 'Incorrect code. Please try again.');
-      return;
-    }
+  resendVerificationCode() {
+    this.error.set('');
+    this.auth.resendVerification(this.form.phone, 'checkout').subscribe({
+      next: () => this.success.set(this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new code has been sent.'),
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the code.')
+    });
+  }
 
-    if (this.createAccount() && !this.auth.isLoggedIn()) {
-      this.auth.register({
-        name: this.form.name,
-        phone: this.form.phone,
-        password: this.form.password,
-        address: this.form.address,
-        city: this.form.city,
-        apartment: this.form.apartment
-      });
-    }
-
-    const newOrder: Order = {
-      id: Date.now().toString(),
+  private placeOrder(): void {
+    const firstCartProductId = this.cart.cartItems()[0]?.product.id;
+    this.order.saveOrder({
       userId: this.auth.user()?.id || null,
       customerName: this.form.name,
       phone: this.form.phone,
@@ -169,40 +193,40 @@ export class Checkout {
       city: this.form.city,
       apartment: this.form.apartment,
       notes: this.form.notes,
-      items: this.cart.cartItems().map(i => ({
-        productId: i.product.id,
-        name: i.product.name,
-        nameAr: i.product.nameAr,
-        image: i.product.image,
-        price: i.product.price,
-        quantity: i.quantity,
+      items: this.cart.cartItems().map(item => ({
+        productId: item.product.id,
+        name: item.product.name,
+        nameAr: item.product.nameAr,
+        image: item.product.image,
+        price: item.product.price,
+        quantity: item.quantity
       })),
       subtotal: this.subtotal,
       deliveryFee: this.deliveryFee(),
       tax: this.tax,
       total: this.total,
-      deliveryDate: this.form.deliveryDate,
-      status: 'pending',
-      placedAt: new Date().toISOString()
-    };
-
-    this.order.saveOrder(newOrder);
-
-    setTimeout(() => {
-      this.cart.clearCart();
-      this.loading.set(false);
-      if (!this.auth.isLoggedIn()) {
-        this.router.navigate(['/order-receipt'], { queryParams: { id: newOrder.id, phone: newOrder.phone } });
-      } else {
-        this.router.navigate(['/orders']);
+      deliveryDate: this.form.deliveryDate
+    }).subscribe({
+      next: order => {
+        this.cart.clearCart();
+        this.loading.set(false);
+        if (this.auth.isLoggedIn()) this.router.navigate(['/orders']);
+        else if (firstCartProductId !== undefined) this.router.navigate(['/product', firstCartProductId]);
+        else this.router.navigateByUrl('/shop');
+        this.success.set(order.id);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set(this.lang.isArabic() ? 'تعذر إنشاء الطلب. حاول مجدداً.' : 'Could not place the order. Please try again.');
       }
-    }, 1000);
+    });
   }
 
-  resendVerificationCode() {
-    this.error.set('');
-    this.success.set(
-      this.lang.isArabic() ? 'تم إعادة إرسال رمز التحقق بنجاح.' : 'A new verification code has been sent.'
+  notifyCardPaymentUnavailable() {
+    this.error.set(
+      this.lang.isArabic()
+        ? 'الدفع بالبطاقة غير متاح حتى يتم إعداد خادم الدفع الآمن.'
+        : 'Card payment is unavailable until the secure payment server is configured.'
     );
   }
 }

@@ -1,14 +1,15 @@
 .cell {
   width: 100%;
-  padding: 0.5rem 0;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid transparent;
+  padding: 0.45rem 0.5rem;
+  background: #fff;
+  border: 1px solid #9c806d;
   outline: none;
 }
 .cell:focus {
   background: #fff;
-  border-bottom-color: #1c1917;
+  border-color: #8a6200;
+  outline: 2px solid rgba(212, 160, 23, 0.35);
+  outline-offset: 1px;
 }
 
 .field {
@@ -17,11 +18,12 @@
   margin-top: 0.25rem;
   padding: 0.45rem 0.5rem;
   background: #fff;
-  border: 1px solid #a8a29e;
+  border: 1px solid #9c806d;
 }
 .field:focus {
-  border-color: #1c1917;
-  outline: 2px solid #1c1917;
+  border-color: #8a6200;
+  outline: 2px solid rgba(212, 160, 23, 0.35);
+  outline-offset: 1px;
 }
 
 .btn {

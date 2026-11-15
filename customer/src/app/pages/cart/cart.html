@@ -55,4 +55,22 @@
   @if (activeProductForModal) {
     <app-variant-picker [product]="activeProductForModal" (close)="closeModal()"></app-variant-picker>
   }
+
+  @if (pendingBoxRepeat) {
+    <div class="repeat-choice-overlay" (click)="closeBoxRepeatPrompt()">
+      <section class="repeat-choice" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <button class="repeat-choice-close" type="button" (click)="closeBoxRepeatPrompt()" aria-label="Close">×</button>
+        <h2>{{ lang.isArabic() ? 'هل تريد صندوقاً آخر بنفس النكهات؟' : 'Another box with the same flavours?' }}</h2>
+        <p>{{ displayName(pendingBoxRepeat.product) }}</p>
+        <div class="repeat-choice-actions">
+          <button type="button" class="repeat-same" (click)="repeatBoxChoices()">
+            {{ lang.isArabic() ? 'نفس الاختيارات' : 'Keep the same choices' }}
+          </button>
+          <button type="button" class="repeat-customize" (click)="customizeAnotherBox()">
+            {{ lang.isArabic() ? 'اختيار نكهات مختلفة' : 'Choose different flavours' }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
 </div>

@@ -36,14 +36,10 @@ export class OrderRecipt implements OnInit {
   }
 
   loadReceipt(id: string, phone: string) {
-    const ordersList = this.orderService.getOrdersByPhone(phone);
-    const found = ordersList.find(o => o.id === id);
-    
-    if (found) {
-      this.order.set(found);
-    } else {
-      this.errorMessage.set('Order could not be found.');
-    }
+    this.orderService.getReceipt(id, phone).subscribe({
+      next: order => this.order.set(order),
+      error: () => this.errorMessage.set('Order could not be found.')
+    });
   }
 
   formatDate(dateStr: string): string {

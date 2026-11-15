@@ -1,17 +1,9 @@
+import { LocalizedText } from '@contracts/Localized';
+import { PackUnit } from '@contracts/ingredient';
 import { ProfitMode } from './pricing.model';
 
-export type PackUnit = 'g' | 'kg' | 'ml' | 'l' | 'pc';
-export const PACK_UNITS: PackUnit[] = ['g', 'kg', 'ml', 'l', 'pc'];
-
-export interface Ingredient {
-  id?: number;
-  name: string;
-  packSize: number;
-  packUnit: PackUnit;
-  packPrice: number;
-  allergens: string;
-  supplier: string;
-}
+export { PACK_UNITS } from '@contracts/ingredient';
+export type { Ingredient, IngredientInput, PackUnit, BaseUnit } from '@contracts/ingredient';
 
 export interface RecipeLine {
   ingredientId: number | null;
@@ -20,8 +12,9 @@ export interface RecipeLine {
 }
 
 export interface RecipeProductDraft {
-  name: string;
-  description: string;
+  type: 'bonbon' | 'bar';
+  name: LocalizedText;
+  description: LocalizedText;
   yieldPieces: number;
   wastePct: number;
   packagingCost: number;

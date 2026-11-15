@@ -127,12 +127,14 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;backgrou
 .btn:focus-visible,.input:focus-visible{outline:2px solid var(--berry);outline-offset:2px}
 .btn-primary{background:var(--berry);border-color:var(--berry);color:#fff}
 .btn-danger{color:var(--berry)}
-.input{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:6px;padding:.5rem .65rem;font:inherit;background:#fff}
+.input{width:100%;box-sizing:border-box;border:1px solid #9c806d;border-radius:4px;padding:.5rem .65rem;font:inherit;background:#fff}
+.input:focus{border-color:#8a6200;outline:2px solid rgba(212,160,23,.35);outline-offset:1px}
+input:not([type="checkbox"]):not([type="radio"]),textarea,select{border-color:#9c806d}
 .f{display:grid;gap:.25rem;font-size:.9rem}
 .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.25rem}
 .tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px}
 .tbl th,.tbl td{text-align:left;padding:.65rem .8rem;border-bottom:1px solid var(--line);font-size:.9rem}
 .badge{display:inline-block;padding:.1rem .5rem;border-radius:99px;font-size:.78rem;background:#eee}
 .b-active,.b-live,.b-paid,.b-delivered{background:#dcf2e1}.b-draft,.b-upcoming,.b-pending,.b-unpaid{background:#fdf0c8}
-.b-archived,.b-ended,.b-cancelled,.b-failed{background:#f3d9de}.b-preparing{background:#dce8f7}
+.b-archived,.b-ended,.b-cancelled,.b-failed,.b-refunded{background:#f3d9de}.b-preparing{background:#dce8f7}
 .err{color:var(--berry);font-size:.9rem}

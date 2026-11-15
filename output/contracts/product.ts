@@ -2,6 +2,8 @@ import { LocalizedText } from './Localized';
 
 export type ProductType = 'bonbon' | 'bar' | 'box';
 export type BoxMode = 'fixed' | 'mixed';
+export type ProductStatus = 'draft' | 'active' | 'archived';
+export type ProfitMode = 'markup' | 'margin';
 
 export interface RecipeLine {
   ingredientId: number;
@@ -30,6 +32,7 @@ export interface BoxSpec {
 export interface Product {
   id: number;
   type: ProductType;
+  sellIndividually?: boolean;
   name: LocalizedText;
   description: LocalizedText;
   details: LocalizedText;
@@ -37,9 +40,20 @@ export interface Product {
   galleryUrls: string[];
   categoryId: number | null;
   badge: LocalizedText | null;
-  isActive: boolean;
+  status: ProductStatus;
   availability: Availability;
+  sku: string;
+  weightGrams: number;
+  shelfLifeDays: number;
+  stockQuantity: number | null;
+  featured: boolean;
+  sortOrder: number;
+  allergens: string[];
   profitPercent: number;
+  profitMode: ProfitMode;
+  roundTo: number;
+  priceOverride: number | null;
+  otherCost: number;
   ingredientCost: number;
   price: number;
   needsReprice: boolean;
@@ -47,7 +61,7 @@ export interface Product {
   box: BoxSpec | null;
 }
 
-export type ProductInput = Omit<Product, 'id' | 'ingredientCost' | 'price' | 'needsReprice'>;
+export type ProductInput = Omit<Product, 'id' | 'allergens' | 'ingredientCost' | 'price' | 'needsReprice'>;
 
 export interface StorefrontBonbon {
   id: number;
@@ -56,7 +70,9 @@ export interface StorefrontBonbon {
   available: boolean;
 }
 
-export interface StorefrontProduct extends Omit<Product, 'recipe' | 'ingredientCost' | 'profitPercent' | 'needsReprice' | 'isActive' | 'box'> {
+export interface StorefrontProduct extends Omit<Product, 'recipe' | 'ingredientCost' | 'profitPercent' | 'profitMode' | 'roundTo' | 'priceOverride' | 'otherCost' | 'needsReprice' | 'status' | 'stockQuantity' | 'box'> {
+  inStock: boolean;
+  ingredientNames: LocalizedText[];
   box: (Omit<BoxSpec, 'packagingCost' | 'allowedBonbonIds' | 'fixedContents'> & {
     bonbons: StorefrontBonbon[];
     fixedContents: (BoxContent & { name: LocalizedText })[];

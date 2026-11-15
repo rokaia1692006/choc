@@ -47,17 +47,10 @@ export class Login {
     }
 
     this.loading.set(true);
-    const success = this.auth.login(cleanPhone, this.password);
-    this.loading.set(false);
-
-    if (success) {
-      this.router.navigate(['/']);
-    } else {
-      this.error.set(
-        this.lang.isArabic() 
-          ? 'رقم الهاتف أو كلمة المرور غير صحيحة.' 
-          : 'Invalid phone number or password.'
-      );
-    }
+    this.auth.login(cleanPhone, this.password).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر تسجيل الدخول. تحقق من بياناتك وحاول مجدداً.' : 'Could not sign in. Check your details and try again.'),
+      complete: () => this.loading.set(false)
+    });
   }
 }

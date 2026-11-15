@@ -1,16 +1,18 @@
-import { Injectable, signal, computed, PLATFORM_ID, inject, effect } from '@angular/core';
+import { Injectable, computed, effect, inject, signal, PLATFORM_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import {User} from '../models/user';
-import { AuthCache } from '../models/auth-cache';
+import { Observable, map, tap } from 'rxjs';
+import { User } from '../models/user';
+import { API_URL } from '../api.config';
+
+type AuthResponse = User | { user: User };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
-  private readonly CACHE_KEY = 'choooc_user';
-  private readonly EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-
-  private _user = signal<User | null>(this.loadFromStorage());
+  private http = inject(HttpClient);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly cacheKey = 'choooc_user';
+  private _user = signal<User | null>(this.readUserCache());
 
   user = computed(() => this._user());
   isLoggedIn = computed(() => this._user() !== null);
@@ -18,103 +20,85 @@ export class AuthService {
   constructor() {
     effect(() => {
       const user = this._user();
-      if (user) {
-        this.saveToStorage(user);
-      } else {
-        if (this.isBrowser) localStorage.removeItem(this.CACHE_KEY);
-      }
+      if (!this.isBrowser) return;
+      if (user) localStorage.setItem(this.cacheKey, JSON.stringify(user));
+      else localStorage.removeItem(this.cacheKey);
     });
-  }
-
-  private loadFromStorage(): User | null {
-    if (!this.isBrowser) return null;
-    try {
-      const raw = localStorage.getItem(this.CACHE_KEY);
-      if (!raw) return null;
-      const cached: AuthCache = JSON.parse(raw);
-      if (Date.now() > cached.expiry) {
-        localStorage.removeItem(this.CACHE_KEY);
-        return null;
-      }
-      return cached.user;
-    } catch { return null; }
-  }
-
-  private saveToStorage(user: User) {
-    if (!this.isBrowser) return;
-    const cached: AuthCache = { user, expiry: Date.now() + this.EXPIRY_MS };
-    localStorage.setItem(this.CACHE_KEY, JSON.stringify(cached));
-  }
-
-  register(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }): boolean {
-    if (!this.isBrowser) return false;
-
-    const users = JSON.parse(localStorage.getItem('choooc_users') || '[]');
-    const exists = users.find((u: any) => u.phone === data.phone);
-    if (exists) return false; 
-
-    const user: User = {
-      id: Date.now().toString(),
-      name: data.name,
-      phone: data.phone,
-      address: data.address,
-      city: data.city,
-      apartment: data.apartment
-    };
-    users.push({ ...user, password: data.password });
-    localStorage.setItem('choooc_users', JSON.stringify(users));
-    this._user.set(user);
-    return true;
-  }
-
-  login(phone: string, password: string): boolean {
-    if (!this.isBrowser) return false;
-    const users = JSON.parse(localStorage.getItem('choooc_users') || '[]');
-    const found = users.find((u: any) => u.phone === phone && u.password === password);
-    if (!found) return false;
-    const { password: _, ...user } = found;
-    this._user.set(user);
-    return true;
-  }
-confirmCode(phone: string): boolean {
-  if (!this.isBrowser) return false;
-  const users = JSON.parse(localStorage.getItem('choooc_users') || '[]');
-  const found = users.find((u: any) => u.phone === phone);
-  return !!found; 
-}
-  correctCode(code: string): boolean {
-  return code === '1234'; 
-}
-  
-  updatePassword(phone: string, newPassword: string): boolean {
-  if (!this.isBrowser) return false;
-  const users = JSON.parse(localStorage.getItem('choooc_users') || '[]');
-  const index = users.findIndex((u: any) => u.phone === phone);
-  if (index === -1) return false;
-  users[index].password = newPassword;
-  localStorage.setItem('choooc_users', JSON.stringify(users));
-
-  const current = this._user();
-  // if (current?.phone === phone) {
-  //   this._user.set(null); 
-  // }
-
-  return true;
-}
-  updateProfile(data: Partial<User>) {
-    const current = this._user();
-    if (!current) return;
-    this._user.set({ ...current, ...data });
-
     if (this.isBrowser) {
-      const users = JSON.parse(localStorage.getItem('choooc_users') || '[]');
-      const updated = users.map((u: any) => u.id === current.id ? { ...u, ...data } : u);
-      localStorage.setItem('choooc_users', JSON.stringify(updated));
+      this.http.get<AuthResponse>(`${API_URL}/auth/me`, { withCredentials: true }).pipe(
+        map(response => this.unwrapUser(response))
+      ).subscribe({ next: user => this._user.set(user), error: () => this._user.set(null) });
     }
   }
 
-logout() {
-  console.trace('logout called'); 
-  this._user.set(null);
-}
+  login(phone: string, password: string): Observable<User> {
+    return this.http.post<AuthResponse>(`${API_URL}/auth/login`, { phone, password }, { withCredentials: true }).pipe(
+      map(response => this.unwrapUser(response)),
+      tap(user => this._user.set(user))
+    );
+  }
+
+  startRegistration(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }): Observable<void> {
+    return this.http.post<void>(`${API_URL}/auth/register`, data, { withCredentials: true });
+  }
+
+  verifyRegistration(phone: string, code: string): Observable<User> {
+    return this.http.post<AuthResponse>(`${API_URL}/auth/register/verify`, { phone, code }, { withCredentials: true }).pipe(
+      map(response => this.unwrapUser(response)),
+      tap(user => this._user.set(user))
+    );
+  }
+
+  registerAfterVerification(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }, code: string): Observable<User> {
+    return this.http.post<AuthResponse>(`${API_URL}/auth/register/verified`, { ...data, code }, { withCredentials: true }).pipe(
+      map(response => this.unwrapUser(response)),
+      tap(user => this._user.set(user))
+    );
+  }
+
+  startPhoneVerification(phone: string, purpose: 'checkout' | 'password-reset'): Observable<void> {
+    return this.http.post<void>(`${API_URL}/auth/verification/start`, { phone, purpose }, { withCredentials: true });
+  }
+
+  resendVerification(phone: string, purpose: 'registration' | 'checkout' | 'password-reset'): Observable<void> {
+    return this.http.post<void>(`${API_URL}/auth/verification/resend`, { phone, purpose }, { withCredentials: true });
+  }
+
+  verifyPhone(phone: string, code: string, purpose: 'checkout' | 'password-reset'): Observable<void> {
+    return this.http.post<void>(`${API_URL}/auth/verification/confirm`, { phone, code, purpose }, { withCredentials: true });
+  }
+
+  resetPassword(phone: string, code: string, password: string): Observable<void> {
+    return this.http.post<void>(`${API_URL}/auth/password/reset`, { phone, code, password }, { withCredentials: true });
+  }
+
+  updateProfile(data: Partial<User>): Observable<User> {
+    return this.http.put<AuthResponse>(`${API_URL}/customers/me`, data, { withCredentials: true }).pipe(
+      map(response => this.unwrapUser(response)),
+      tap(user => this._user.set(user))
+    );
+  }
+
+  logout(): void {
+    this.http.post<void>(`${API_URL}/auth/logout`, {}, { withCredentials: true }).subscribe({ complete: () => this._user.set(null), error: () => this._user.set(null) });
+  }
+
+  setUser(user: User | null): void {
+    this._user.set(user);
+  }
+
+  private unwrapUser(response: AuthResponse): User {
+    return 'user' in response ? response.user : response;
+  }
+
+  private readUserCache(): User | null {
+    if (!this.isBrowser) return null;
+    try {
+      const value = localStorage.getItem(this.cacheKey);
+      return value ? JSON.parse(value) as User : null;
+    } catch {
+      localStorage.removeItem(this.cacheKey);
+      return null;
+    }
+  }
 }

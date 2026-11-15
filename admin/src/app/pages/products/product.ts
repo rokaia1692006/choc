@@ -25,7 +25,8 @@ export class ProductPage implements OnInit {
   error = signal('');
 
   d: RecipeProductDraft = {
-    name: '', description: '', yieldPieces: 12, wastePct: 3, packagingCost: 0, labourCost: 0,
+    type: 'bonbon', name: { en: '', ar: '' }, description: { en: '', ar: '' },
+    yieldPieces: 12, wastePct: 3, packagingCost: 0, labourCost: 0,
     profitPct: 40, profitMode: 'markup', roundTo: 0.5, priceOverride: null,
     lines: [{ ingredientId: null, qty: 0, unit: 'g' }],
   };
@@ -53,14 +54,8 @@ export class ProductPage implements OnInit {
     return this.selling > 0 ? (this.profitEach / this.selling) * 100 : 0;
   }
 
-  get profitHint(): string {
-    return this.d.profitMode === 'markup'
-      ? 'The price is the cost plus this percent of the cost.'
-      : 'This percent of the selling price is profit.';
-  }
-
-  get canSave(): boolean {
-    return this.d.name.trim().length > 0
+    get canSave(): boolean {
+    return this.d.name.en.trim().length > 0
       && this.q.problems.length === 0
       && this.d.lines.some(l => l.ingredientId !== null && l.qty > 0);
   }
@@ -92,7 +87,7 @@ export class ProductPage implements OnInit {
       lines: this.d.lines.filter(l => l.ingredientId !== null && l.qty > 0),
     };
     this.api.createProductFromRecipe(body).subscribe({
-      next: made => this.router.navigate(['/products', made.id, 'edit']),
+            next: made => this.router.navigate(['/products', made.id]),
       error: () => {
         this.saving.set(false);
         this.error.set('The product was not created. Check the recipe and try again.');

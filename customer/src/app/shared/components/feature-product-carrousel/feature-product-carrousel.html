@@ -9,7 +9,7 @@
         [style.transform]="'translateX(-' + (currentIndex * slideWidth) + '%)'"
         (touchstart)="onTouchStart($event)"
         (touchend)="onTouchEnd($event)">
-        @for (product of featuredProducts; track product.id) {
+        @for (product of featuredProducts(); track product.id) {
           <div class="carousel-slide" [style.width.%]="slideWidth">
             <app-product-cards [product]="product" />
           </div>
@@ -22,7 +22,7 @@
   </div>
   @if (showDots) {
     <div class="carousel-dots">
-      @for (product of featuredProducts; track product.id; let i = $index) {
+      @for (product of featuredProducts(); track product.id; let i = $index) {
         <button class="dot" [class.active]="i === currentIndex" (click)="goTo(i)"></button>
       }
     </div>

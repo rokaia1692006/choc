@@ -1,0 +1,154 @@
+@if (product(); as product) {
+  <main class="product-detail" [class.rtl]="lang.isArabic()">
+    <div class="cart-toast" role="status" aria-live="polite" [class.visible]="toastVisible()">
+      {{ lang.isArabic() ? 'تمت الإضافة إلى السلة' : 'Added to cart' }}
+    </div>
+    @if (cartChoicesOpen()) {
+      <div class="cart-choices-overlay" (click)="closeCartChoices()">
+        <section class="cart-choices-dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+          <header class="cart-choices-header">
+            <div>
+              <p>{{ lang.isArabic() ? 'في سلتك' : 'YOUR CART' }}</p>
+              <h2>{{ lang.isArabic() ? 'اختيارات هذا المنتج' : 'Your selections' }}</h2>
+            </div>
+            <button type="button" (click)="closeCartChoices()" [attr.aria-label]="lang.isArabic() ? 'إغلاق' : 'Close'">×</button>
+          </header>
+          <div class="cart-choices-list">
+            @for (item of configuredCartItems; track item.cartItemId) {
+              <article class="cart-choice-item">
+                <img [src]="item.product.image" [alt]="cartLineName(item)">
+                <div class="cart-choice-details">
+                  <h3>{{ cartLineName(item) }}</h3>
+                  <p>{{ item.product.price | currency }}</p>
+                </div>
+                <div class="cart-choice-quantity">
+                  <button type="button" (click)="decreaseCartItem(item)" [attr.aria-label]="lang.isArabic() ? 'تقليل الكمية' : 'Decrease quantity'">−</button>
+                  <span>{{ item.quantity }}</span>
+                  <button type="button" (click)="increaseCartItem(item)" [attr.aria-label]="lang.isArabic() ? 'زيادة الكمية' : 'Increase quantity'">+</button>
+                </div>
+                <button class="cart-choice-remove" type="button" (click)="removeCartItem(item)">
+                  {{ lang.isArabic() ? 'إزالة' : 'Remove' }}
+                </button>
+              </article>
+            } @empty {
+              <p class="cart-choices-empty">{{ lang.isArabic() ? 'لا توجد اختيارات في السلة' : 'No selections for this product are in your cart.' }}</p>
+            }
+          </div>
+          <footer class="cart-choices-footer">
+            <span>{{ lang.isArabic() ? 'الإجمالي' : 'Subtotal' }}</span>
+            <strong>{{ configuredCartTotal | currency }}</strong>
+            <button type="button" (click)="closeCartChoices()">{{ lang.isArabic() ? 'العودة إلى المنتج' : 'Back to product' }}</button>
+          </footer>
+        </section>
+      </div>
+    }
+    <button class="back-link" type="button" (click)="backToShop()">
+      <span aria-hidden="true">←</span> {{ lang.t().back }}
+    </button>
+
+    <div class="detail-layout">
+      <section class="gallery" aria-label="Product images">
+        <div class="hero-image">
+          <img [src]="activeImage() || product.image" [alt]="displayName">
+        </div>
+        @if (product.images?.length) {
+          <div class="image-strip">
+            @for (image of product.images; track image) {
+              <button class="image-choice" type="button" [class.active]="activeImage() === image" (click)="selectImage(image)" [attr.aria-label]="displayName">
+                <img [src]="image" [alt]="displayName">
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="product-info">
+        <header class="product-heading">
+          <p class="eyebrow">{{ lang.t().productDetails }}</p>
+          <h1>{{ displayName }}</h1>
+          <p class="price">{{ displayPrice | currency }}</p>
+        </header>
+
+        <section class="description-section">
+          <h2>{{ lang.t().productDescription }}</h2>
+          <p class="description">{{ displayDescription }}</p>
+        </section>
+
+        @if (product.variants?.length) {
+          <section class="options-section">
+            <h2>{{ lang.t().chooseFlavour }}</h2>
+            <div class="flavour-list">
+              @for (variant of product.variants; track variant.id) {
+                <button class="flavour-option" type="button"
+                  [class.selected]="selectedVariant()?.id === variant.id"
+                  [class.unavailable]="!variant.available"
+                  [disabled]="!variant.available"
+                  (click)="selectVariant(variant)">
+                  <img [src]="variant.crossSectionImage || product.image" [alt]="lang.isArabic() && variant.labelAr ? variant.labelAr : variant.label">
+                  <span class="flavour-copy">
+                    <span class="flavour-name">{{ lang.isArabic() && variant.labelAr ? variant.labelAr : variant.label }}</span>
+                    @if (variant.priceModifier) {
+                      <span class="price-modifier">+{{ variant.priceModifier | currency }}</span>
+                    }
+                    @if (!variant.available) {
+                      <span class="availability">{{ lang.t().outOfStockText }}</span>
+                    }
+                  </span>
+                </button>
+              }
+            </div>
+          </section>
+        }
+
+        @if (product.mixedBox) {
+          <section class="options-section box-options">
+            <div class="box-heading">
+              <h2>{{ lang.t().buildYourBox }}</h2>
+              <span>{{ product.mixedBox.totalPieces - remainingPieces }} / {{ product.mixedBox.totalPieces }}</span>
+            </div>
+            <div class="flavour-list">
+              @for (selection of selections(); track selection.variant.id; let index = $index) {
+                <div class="flavour-option box-flavour" [class.unavailable]="!selection.variant.available">
+                  <img [src]="selection.variant.crossSectionImage || product.image" [alt]="lang.isArabic() && selection.variant.labelAr ? selection.variant.labelAr : selection.variant.label">
+                  <span class="flavour-copy">
+                    <span class="flavour-name">{{ lang.isArabic() && selection.variant.labelAr ? selection.variant.labelAr : selection.variant.label }}</span>
+                    @if (!selection.variant.available) {
+                      <span class="availability">{{ lang.t().outOfStockText }}</span>
+                    }
+                  </span>
+                  <span class="quantity-controls">
+                    <button type="button" (click)="changeBoxQuantity(index, -4)" [disabled]="selection.quantity < 4" [attr.aria-label]="lang.t().remove">−</button>
+                    <span>{{ selection.quantity }}</span>
+                    <button type="button" (click)="changeBoxQuantity(index, 4)" [disabled]="remainingPieces < 4 || !selection.variant.available" [attr.aria-label]="lang.t().addToCart">+</button>
+                  </span>
+                </div>
+              }
+            </div>
+            @if (remainingPieces > 0) {
+              <p class="remaining">{{ lang.isArabic() ? 'اختر ' + remainingPieces + ' قطع إضافية' : 'Select ' + remainingPieces + ' more pieces' }}</p>
+            }
+          </section>
+        }
+
+        @if (configuredCartQuantity > 0) {
+          <div class="purchase-quantity" aria-label="Product quantity">
+            <button type="button" (click)="updateConfiguredQuantity(-1)" [attr.aria-label]="lang.t().remove">−</button>
+            <span>{{ configuredCartQuantity }}</span>
+            <button type="button" (click)="updateConfiguredQuantity(1)" [attr.aria-label]="lang.t().addToCart">+</button>
+          </div>
+        } @else {
+          <button class="add-button" type="button" [disabled]="!canAddToCart" (click)="addToCart()">
+            {{ lang.t().addToCart }} <span>{{ displayPrice | currency }}</span>
+          </button>
+        }
+      </section>
+    </div>
+  </main>
+} @else {
+  <main class="not-found">
+    <button class="back-link" type="button" (click)="backToShop()">
+      <span aria-hidden="true">←</span> {{ lang.t().back }}
+    </button>
+    <h1>{{ lang.t().noProductsFound }}</h1>
+  </main>
+}

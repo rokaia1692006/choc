@@ -1,4 +1,4 @@
-<div class="productCard" (click)="openDescription()">
+<div class="productCard" role="link" tabindex="0" (click)="openProduct()" (keydown.enter)="openProduct()">
   <div class="product-image">
     <img [src]="product.image" alt="{{ product.name }}" class="image">
     @if (product.badge) {
@@ -15,18 +15,19 @@
     <p class="price">{{ product.price | currency }}</p>
     <p class="description">{{ displayDescription }}</p>
     <div class="card-actions">
-      @if (quantity === 0) {
+      @if (matchingCartQuantity === 0) {
         <button class="addbtn" (click)="$event.stopPropagation(); onAddClick()">
           {{ (product.variants?.length || product.mixedBox) ? ('chooseFlavour' | translate) : ('addToCart' | translate) }}
         </button>
       } @else {
         <div class="qty-controls">
           <button class="qty-btn" (click)="$event.stopPropagation(); remove()">-</button>
-          <span class="qty">{{ quantity }}</span>
+          <span class="qty">{{ matchingCartQuantity }}</span>
           <button class="qty-btn" (click)="$event.stopPropagation(); onAddClick()">+</button>
         </div>
       }
     </div>
   </div>
+
 </div>
 

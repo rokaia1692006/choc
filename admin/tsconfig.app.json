@@ -4,10 +4,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "types": []
+    , "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/**/*.ts"
-, "src/app/core/models/product.model.ts"  ],
+, "src/app/core/models/product.model.ts", "../output/contracts/**/*.ts"],
   "exclude": [
     "src/**/*.spec.ts"
   ]

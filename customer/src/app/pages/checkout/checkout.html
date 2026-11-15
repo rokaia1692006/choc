@@ -98,6 +98,14 @@
             {{ loading() ? ('loading' | translate) : ('placeOrder' | translate) + ' - ' + (total | currency) }}
           </button>
 
+          <button type="button" class="paymobbtn" [disabled]="loading() || cart.cartItems().length === 0" (click)="notifyCardPaymentUnavailable()">
+            <span class="card-symbol" aria-hidden="true">▰</span>
+            {{ lang.isArabic() ? 'الدفع بالبطاقة عبر Paymob' : 'Pay by card with Paymob' }}
+          </button>
+          <p class="payment-note">
+            {{ lang.isArabic() ? 'الدفع بالبطاقة غير متاح حالياً.' : 'Card payments are not available yet.' }}
+          </p>
+
         </form>
       }
 

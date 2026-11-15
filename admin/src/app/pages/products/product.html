@@ -1,23 +1,31 @@
 <div class="max-w-5xl mx-auto px-6 py-8">
   <h1 class="text-xl font-semibold text-stone-900">Build a product from a recipe</h1>
-  <p class="text-sm text-stone-600 mt-1 max-w-prose">
-    List what goes into one batch and choose how much profit to add. The cost sheet updates as you type.
-    The server works the price out again when you save, so what you see here is a preview.
-  </p>
 
   <app-error-line [message]="error()" />
 
   <div class="mt-6 grid lg:grid-cols-[1fr_20rem] gap-x-10 gap-y-8">
     <div>
-      <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
-        <label class="block text-sm">Product name
-          <input class="field" maxlength="120" [(ngModel)]="d.name">
+            <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+        <label class="block text-sm">Product name (English)
+          <input class="field" maxlength="120" [(ngModel)]="d.name.en">
+        </label>
+        <label class="block text-sm">Product name (Arabic)
+          <input class="field" dir="rtl" maxlength="120" [(ngModel)]="d.name.ar">
+        </label>
+        <label class="block text-sm">Type
+          <select class="field" [(ngModel)]="d.type">
+            <option value="bonbon">Bonbon</option>
+            <option value="bar">Bar</option>
+          </select>
         </label>
         <label class="block text-sm">Pieces one batch makes
           <input class="field" type="number" min="1" [(ngModel)]="d.yieldPieces">
         </label>
-        <label class="block text-sm sm:col-span-2">Description
-          <textarea class="field" rows="2" maxlength="600" [(ngModel)]="d.description"></textarea>
+        <label class="block text-sm sm:col-span-2">Description (English)
+          <textarea class="field" rows="2" maxlength="600" [(ngModel)]="d.description.en"></textarea>
+        </label>
+        <label class="block text-sm sm:col-span-2">Description (Arabic)
+          <textarea class="field" dir="rtl" rows="2" maxlength="600" [(ngModel)]="d.description.ar"></textarea>
         </label>
       </div>
 
@@ -82,7 +90,6 @@
             <option value="margin">The selling price (margin)</option>
           </select>
         </label>
-        <p class="text-xs text-stone-500 sm:col-span-2 -mt-2">{{ profitHint }}</p>
         <label class="block text-sm sm:col-span-2">Your own price (leave empty to use the suggestion)
           <input class="field sm:max-w-xs" type="number" min="0" step="0.01" [(ngModel)]="d.priceOverride">
         </label>
@@ -100,7 +107,6 @@
         <div class="row total"><dt>Selling at</dt><span class="leader"></span><dd>{{ selling | money }} {{ cur }}</dd></div>
         <div class="row text-stone-600"><dt>Profit per piece</dt><span class="leader"></span><dd>{{ profitEach | money }}</dd></div>
       </dl>
-      <p class="mt-1 text-xs text-stone-500">That is {{ profitOfPrice.toFixed(1) }}% of the selling price.</p>
 
       @for (p of q.problems; track p) {
         <p class="mt-3 text-sm text-red-800">{{ p }}</p>
@@ -112,7 +118,6 @@
       <button type="button" class="btn w-full mt-5 py-2" [disabled]="!canSave || saving()" (click)="save()">
         {{ saving() ? 'Saving' : 'Create product' }}
       </button>
-      <p class="mt-2 text-xs text-stone-500">Next you can set category, photos, seasonal dates and stock.</p>
     </aside>
   </div>
 </div>

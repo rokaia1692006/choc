@@ -4,12 +4,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../core/services/cart';
 import { VariantPicker } from '../../shared/components/variant-picker/variant-picker'; // Import your modal component
+import { CartItem } from '../../core/services/cart';
 import { Product } from '../../core/models/products';
 import { LanguageService } from '../../core/services/language';
 import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
 import { CurrencyPipe } from '../../shared/pipes/currency-pipe';
 import {inject} from '@angular/core';
 import { CategoryService } from '../../core/services/category';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-cart',
   standalone: true,
@@ -19,10 +21,11 @@ import { CategoryService } from '../../core/services/category';
 })
 export class Cart {
   activeProductForModal: Product | null = null;
+  pendingBoxRepeat: CartItem | null = null;
   lang = inject(LanguageService);
 categoryService = inject(CategoryService); 
 
-  constructor(public cartService: CartService) {}
+  constructor(public cartService: CartService, private router: Router) {}
 
  displayName(product: any): string {
   if (product.isCustomVariant) {
@@ -38,11 +41,30 @@ displayCategory(product: Product): string {
     return this.lang.isArabic() ? cat.nameAr : cat.name;
   }
 increment(item: any) {
-  if (item.product.mixedBox || item.product.variants?.length) {
+  if (item.product.mixedBox) {
+    this.pendingBoxRepeat = item;
+  } else if (item.product.variants?.length) {
     this.openVariantPickerFromCart(item.product);
   } else {
     this.cartService.updateQuantity(item.cartItemId, item.quantity + 1);
   }
+}
+
+repeatBoxChoices() {
+  if (!this.pendingBoxRepeat) return;
+  this.cartService.addToCart(this.pendingBoxRepeat.product);
+  this.pendingBoxRepeat = null;
+}
+
+customizeAnotherBox() {
+  if (!this.pendingBoxRepeat) return;
+  const productId = this.pendingBoxRepeat.product.id;
+  this.pendingBoxRepeat = null;
+  this.router.navigate(['/product', productId], { queryParams: { from: 'cart' } });
+}
+
+closeBoxRepeatPrompt() {
+  this.pendingBoxRepeat = null;
 }
 
   decrement(cartItemId: string, qty: number) {
