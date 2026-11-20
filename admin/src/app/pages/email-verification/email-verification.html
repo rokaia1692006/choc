@@ -1,0 +1,14 @@
+<main class="wrap">
+  <section class="card">
+    <h1>Check your email</h1>
+    <p>Enter the 6-character code sent to your admin email address.</p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label class="f">Email code
+        <input class="input" formControlName="code" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" maxlength="6">
+      </label>
+      @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+      <button class="btn btn-primary" [disabled]="busy() || form.invalid">Verify email</button>
+      <button type="button" class="link" (click)="backToLogin()">Back to sign in</button>
+    </form>
+  </section>
+</main>

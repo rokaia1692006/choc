@@ -18,4 +18,5 @@ export interface AdminUser {
   email: string;
   role: AdminRole;
   twoFactorEnabled: boolean;
+  requiresPasswordChange?: boolean;
 }

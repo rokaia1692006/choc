@@ -7,9 +7,15 @@ export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (auth.user()) return true;
+  if (auth.user()) {
+    return auth.requiresPasswordChange()
+      ? router.createUrlTree(['/change-password'])
+      : true;
+  }
   return auth.me().pipe(
-    map(() => true),
+    map(() => auth.requiresPasswordChange()
+      ? router.createUrlTree(['/change-password'])
+      : true),
     catchError(() => of(router.createUrlTree(['/login'])))
   );
 };

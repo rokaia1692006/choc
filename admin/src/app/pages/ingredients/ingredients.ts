@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Ingredient, IngredientInput, PACK_UNITS } from '../../core/models/Ingredient.model';
 import { IngredientService } from '../../core/services/Ingredient.service';
@@ -60,8 +61,20 @@ export class IngredientsPage implements OnInit {
         this.draft = blank();
         this.error.set('');
       },
-      error: () => this.error.set('Could not add that ingredient. Nothing was saved.'),
+      error: error => this.error.set(this.addErrorMessage(error)),
     });
+  }
+
+  private addErrorMessage(error: HttpErrorResponse): string {
+    const message = typeof error.error?.message === 'string' ? error.error.message : '';
+    if (error.status === 400) return message || 'Check the ingredient name, unit, pack size, and price.';
+    if (error.status === 401) return 'Your admin session expired. Sign in again and retry.';
+    if (error.status === 403) return 'This account cannot manage ingredients. Sign in with an admin account.';
+    if (error.status === 409) return message || 'That ingredient conflicts with existing data.';
+    if (error.status === 404) return 'The running API does not have the ingredient endpoint. Restart the backend and confirm it is running on port 5297.';
+    if (error.status === 0) return 'Could not reach the API. Check that the backend is running and allows this site.';
+    if (error.status >= 500) return 'The server could not save the ingredient. Restart the API to apply the latest database migration, then retry.';
+    return message || 'Could not add that ingredient. Check the API response and retry.';
   }
 
   save(r: Ingredient) {

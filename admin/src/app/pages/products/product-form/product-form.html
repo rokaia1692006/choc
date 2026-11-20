@@ -1,6 +1,7 @@
 <header class="top"><h2>{{ id ? 'Edit product' : 'New product' }}</h2><a routerLink="/products">Back to products</a></header>
 <form [formGroup]="form" (ngSubmit)="save()">
   <fieldset class="card"><legend>What is this product?</legend>
+    <p class="hint">Recipes use ingredients. Boxes use existing bonbons or bars. Only active bars and boxes appear in the customer catalog; draft items stay hidden.</p>
     <label class="f">Type
       <select class="input" formControlName="type">
         <option value="bonbon">Bonbon (box only)</option>
@@ -8,7 +9,7 @@
         <option value="box">Box (made from bonbons and bars)</option>
       </select></label>
     <label class="f">Status
-      <select class="input" formControlName="status"><option value="draft">Draft (hidden)</option><option value="active">Active (on sale)</option><option value="archived">Archived</option></select></label>
+      <select class="input" formControlName="status"><option value="draft">Draft (hidden)</option><option value="active">Active (on sale)</option></select></label>
     <label class="chk"><input type="checkbox" formControlName="featured"> Featured on the home page</label>
   </fieldset>
 

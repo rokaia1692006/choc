@@ -17,8 +17,29 @@ export class Login {
     this.busy.set(true); this.error.set('');
     const { email, password } = this.form.getRawValue();
     this.auth.login(email, password).subscribe({
-      next: r => this.router.navigate([r.requiresTwoFactor ? '/two-factor' : '/']),
-      error: e => { this.busy.set(false); this.error.set(e.status === 423 ? 'Account locked. Try again in 15 minutes.' : 'Email or password is wrong.'); },
+      next: r => this.router.navigate([
+  r.requiresEmailVerification
+    ? '/email-verification'
+    : r.requiresTwoFactorSetup
+      ? '/two-factor-setup'
+      : r.requiresTwoFactor
+        ? '/two-factor'
+        : r.requiresPasswordChange
+          ? '/change-password'
+          : '/'
+]),
+      error: e => {
+        this.busy.set(false);
+        this.error.set(e.status === 423
+          ? 'Account locked. Try again in 15 minutes.'
+          : e.status === 401
+            ? 'Email or password is wrong.'
+            : e.status === 403
+              ? 'The server blocked this sign-in request. Check the admin request header and CORS settings.'
+              : e.status === 503
+                ? 'The verification email could not be sent. Check the backend SMTP settings.'
+              : 'Unable to reach the sign-in service. Check that the backend is running.');
+      },
     });
   }
 }

@@ -46,7 +46,7 @@
                 <select class="field flush" [attr.aria-label]="'Ingredient ' + ($index + 1)"
                         [(ngModel)]="l.ingredientId" (ngModelChange)="picked($index)">
                   <option [ngValue]="null">Choose</option>
-                  @for (i of ingredients(); track i.id) { <option [ngValue]="i.id">{{ i.name }}</option> }
+                  @for (i of ingredients(); track i.id) { <option [ngValue]="i.id">{{ i.name.en }} ({{ i.costPerUnit | money }} {{ cur }}/{{ i.unit }})</option> }
                 </select>
               </td>
               <td class="pr-3"><input class="field flush" type="number" min="0" step="any" aria-label="Amount" [(ngModel)]="l.qty"></td>
