@@ -6,6 +6,7 @@ import { User } from '../models/user';
 import { API_URL } from '../api.config';
 
 type AuthResponse = User | { user: User };
+export interface VerificationCodeResponse { code: string; }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -25,51 +26,51 @@ export class AuthService {
       else localStorage.removeItem(this.cacheKey);
     });
     if (this.isBrowser) {
-      this.http.get<AuthResponse>(`${API_URL}/auth/me`, { withCredentials: true }).pipe(
+      this.http.get<AuthResponse>(`${API_URL}/customer-auth/me`, { withCredentials: true }).pipe(
         map(response => this.unwrapUser(response))
       ).subscribe({ next: user => this._user.set(user), error: () => this._user.set(null) });
     }
   }
 
   login(phone: string, password: string): Observable<User> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/login`, { phone, password }, { withCredentials: true }).pipe(
+    return this.http.post<AuthResponse>(`${API_URL}/customer-auth/login`, { phone, password }, { withCredentials: true }).pipe(
       map(response => this.unwrapUser(response)),
       tap(user => this._user.set(user))
     );
   }
 
-  startRegistration(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }): Observable<void> {
-    return this.http.post<void>(`${API_URL}/auth/register`, data, { withCredentials: true });
+  startRegistration(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }): Observable<VerificationCodeResponse> {
+    return this.http.post<VerificationCodeResponse>(`${API_URL}/customer-auth/register`, data, { withCredentials: true });
   }
 
   verifyRegistration(phone: string, code: string): Observable<User> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/register/verify`, { phone, code }, { withCredentials: true }).pipe(
+    return this.http.post<AuthResponse>(`${API_URL}/customer-auth/register/verify`, { phone, code }, { withCredentials: true }).pipe(
       map(response => this.unwrapUser(response)),
       tap(user => this._user.set(user))
     );
   }
 
   registerAfterVerification(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }, code: string): Observable<User> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/register/verified`, { ...data, code }, { withCredentials: true }).pipe(
+    return this.http.post<AuthResponse>(`${API_URL}/customer-auth/register/verified`, { profile: data, code }, { withCredentials: true }).pipe(
       map(response => this.unwrapUser(response)),
       tap(user => this._user.set(user))
     );
   }
 
-  startPhoneVerification(phone: string, purpose: 'checkout' | 'password-reset'): Observable<void> {
-    return this.http.post<void>(`${API_URL}/auth/verification/start`, { phone, purpose }, { withCredentials: true });
+  startPhoneVerification(phone: string, purpose: 'checkout' | 'password-reset'): Observable<VerificationCodeResponse> {
+    return this.http.post<VerificationCodeResponse>(`${API_URL}/customer-auth/verification/start`, { phone, purpose }, { withCredentials: true });
   }
 
-  resendVerification(phone: string, purpose: 'registration' | 'checkout' | 'password-reset'): Observable<void> {
-    return this.http.post<void>(`${API_URL}/auth/verification/resend`, { phone, purpose }, { withCredentials: true });
+  resendVerification(phone: string, purpose: 'registration' | 'checkout' | 'password-reset'): Observable<VerificationCodeResponse> {
+    return this.http.post<VerificationCodeResponse>(`${API_URL}/customer-auth/verification/resend`, { phone, purpose }, { withCredentials: true });
   }
 
   verifyPhone(phone: string, code: string, purpose: 'checkout' | 'password-reset'): Observable<void> {
-    return this.http.post<void>(`${API_URL}/auth/verification/confirm`, { phone, code, purpose }, { withCredentials: true });
+    return this.http.post<void>(`${API_URL}/customer-auth/verification/confirm`, { phone, code, purpose }, { withCredentials: true });
   }
 
   resetPassword(phone: string, code: string, password: string): Observable<void> {
-    return this.http.post<void>(`${API_URL}/auth/password/reset`, { phone, code, password }, { withCredentials: true });
+    return this.http.post<void>(`${API_URL}/customer-auth/password/reset`, { phone, code, password }, { withCredentials: true });
   }
 
   updateProfile(data: Partial<User>): Observable<User> {
@@ -80,7 +81,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post<void>(`${API_URL}/auth/logout`, {}, { withCredentials: true }).subscribe({ complete: () => this._user.set(null), error: () => this._user.set(null) });
+    this.http.post<void>(`${API_URL}/customer-auth/logout`, {}, { withCredentials: true }).subscribe({ complete: () => this._user.set(null), error: () => this._user.set(null) });
   }
 
   setUser(user: User | null): void {

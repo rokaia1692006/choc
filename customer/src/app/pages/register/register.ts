@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { LanguageService } from '../../core/services/language';
 import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
+import { SHOW_LOCAL_VERIFICATION_CODE } from '../../core/api.config';
 
 type RegStep = 'register' | 'sms';
 
@@ -47,8 +48,8 @@ export class Register {
       return;
     }
 
-    if (this.form.password.length < 6) {
-      this.error.set(this.lang.isArabic() ? 'يجب أن تتكون كلمة المرور من ٦ أحرف على الأقل.' : 'Password must be at least 6 characters.');
+    if (this.form.password.length < 8) {
+      this.error.set(this.lang.isArabic() ? 'يجب أن تتكون كلمة المرور من ٨ أحرف على الأقل.' : 'Password must be at least 8 characters.');
       return;
     }
 
@@ -68,9 +69,10 @@ export class Register {
     this.loading.set(true);
     this.form.phone = cleanPhone;
     this.auth.startRegistration(this.form).subscribe({
-      next: () => {
+      next: response => {
         this.step.set('sms');
-        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' : 'An account verification code has been sent to your number.');
+        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
+        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' : 'An account verification code has been sent to your number.') + code);
       },
       error: () => this.error.set(this.lang.isArabic() ? 'تعذر بدء التسجيل. تحقق مما إذا كان الرقم مسجلاً وحاول مجدداً.' : 'Could not start registration. Check whether this phone is already registered and try again.'),
       complete: () => this.loading.set(false)
@@ -96,7 +98,10 @@ export class Register {
   resendVerificationCode() {
     this.error.set(null);
     this.auth.resendVerification(this.form.phone, 'registration').subscribe({
-      next: () => this.success.set(this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new registration code has been sent.'),
+      next: response => {
+        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
+        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new registration code has been sent.') + code);
+      },
       error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the verification code.')
     });
   }

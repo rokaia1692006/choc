@@ -13,9 +13,7 @@ export class CatalogService {
 
   products(): Observable<Product[]> {
     return this.http.get<StorefrontProduct[]>(this.productsUrl).pipe(
-      map(products => products
-        .filter(product => product.type === 'box' || product.sellIndividually === true)
-        .map(product => this.toProduct(product)))
+      map(products => products.map(product => this.toProduct(product)))
     );
   }
 
@@ -67,6 +65,7 @@ export class CatalogService {
       image: source.imageUrl,
       images: source.galleryUrls,
       categoryId: source.categoryId ?? undefined,
+      featured: source.featured,
       badge: source.badge?.en,
       badgeAr: source.badge?.ar,
       inStock: source.inStock,

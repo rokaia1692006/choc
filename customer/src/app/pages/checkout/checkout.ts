@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth';
+import { SHOW_LOCAL_VERIFICATION_CODE } from '../../core/api.config';
 import { CartService } from '../../core/services/cart';
 import { OrderService } from '../../core/services/order-service';
 import { CurrencyService } from '../../core/services/currency';
@@ -129,9 +130,10 @@ export class Checkout {
     }
     this.loading.set(true);
     this.auth.startPhoneVerification(cleanPhone, 'checkout').subscribe({
-      next: () => {
+      next: response => {
         this.step.set('sms');
-        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز التحقق إلى رقم هاتفك.' : 'A verification code has been sent to your number.');
+        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
+        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز التحقق إلى رقم هاتفك.' : 'A verification code has been sent to your number.') + code);
       },
       error: () => this.error.set(this.lang.isArabic() ? 'تعذر إرسال رمز التحقق.' : 'Could not send a verification code.'),
       complete: () => this.loading.set(false)
@@ -147,27 +149,26 @@ export class Checkout {
     }
 
     this.loading.set(true);
-    this.auth.verifyPhone(this.form.phone, this.verificationCode.trim(), 'checkout').subscribe({
-      next: () => {
-        if (this.createAccount()) {
-          this.auth.registerAfterVerification({
-            name: this.form.name,
-            phone: this.form.phone,
-            password: this.form.password,
-            address: this.form.address,
-            city: this.form.city,
-            apartment: this.form.apartment
-          }, this.verificationCode.trim()).subscribe({
-            next: () => this.placeOrder(),
-            error: () => {
-              this.loading.set(false);
-              this.error.set(this.lang.isArabic() ? 'تعذر إنشاء الحساب.' : 'Could not create the account.');
-            }
-          });
-        } else {
-          this.placeOrder();
+    if (this.createAccount()) {
+      this.auth.registerAfterVerification({
+        name: this.form.name,
+        phone: this.form.phone,
+        password: this.form.password,
+        address: this.form.address,
+        city: this.form.city,
+        apartment: this.form.apartment
+      }, this.verificationCode.trim()).subscribe({
+        next: () => this.placeOrder(),
+        error: () => {
+          this.loading.set(false);
+          this.error.set(this.lang.isArabic() ? 'تعذر إنشاء الحساب.' : 'Could not create the account.');
         }
-      },
+      });
+      return;
+    }
+
+    this.auth.verifyPhone(this.form.phone, this.verificationCode.trim(), 'checkout').subscribe({
+      next: () => this.placeOrder(),
       error: () => {
         this.loading.set(false);
         this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح أو انتهت صلاحيته.' : 'The code is incorrect or expired.');
@@ -178,7 +179,10 @@ export class Checkout {
   resendVerificationCode() {
     this.error.set('');
     this.auth.resendVerification(this.form.phone, 'checkout').subscribe({
-      next: () => this.success.set(this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new code has been sent.'),
+      next: response => {
+        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
+        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new code has been sent.') + code);
+      },
       error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the code.')
     });
   }

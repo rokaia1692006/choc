@@ -34,7 +34,9 @@ function boxRule(g: AbstractControl): ValidationErrors | null {
     boxMode?: BoxMode;
     fixedContents?: FixedContentValue[];
     allowedBonbonIds?: number[];
+    sourceBarId?: number;
   };
+  if (v.type === 'bar') return (v.sourceBarId ?? 0) > 0 ? null : { sourceBar: true };
   if (v.type !== 'box') return (v.recipe ?? []).length ? null : { recipeEmpty: true };
   if ((v.totalPieces ?? 0) < 1 || (v.rowSize ?? 0) < 1 || (v.totalPieces ?? 0) % (v.rowSize ?? 1) !== 0) return { boxRows: true };
   if (v.boxMode === 'fixed') {
@@ -64,8 +66,8 @@ export class ProductForm implements OnInit {
   error = signal('');
 
   form = this.fb.nonNullable.group({
-    type: 'bonbon' as ProductType,
-    status: 'draft' as ProductStatus,
+    type: 'box' as ProductType,
+    status: 'active' as ProductStatus,
     name: this.fb.nonNullable.group({ en: ['', Validators.required], ar: '' }),
     description: this.fb.nonNullable.group({ en: ['', Validators.required], ar: '' }),
     details: this.fb.nonNullable.group({ en: '', ar: '' }),
@@ -85,6 +87,7 @@ export class ProductForm implements OnInit {
     totalPieces: 12, rowSize: 4, packagingCost: [0, Validators.min(0)],
     fixedContents: this.fb.array<FormGroup>([]),
     allowedBonbonIds: [[] as number[]],
+    sourceBarId: [0, Validators.min(0)],
   }, { validators: [availabilityRule, boxRule] });
 
   get recipe() { return this.form.controls.recipe as FormArray<FormGroup>; }
@@ -242,6 +245,7 @@ export class ProductForm implements OnInit {
       otherCost: isBox ? 0 : +v.otherCost || 0,
       recipe: isBox ? [] : (v.recipe as Array<{ ingredientId: number | string; quantity: number | string }>).map(r => ({ ingredientId: +r['ingredientId'], quantity: +r['quantity'] })),
       box: isBox ? this.currentSpec() : null,
+      sourceBarId: v.type === 'bar' ? +v.sourceBarId : null,
     };
     this.saving.set(true); this.error.set('');
     const req = this.id ? this.svc.update(this.id, body) : this.svc.create(body);

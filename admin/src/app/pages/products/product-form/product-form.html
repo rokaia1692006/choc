@@ -1,15 +1,16 @@
 <header class="top"><h2>{{ id ? 'Edit product' : 'New product' }}</h2><a routerLink="/products">Back to products</a></header>
 <form [formGroup]="form" (ngSubmit)="save()">
   <fieldset class="card"><legend>What is this product?</legend>
-    <p class="hint">Recipes use ingredients. Boxes use existing bonbons or bars. Only active bars and boxes appear in the customer catalog; draft items stay hidden.</p>
+    <p class="hint">Use Build to create bonbon or bar recipes. Use Products to finish a bar as a sellable item or create a box from existing bonbon/bar builds.</p>
     <label class="f">Type
       <select class="input" formControlName="type">
-        <option value="bonbon">Bonbon (box only)</option>
-        <option value="bar">Bar (sold individually or in boxes)</option>
+        @if (id) { <option value="bonbon">Bonbon build (box component)</option> }
+        @if (id) { <option value="bar">Single bar</option> }
+        @else { <option value="bar">Single bar</option> }
         <option value="box">Box (made from bonbons and bars)</option>
       </select></label>
     <label class="f">Status
-      <select class="input" formControlName="status"><option value="draft">Draft (hidden)</option><option value="active">Active (on sale)</option></select></label>
+      <select class="input" formControlName="status"><option value="draft">Draft (hidden from customers)</option><option value="active">Active (visible to customers)</option></select></label>
     <label class="chk"><input type="checkbox" formControlName="featured"> Featured on the home page</label>
   </fieldset>
 
@@ -46,26 +47,19 @@
     </div>
   </fieldset>
 
-  @if (form.value.type !== 'box') {
-    <fieldset class="card"><legend>Recipe for one piece</legend>
-      <div formArrayName="recipe">
-        @for (g of recipe.controls; track g; let i = $index) {
-          <div class="variant" [formGroupName]="i">
-            <select class="input" formControlName="ingredientId" aria-label="Ingredient">
-              <option [ngValue]="0" disabled>Choose an ingredient</option>
-              @for (n of ingredients(); track n.id) { <option [ngValue]="n.id">{{ n.name.en }}</option> }
-            </select>
-            <input class="input" type="number" min="0" step="any" formControlName="quantity" aria-label="Amount">
-            <span>{{ unitOf(i) }}</span>
-            <button class="btn btn-danger" type="button" (click)="recipe.removeAt(i)">Remove</button>
-          </div>
-        }
-      </div>
-      <button class="btn" type="button" (click)="addRecipeLine()">Add ingredient</button>
-      <label class="f">Other cost per piece (packaging, labour)<input class="input" type="number" min="0" step="0.01" formControlName="otherCost"></label>
-      @if (form.errors?.['recipeEmpty']) { <p class="err">Add at least one ingredient.</p> }
+  @if (form.value.type === 'bar') {
+    <fieldset class="card"><legend>Bar build</legend>
+      <label class="f">Choose the bar recipe
+        <select class="input" formControlName="sourceBarId">
+          <option [ngValue]="0" disabled>Choose a built bar</option>
+          @for (b of items(); track b.id) {
+            @if (b.type === 'bar') { <option [ngValue]="b.id">{{ b.name.en }}</option> }
+          }
+        </select>
+      </label>
+      <label class="f">Packaging and labour cost per bar<input class="input" type="number" min="0" step="0.01" formControlName="otherCost"></label>
     </fieldset>
-  } @else {
+  } @else if (form.value.type === 'box') {
     <fieldset class="card"><legend>Box</legend>
       <label class="f">Kind of box
         <select class="input" formControlName="boxMode">
@@ -134,6 +128,7 @@
     <label class="f">Sort order<input class="input" type="number" formControlName="sortOrder"></label>
   </fieldset>
 
+  @if (form.errors?.['sourceBar']) { <p class="err">Choose a bar build before saving.</p> }
   @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
   <div class="bar"><button class="btn btn-primary" [disabled]="saving()">Save product</button><a class="btn" routerLink="/products">Cancel</a></div>
 </form>

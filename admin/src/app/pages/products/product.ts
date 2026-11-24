@@ -7,6 +7,7 @@ import { IngredientService } from '../../core/services/Ingredient.service';
 import { PricingService } from '../../core/services/pricing.service';
 import { ErrorLine } from '../../shared/components/error-line/error-line';
 import { MoneyPipe } from '../../shared/pipes/money-pipe';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-builder',
@@ -82,15 +83,23 @@ export class ProductPage implements OnInit {
 
   save() {
     this.saving.set(true);
+    this.error.set('');
     const body: RecipeProductDraft = {
       ...this.d,
+      packagingCost: 0,
+      labourCost: 0,
+      profitPct: 0,
+      profitMode: 'markup',
+      roundTo: 0,
+      priceOverride: null,
       lines: this.d.lines.filter(l => l.ingredientId !== null && l.qty > 0),
     };
     this.api.createProductFromRecipe(body).subscribe({
-            next: made => this.router.navigate(['/products', made.id]),
-      error: () => {
+      next: made => this.router.navigate(['/products', made.id]),
+      error: (error: HttpErrorResponse) => {
         this.saving.set(false);
-        this.error.set('The product was not created. Check the recipe and try again.');
+        const message = typeof error.error?.message === 'string' ? error.error.message : '';
+        this.error.set(message || 'The product was not created. Check the recipe and try again.');
       },
     });
   }

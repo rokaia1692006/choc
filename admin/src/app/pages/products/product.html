@@ -1,5 +1,5 @@
 <div class="max-w-5xl mx-auto px-6 py-8">
-  <h1 class="text-xl font-semibold text-stone-900">Build a product from a recipe</h1>
+  <h1 class="text-xl font-semibold text-stone-900">Build a bonbon or bar recipe</h1>
 
   <app-error-line [message]="error()" />
 
@@ -67,32 +67,6 @@
         <label class="block text-sm">Waste (percent of ingredients)
           <input class="field" type="number" min="0" max="50" [(ngModel)]="d.wastePct">
         </label>
-        <label class="block text-sm">Packaging per batch ({{ cur }})
-          <input class="field" type="number" min="0" step="0.01" [(ngModel)]="d.packagingCost">
-        </label>
-        <label class="block text-sm">Labour per batch ({{ cur }})
-          <input class="field" type="number" min="0" step="0.01" [(ngModel)]="d.labourCost">
-        </label>
-        <label class="block text-sm">Round price up to the nearest
-          <select class="field" [(ngModel)]="d.roundTo">
-            <option [ngValue]="0">No rounding</option>
-            <option [ngValue]="0.5">0.50</option>
-            <option [ngValue]="1">1</option>
-            <option [ngValue]="5">5</option>
-          </select>
-        </label>
-        <label class="block text-sm">Profit to add (percent)
-          <input class="field" type="number" min="0" max="500" [(ngModel)]="d.profitPct">
-        </label>
-        <label class="block text-sm">Count that percent on
-          <select class="field" [(ngModel)]="d.profitMode">
-            <option value="markup">The cost (markup)</option>
-            <option value="margin">The selling price (margin)</option>
-          </select>
-        </label>
-        <label class="block text-sm sm:col-span-2">Your own price (leave empty to use the suggestion)
-          <input class="field sm:max-w-xs" type="number" min="0" step="0.01" [(ngModel)]="d.priceOverride">
-        </label>
       </div>
     </div>
 
@@ -101,22 +75,18 @@
       <dl class="mt-3 text-sm space-y-2">
         <div class="row"><dt>Ingredients</dt><span class="leader"></span><dd>{{ q.ingredientsCost | money }}</dd></div>
         <div class="row"><dt>Whole batch</dt><span class="leader"></span><dd>{{ q.batchCost | money }}</dd></div>
-        <div class="row"><dt>One piece costs</dt><span class="leader"></span><dd>{{ q.costPerPiece | money }}</dd></div>
-        <div class="row"><dt>Profit added</dt><span class="leader"></span><dd>{{ q.profitAdded | money }}</dd></div>
-        <div class="row"><dt>Suggested price</dt><span class="leader"></span><dd>{{ q.suggested | money }}</dd></div>
-        <div class="row total"><dt>Selling at</dt><span class="leader"></span><dd>{{ selling | money }} {{ cur }}</dd></div>
-        <div class="row text-stone-600"><dt>Profit per piece</dt><span class="leader"></span><dd>{{ profitEach | money }}</dd></div>
+        <div class="row total"><dt>Ingredient cost per piece</dt><span class="leader"></span><dd>{{ q.costPerPiece | money }}</dd></div>
       </dl>
 
       @for (p of q.problems; track p) {
         <p class="mt-3 text-sm text-red-800">{{ p }}</p>
       }
-      @if (selling > 0 && selling < q.costPerPiece) {
-        <p class="mt-3 text-sm text-red-800">This price is below what one piece costs to make.</p>
+      @if (q.costPerPiece > 0) {
+        <p class="mt-3 text-sm text-stone-600">Add packaging and profit later when this build is sold as a bar or used in a box.</p>
       }
 
       <button type="button" class="btn w-full mt-5 py-2" [disabled]="!canSave || saving()" (click)="save()">
-        {{ saving() ? 'Saving' : 'Create product' }}
+        {{ saving() ? 'Saving' : 'Create bonbon / bar build' }}
       </button>
     </aside>
   </div>

@@ -59,6 +59,7 @@ export interface Product {
   needsReprice: boolean;
   recipe: RecipeLine[];
   box: BoxSpec | null;
+  sourceBarId?: number | null;
 }
 
 export type ProductInput = Omit<Product, 'id' | 'allergens' | 'ingredientCost' | 'price' | 'needsReprice'>;
