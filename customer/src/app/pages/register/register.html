@@ -2,15 +2,15 @@
   <div class="authcard">
 
     <div class="authheader">
-      <a routerLink="/" class="authlogo">Bonbon Boutique</a>
+      <a routerLink="/" class="authlogo"></a>
       <h1 class="authtitle">
-        {{ step() === 'register' ? ('createAccount' | translate) : (lang.isArabic() ? 'تأكيد الحساب' : 'Verify Account') }}
+        {{ step() === 'register' ? ('createAccount' | translate) : (lang.isArabic() ? 'تأكيد البريد الإلكتروني' : 'Verify Email') }}
       </h1>
 
       <div class="steps">
-        <span class="step" [class.active]="step() === 'register'" [class.done]="step() === 'sms'">1</span>
-        <span class="step-line" [class.done]="step() === 'sms'"></span>
-        <span class="step" [class.active]="step() === 'sms'">2</span>
+        <span class="step" [class.active]="step() === 'register'" [class.done]="step() !== 'register'"></span>
+        <span class="step-line" [class.done]="step() !== 'register'"></span>
+        <span class="step" [class.active]="step() === 'email'"></span>
       </div>
     </div>
 
@@ -31,6 +31,17 @@
             [placeholder]="lang.isArabic() ? 'الاسم الكامل الخاص بك' : 'Your full name'" 
             [(ngModel)]="form.name" 
             name="name" 
+            required />
+        </div>
+
+        <div class="formgroup">
+          <label>{{ lang.isArabic() ? 'البريد الإلكتروني' : 'Email Address' }} <span class="required">*</span></label>
+          <input
+            type="email"
+            [placeholder]="lang.isArabic() ? 'name@example.com' : 'name@example.com'"
+            [(ngModel)]="form.email"
+            name="email"
+            autocomplete="email"
             required />
         </div>
 
@@ -97,6 +108,8 @@
           </div>
         </div>
 
+        <app-captcha (solved)="onCaptchaSolved($event)" (expired)="onCaptchaExpired()" />
+
         <button type="submit" class="authbtn" [disabled]="loading()">
           {{ loading() ? (lang.isArabic() ? 'جاري تسجيل البيانات...' : 'Submitting...') : (lang.t()['register']) }}
         </button>
@@ -104,31 +117,31 @@
       </form>
     }
 
-    @if (step() === 'sms') {
-      <form class="authform" (ngSubmit)="submitVerificationCode()">
+    @if (step() === 'email') {
+      <form class="authform" (ngSubmit)="submitEmailVerification()">
         <p class="stepinfo">
-          {{ lang.isArabic() ? 'أدخل الرمز المرسل إلى رقم هاتفك' : 'Enter the verification code sent to your phone' }} 
-          <strong>{{ form.phone }}</strong>
+          {{ lang.isArabic() ? 'أدخل الرمز المرسل إلى بريدك الإلكتروني' : 'Enter the verification code sent to' }}
+          <strong>{{ form.email }}</strong>
         </p>
 
         <div class="formgroup">
-          <label for="verificationCode">{{ lang.isArabic() ? 'رمز التحقق' : 'Verification Code' }}</label>
+          <label for="emailVerificationCode">{{ lang.isArabic() ? 'رمز التحقق' : 'Email Verification Code' }}</label>
           <input
-            id="verificationCode"
+            id="emailVerificationCode"
             type="text"
-            placeholder="XXXX"
-            [(ngModel)]="verificationCode"
-            name="verificationCode"
-            maxlength="6"
+            [placeholder]="lang.isArabic() ? 'رمز التحقق' : 'Verification code'"
+            [(ngModel)]="emailVerificationCode"
+            name="emailVerificationCode"
+            autocomplete="one-time-code"
             required />
         </div>
 
-        <button type="submit" class="authbtn" [disabled]="loading()">
-          {{ loading() ? (lang.isArabic() ? 'جاري التأكيد...' : 'Verifying...') : (lang.isArabic() ? 'تأكيد الرمز وتفعيل الحساب' : 'Verify & Activate Account') }}
+        <app-captcha (solved)="onCaptchaSolved($event)" (expired)="onCaptchaExpired()" />
+        <button type="button" class="authbtn-ghost" [disabled]="loading() || !captchaToken" (click)="resendEmailVerification()">
+          {{ lang.isArabic() ? 'إعادة إرسال رمز البريد الإلكتروني' : 'Resend Email Code' }}
         </button>
-
-        <button type="button" class="authbtn-ghost" (click)="resendVerificationCode()">
-          {{ lang.isArabic() ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+        <button type="submit" class="authbtn" [disabled]="loading()">
+          {{ loading() ? (lang.isArabic() ? 'جاري التأكيد...' : 'Verifying...') : (lang.isArabic() ? 'تأكيد البريد الإلكتروني' : 'Verify Email') }}
         </button>
       </form>
     }

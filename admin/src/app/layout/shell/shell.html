@@ -16,6 +16,9 @@
       <a routerLink="/dashboard" routerLinkActive="on">Dashboard</a>
       <a routerLink="/ingredient" routerLinkActive="on">Ingredient</a>
       <a routerLink="/customers" routerLinkActive="on">Customers</a>
+      @if (auth.user()?.role === 'Admin') {
+        <a routerLink="/staff" routerLinkActive="on">Staff</a>
+      }
       <a routerLink="/build" routerLinkActive="on">Build bonbon / bar</a>
   
 

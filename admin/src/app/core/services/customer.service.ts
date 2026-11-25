@@ -16,4 +16,7 @@ export class CustomerService {
   signOut(sessionId: string): Observable<void> {
     return this.http.delete<void>(`${this.api}/online/${sessionId}`);
   }
+  delete(sessionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.api}/online/${sessionId}`);
+    }
 }

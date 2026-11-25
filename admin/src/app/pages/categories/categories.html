@@ -1,0 +1,38 @@
+<header class="top"><h2>Categories</h2><a class="btn" routerLink="/products">Back to products</a></header>
+
+@if (error()) { <p class="err" role="alert">{{ error() }}</p> }
+
+<section class="card">
+  <label class="f">Category
+    <select class="input" [ngModel]="target()" (ngModelChange)="onTargetChange($event)">
+      <option value="new">+ New category</option>
+      @for (c of categories(); track c.id) { <option [ngValue]="c.id">{{ c.name.en }}</option> }
+    </select>
+  </label>
+
+  @if (target() === 'new') {
+    <label class="f">Category name (English)
+      <input class="field" type="text" maxlength="120" [(ngModel)]="newNameEn"></label>
+    <label class="f">Category name (Arabic)
+      <input class="field" dir="rtl" type="text" maxlength="120" [(ngModel)]="newNameAr"></label>
+  }
+
+  <p class="hint">Tick the products in this category. A product can be in several categories.</p>
+
+  <div class="picks">
+    @for (p of products(); track p.id) {
+      <label class="chk">
+        <input type="checkbox" [checked]="picked().has(p.id)" (change)="togglePick(p.id)"> {{ p.name.en }}
+      </label>
+    }
+  </div>
+
+  <div class="acts">
+    <button class="btn btn-primary" (click)="applyCategory()" [disabled]="!canApply() || busy()">
+      {{ target() === 'new' ? 'Create category' : 'Save category' }}
+    </button>
+    @if (target() !== 'new') {
+      <button class="btn btn-danger" (click)="deleteCategory()">Delete category</button>
+    }
+  </div>
+</section>

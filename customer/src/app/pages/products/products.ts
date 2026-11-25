@@ -31,9 +31,10 @@ export class Products implements OnInit {
 
   filteredProducts = computed(() => {
     let products = this.allProducts();
-    if (this.selectedCategory() !== 0) {
-      products = products.filter(product => product.categoryId === this.selectedCategory());
-    }
+    const selected = this.selectedCategory();
+if (selected !== 0) {
+  products = products.filter(p => p.categoryIds?.includes(selected));
+}
     const query = this.searchQuery().trim().toLowerCase();
     if (query) {
       products = products.filter(product =>

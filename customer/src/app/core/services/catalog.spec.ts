@@ -44,6 +44,13 @@ describe('CatalogService', () => {
       product(2, 'box', false, false)
     ]);
   });
+
+  it('shares the catalog request between product and featured product consumers', () => {
+    service.products().subscribe();
+    service.featuredProducts().subscribe();
+
+    http.expectOne(`${API_URL}/storefront/products`).flush([product(1, 'bonbon', false, true)]);
+  });
 });
 
 function product(id: number, type: 'bonbon' | 'bar' | 'box', sellIndividually: boolean, featured: boolean): StorefrontProduct {

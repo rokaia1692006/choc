@@ -38,7 +38,7 @@ export interface Product {
   details: LocalizedText;
   imageUrl: string;
   galleryUrls: string[];
-  categoryId: number | null;
+  categoryIds: number[] ;
   badge: LocalizedText | null;
   status: ProductStatus;
   availability: Availability;

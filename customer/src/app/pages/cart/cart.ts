@@ -34,8 +34,10 @@ categoryService = inject(CategoryService);
   return this.lang.isArabic() && product.nameAr ? product.nameAr : product.name;
 }
 displayCategory(product: Product): string {
-    const cat = product.categoryId != null
-      ? this.categoryService.getById(product.categoryId)
+  const firstId = product.categoryIds[0];
+const category = firstId != null ? this.categoryService.getById(firstId) : undefined;
+    const cat = product.categoryIds != null
+      ? this.categoryService.getById(product.categoryIds)
       : undefined;
     if (!cat) return product.category ?? '';
     return this.lang.isArabic() ? cat.nameAr : cat.name;

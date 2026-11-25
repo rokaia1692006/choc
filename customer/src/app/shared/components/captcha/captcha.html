@@ -1,0 +1,4 @@
+<div #box class="captcha"></div>
+@if (configurationError()) {
+	<p class="captcha-error" role="alert">{{ configurationError() }}</p>
+}

@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -6,18 +6,21 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { LanguageService } from '../../core/services/language';
 import { LanguagesPipe } from '../../shared/pipes/languages-pipe';
-import { SHOW_LOCAL_VERIFICATION_CODE } from '../../core/api.config';
+import { Captcha } from '../../shared/components/captcha/captcha';
+import { finalize, switchMap } from 'rxjs';
 
-type RegStep = 'register' | 'sms';
+type RegStep = 'register' | 'email';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LanguagesPipe],
+  imports: [CommonModule, FormsModule, RouterModule, LanguagesPipe, Captcha],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
 export class Register {
+  @ViewChild(Captcha) captcha?: Captcha;
+
   lang = inject(LanguageService);
   auth = inject(AuthService);
   router = inject(Router);
@@ -27,9 +30,11 @@ export class Register {
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
-  verificationCode = '';
+  captchaToken = '';
+  emailVerificationCode = '';
   form = {
     name: '',
+    email: '',
     phone: '',
     password: '',
     confirmPassword: '',
@@ -53,6 +58,16 @@ export class Register {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email.trim())) {
+      this.error.set(this.lang.isArabic() ? 'يرجى إدخال بريد إلكتروني صحيح.' : 'Please enter a valid email address.');
+      return;
+    }
+
+    if (!this.captchaToken) {
+      this.error.set(this.lang.isArabic() ? 'يرجى إكمال اختبار التحقق.' : 'Please complete the CAPTCHA.');
+      return;
+    }
+
     
     const egPhoneRegex = /^(?:\+22)?(?:\+20|20|0)?1[0125]\d{8}$/;
     const cleanPhone = this.form.phone.trim().replace(/\s+/g, ''); 
@@ -68,41 +83,79 @@ export class Register {
 
     this.loading.set(true);
     this.form.phone = cleanPhone;
-    this.auth.startRegistration(this.form).subscribe({
-      next: response => {
-        this.step.set('sms');
-        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
-        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز تفعيل الحساب إلى رقم هاتفك.' : 'An account verification code has been sent to your number.') + code);
+    this.auth.startVerification(this.form.email.trim(), 'registration', this.captchaToken).pipe(
+      finalize(() => {
+        this.loading.set(false);
+        this.captchaToken = '';
+        this.captcha?.reset();
+      })
+    ).subscribe({
+      next: () => {
+        this.captchaToken = '';
+        this.step.set('email');
+        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.' : 'An email verification code has been sent to your inbox.');
       },
-      error: () => this.error.set(this.lang.isArabic() ? 'تعذر بدء التسجيل. تحقق مما إذا كان الرقم مسجلاً وحاول مجدداً.' : 'Could not start registration. Check whether this phone is already registered and try again.'),
-      complete: () => this.loading.set(false)
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إرسال رسالة التحقق. تحقق من إعدادات البريد الإلكتروني في الخادم وسجلاته.' : 'Could not send the verification email. Check the backend SMTP settings and server logs.'),
     });
   }
 
-  submitVerificationCode() {
+  submitEmailVerification() {
     this.error.set(null);
-
-    if (!this.verificationCode.trim()) {
-      this.error.set(this.lang.isArabic() ? 'يرجى إدخال رمز التحقق.' : 'Please enter the verification code.');
+    this.success.set(null);
+    if (!this.emailVerificationCode.trim()) {
+      this.error.set(this.lang.isArabic() ? 'يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني.' : 'Enter the verification code sent to your email.');
       return;
     }
 
     this.loading.set(true);
-    this.auth.verifyRegistration(this.form.phone, this.verificationCode.trim()).subscribe({
+    this.auth.confirmVerification(this.form.email.trim(), 'registration', this.emailVerificationCode.trim()).pipe(
+      switchMap(verificationToken => this.auth.startRegistration({
+        name: this.form.name,
+        email: this.form.email.trim(),
+        phone: this.form.phone,
+        password: this.form.password,
+        address: this.form.address,
+        city: this.form.city,
+        apartment: this.form.apartment
+      }, verificationToken))
+    ).pipe(finalize(() => this.loading.set(false))).subscribe({
       next: () => this.router.navigate(['/']),
-      error: () => this.error.set(this.lang.isArabic() ? 'الرمز غير صحيح أو انتهت صلاحيته.' : 'The code is incorrect or expired.'),
-      complete: () => this.loading.set(false)
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر تأكيد البريد الإلكتروني أو بدء التسجيل. تحقق من الرمز وحاول مجدداً.' : 'Could not verify the email or start registration. Check the code and try again.'),
     });
   }
 
-  resendVerificationCode() {
+  resendEmailVerification() {
     this.error.set(null);
-    this.auth.resendVerification(this.form.phone, 'registration').subscribe({
-      next: response => {
-        const code = SHOW_LOCAL_VERIFICATION_CODE ? ` (${this.lang.isArabic() ? 'رمز التطوير' : 'development code'}: ${response.code})` : '';
-        this.success.set((this.lang.isArabic() ? 'تم إرسال رمز جديد.' : 'A new registration code has been sent.') + code);
+    this.success.set(null);
+    if (!this.captchaToken) {
+      this.error.set(this.lang.isArabic() ? 'يرجى إكمال اختبار التحقق أولاً.' : 'Complete the CAPTCHA first.');
+      return;
+    }
+
+    this.loading.set(true);
+    this.auth.startVerification(this.form.email.trim(), 'registration', this.captchaToken).pipe(
+      finalize(() => {
+        this.loading.set(false);
+        this.captchaToken = '';
+        this.captcha?.reset();
+      })
+    ).subscribe({
+      next: () => {
+        this.captchaToken = '';
+        this.success.set(this.lang.isArabic() ? 'تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني.' : 'A new email verification code has been sent.');
       },
-      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the verification code.')
+      error: () => this.error.set(this.lang.isArabic() ? 'تعذر إعادة إرسال الرمز.' : 'Could not resend the verification code.'),
     });
   }
+
+  onCaptchaSolved(token: string) {
+    this.captchaToken = token;
+    this.error.set(null);
+  }
+
+  onCaptchaExpired() {
+    this.captchaToken = '';
+    this.error.set(this.lang.isArabic() ? 'انتهت صلاحية التحقق. يرجى إكمال اختبار CAPTCHA مرة أخرى.' : 'The CAPTCHA expired. Please complete it again before registering.');
+  }
+
 }

@@ -1,0 +1,31 @@
+<main class="activation-page">
+  <section class="activation-panel">
+    <p class="eyebrow">CHOCO ADMIN</p>
+    @if (complete()) {
+      <h1>Account activated</h1>
+      <p class="intro">Your staff account is ready. Sign in to finish setting up two-factor authentication.</p>
+      <a class="btn btn-primary" routerLink="/login">Go to sign in</a>
+    } @else {
+      <h1>Activate staff account</h1>
+      <p class="intro">Enter the invitation code sent to your email and choose a password.</p>
+      @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+      <form (ngSubmit)="activate()">
+        <label for="invite-email">Email address</label>
+        <input id="invite-email" name="email" class="input" type="email" autocomplete="email" [(ngModel)]="email" required>
+
+        <label for="invite-code">Invitation code</label>
+        <input id="invite-code" name="code" class="input code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" [(ngModel)]="code" required>
+
+        <label for="invite-password">Create password</label>
+        <input id="invite-password" name="password" class="input" type="password" autocomplete="new-password" [(ngModel)]="password" required>
+
+        <label for="invite-confirm">Confirm password</label>
+        <input id="invite-confirm" name="confirmPassword" class="input" type="password" autocomplete="new-password" [(ngModel)]="confirmPassword" required>
+
+        <button class="btn btn-primary activate-button" type="submit" [disabled]="submitting()">
+          {{ submitting() ? 'Activating…' : 'Activate account' }}
+        </button>
+      </form>
+    }
+  </section>
+</main>

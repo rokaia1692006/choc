@@ -1,0 +1,72 @@
+<section class="staff-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">ACCESS MANAGEMENT</p>
+      <h2>Staff</h2>
+      <p class="subtitle">Add and review staff accounts.</p>
+    </div>
+    <span class="count">{{ staff().length }} staff</span>
+  </header>
+
+  @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+  <div class="staff-layout">
+    <form class="add-panel" (ngSubmit)="addStaff()">
+      <h3>Add staff member</h3>
+      <label class="field-label" for="staff-name">Full name</label>
+      <input id="staff-name" name="name" class="input" type="text" autocomplete="name"
+             [(ngModel)]="name" required>
+
+      <label class="field-label" for="staff-email">Email address</label>
+      <input id="staff-email" name="email" class="input" type="email" autocomplete="email"
+             [(ngModel)]="email" required>
+
+      <div class="role-preview">
+        <span class="role-mark" aria-hidden="true">S</span>
+        <span><strong>Staff role</strong><small>Limited staff access</small></span>
+      </div>
+      <button class="btn btn-primary add-button" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Sending invitation…' : 'Add staff' }}
+      </button>
+    </form>
+
+    <section class="roster" aria-labelledby="roster-title">
+      <div class="roster-heading">
+        <h3 id="roster-title">Staff roster</h3>
+      </div>
+      @if (loading()) {
+        <p class="loading">Loading staff…</p>
+      } @else if (staff().length) {
+        <div class="table-scroll">
+          <table class="tbl">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              @for (member of staff(); track member.id) {
+                <tr>
+                  <td>{{ member.name }}</td>
+                  <td>{{ member.email }}</td>
+                  <td><span class="role-badge">Staff</span></td>
+                  <td><span class="status" [class.active]="member.isActive">{{ member.isActive ? 'Active' : 'Invitation pending' }}</span></td>
+                  <td>
+                    @if (!member.isActive) {
+                      <button class="resend" type="button" [disabled]="resendingId() !== null" (click)="resendInvitation(member)">
+                        {{ resendingId() === member.id ? 'Sending…' : 'Resend' }}
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <span class="empty-mark" aria-hidden="true">+</span>
+          <strong>No staff accounts</strong>
+          <p>Invited staff members will appear here.</p>
+        </div>
+      }
+    </section>
+  </div>
+</section>

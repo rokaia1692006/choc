@@ -1,6 +1,6 @@
 <div class="productCard" role="link" tabindex="0" (click)="openProduct()" (keydown.enter)="openProduct()">
   <div class="product-image">
-    <img [src]="product.image" alt="{{ product.name }}" class="image">
+    <img [src]="product.image" alt="{{ product.name }}" class="image" loading="lazy" decoding="async">
     @if (product.badge) {
       <span class="badge">{{ displayBadge }}</span>
     }

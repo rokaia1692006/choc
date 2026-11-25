@@ -1,0 +1,11 @@
+.captcha {
+  min-height: 65px;
+  display: flex;
+  justify-content: center;
+}
+
+.captcha-error {
+  color: #b42318;
+  font-size: 0.875rem;
+  text-align: center;
+}

@@ -6,6 +6,7 @@ import { User } from '../models/user';
 import { API_URL } from '../api.config';
 
 type AuthResponse = User | { user: User };
+export type VerificationPurpose = 'registration' | 'checkout' | 'passwordReset';
 export interface VerificationCodeResponse { code: string; }
 
 @Injectable({ providedIn: 'root' })
@@ -39,8 +40,12 @@ export class AuthService {
     );
   }
 
-  startRegistration(data: { name: string; phone: string; password: string; address: string; city: string; apartment?: string }): Observable<VerificationCodeResponse> {
-    return this.http.post<VerificationCodeResponse>(`${API_URL}/customer-auth/register`, data, { withCredentials: true });
+  startRegistration(data: { name: string; email: string; phone: string; password: string; address: string; city: string; apartment?: string }, verificationToken: string): Observable<User> {
+    const registration = { ...data, verificationToken };
+    return this.http.post<AuthResponse>(`${API_URL}/customer-auth/register`, registration, { withCredentials: true }).pipe(
+      map(response => this.unwrapUser(response)),
+      tap(user => this._user.set(user))
+    );
   }
 
   verifyRegistration(phone: string, code: string): Observable<User> {
@@ -101,5 +106,14 @@ export class AuthService {
       localStorage.removeItem(this.cacheKey);
       return null;
     }
+  }
+  startVerification(email: string, purpose: VerificationPurpose, captchaToken: string): Observable<void> {
+    return this.http.post<void>(`${API_URL}/account/verification/start`,
+      { email, purpose, captchaToken }, { withCredentials: true });
+  }
+
+  confirmVerification(email: string, purpose: VerificationPurpose, code: string): Observable<string> {
+    return this.http.post<{ verificationToken: string }>(`${API_URL}/account/verification/confirm`,
+      { email, purpose, code }, { withCredentials: true }).pipe(map(r => r.verificationToken));
   }
 }

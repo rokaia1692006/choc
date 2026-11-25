@@ -38,7 +38,11 @@ export class Login {
               ? 'The server blocked this sign-in request. Check the admin request header and CORS settings.'
               : e.status === 503
                 ? 'The verification email could not be sent. Check the backend SMTP settings.'
-              : 'Unable to reach the sign-in service. Check that the backend is running.');
+                : e.status === 0
+                  ? 'Unable to connect to the sign-in service. Check the backend URL, that the backend is running, and its CORS settings.'
+                  : e.status >= 500
+                    ? `The sign-in service returned an error (${e.status}). Check the backend logs.`
+                    : `Sign-in failed with an unexpected response (${e.status}).`);
       },
     });
   }

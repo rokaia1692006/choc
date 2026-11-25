@@ -5,7 +5,12 @@ import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { seasonState } from '../../../core/models/product.utils';
 
-@Component({ selector: 'app-product-list', imports: [RouterLink, CurrencyPipe, DatePipe], templateUrl: './product-list.html', styleUrl: './product-list.css' })
+@Component({ 
+  selector: 'app-product-list', 
+  imports: [RouterLink, CurrencyPipe, DatePipe], 
+  templateUrl: './product-list.html', 
+  styleUrl: './product-list.css' 
+})
 export class ProductList implements OnInit {
   private svc = inject(ProductService);
   products = signal<Product[]>([]);

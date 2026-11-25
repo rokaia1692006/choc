@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { Category as ApiCategory } from '@contracts/Category';
 import { StorefrontProduct } from '@contracts/product';
 import { API_URL } from '../api.config';
@@ -10,11 +10,14 @@ import { Category, Product, productTypes } from '../models/products';
 export class CatalogService {
   private http = inject(HttpClient);
   private readonly productsUrl = `${API_URL}/storefront/products`;
+  private productsRequest?: Observable<Product[]>;
 
   products(): Observable<Product[]> {
-    return this.http.get<StorefrontProduct[]>(this.productsUrl).pipe(
-      map(products => products.map(product => this.toProduct(product)))
+    this.productsRequest ??= this.http.get<StorefrontProduct[]>(this.productsUrl).pipe(
+      map(products => products.map(product => this.toProduct(product))),
+      shareReplay({ bufferSize: 1, refCount: false })
     );
+    return this.productsRequest;
   }
 
   featuredProducts(): Observable<Product[]> {

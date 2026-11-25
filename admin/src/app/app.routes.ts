@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'email-verification', loadComponent: () => import('./pages/email-verification/email-verification').then((m) => m.EmailVerification) },
   { path: 'two-factor', loadComponent: () => import('./pages/two-factor/two-factor').then((m) => m.TwoFactorSetup) },
   { path: 'two-factor-setup', loadComponent: () => import('./pages/two-factor/two-factor').then((m) => m.TwoFactorSetup) },
+  { path: 'staff/activate', loadComponent: () => import('./pages/staff-activation/staff-activation').then((m) => m.StaffActivationPage) },
   { path: 'change-password', canActivate: [passwordChangeGuard], loadComponent: () => import('./pages/change-password/change-password').then((m) => m.ChangePassword) },
   {
     path: '',
@@ -22,6 +23,7 @@ export const routes: Routes = [
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.DashboardPage) },
       { path: 'ingredient', canActivate: [roleGuard('Admin')], loadComponent: () => import('./pages/ingredients/ingredients').then((m) => m.IngredientsPage) },
       { path: 'customers', canActivate: [roleGuard('Admin')], loadComponent: () => import('./pages/customers/customers').then((m) => m.CustomersPage) },
+      { path: 'staff', canActivate: [roleGuard('Admin')], loadComponent: () => import('./pages/staff/staff').then((m) => m.StaffPage) },
       { path: 'build', loadComponent: () => import('./pages/products/product').then((m) => m.ProductPage) },
     ],
   },
